@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Found by AI — Run Your Audit</title>
+  <meta name="description" content="Find out if AI engines like ChatGPT, Claude and Perplexity are recommending your brand — and get a full action plan to fix it." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A12;
+      --surface: #0D0D1A;
+      --surface2: #12121F;
+      --border: #2A2A3E;
+      --border-glow: rgba(0,229,255,0.25);
+      --cyan: #00E5FF;
+      --cyan-dim: rgba(0,229,255,0.12);
+      --cyan-mid: rgba(0,229,255,0.35);
+      --white: #FFFFFF;
+      --muted: #A0A0B0;
+      --subtle: #8888A0;
+      --error: #FF3B5C;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── BACKGROUND ORBS ─────────────────────────── */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(120px);
+      opacity: 0.12;
+      z-index: 0;
+    }
+    .bg-orb-1 {
+      width: 600px; height: 600px;
+      background: var(--cyan);
+      top: -200px; right: -150px;
+    }
+    .bg-orb-2 {
+      width: 400px; height: 400px;
+      background: #5B5BFF;
+      bottom: 100px; left: -100px;
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ─── HEADER ──────────────────────────────────── */
+    header {
+      padding: 40px 0 48px;
+      text-align: center;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .logo-dot {
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    h1 {
+      font-size: clamp(26px, 5vw, 36px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--cyan);
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #A0A0B0;
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 32px;
+    }
+
+    /* ─── TRUST PILLS ─────────────────────────────── */
+    .trust-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      background: var(--cyan-dim);
+      border: 1px solid var(--border-glow);
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--cyan);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── FORM CARD ───────────────────────────────── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid #2E2E48;
+      border-radius: 16px;
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan-mid), transparent);
+    }
+
+    /* ─── SECTION DIVIDERS ────────────────────────── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin: 32px 0 20px;
+    }
+
+    .section-label::before, .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    /* ─── FORM FIELDS ─────────────────────────────── */
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #E0E0EE;
+      margin-bottom: 7px;
+      letter-spacing: 0.01em;
+    }
+
+    label .req {
+      color: var(--cyan);
+      margin-left: 3px;
+    }
+
+    label .opt {
+      color: var(--subtle);
+      font-weight: 400;
+      font-size: 11px;
+      margin-left: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    textarea {
+      width: 100%;
+      background: #16162A;
+      border: 1px solid #2E2E48;
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="url"]:focus,
+    textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px var(--cyan-dim);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #606078;
+      font-size: 13px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.6;
+    }
+
+    /* Token field special styling */
+    .token-field input {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      background: #0A0A18;
+      border-color: var(--border-glow);
+    }
+
+    .token-hint {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 7px;
+      font-size: 12px;
+      color: #9090A8;
+    }
+
+    .token-hint svg { flex-shrink: 0; opacity: 0.7; }
+
+    /* ─── SUBMIT BUTTON ───────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      height: 54px;
+      background: var(--cyan);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      margin-top: 32px;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ─── SPINNER ─────────────────────────────────── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-text { transition: opacity 0.2s; }
+
+    /* ─── SUCCESS STATE ───────────────────────────── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .success-icon {
+      width: 64px; height: 64px;
+      background: var(--cyan-dim);
+      border: 1px solid var(--border-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 28px;
+    }
+
+    .success-state h2 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .success-state p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ─── ERROR MESSAGE ───────────────────────────── */
+    .error-msg {
+      display: none;
+      background: rgba(255,59,92,0.1);
+      border: 1px solid rgba(255,59,92,0.3);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #FF6B84;
+      margin-top: 16px;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 32px 0 0;
+      font-size: 12px;
+      color: #8888A0;
+    }
+
+    footer a { color: var(--cyan); text-decoration: none; }
+
+    /* ─── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 520px) {
+      .form-card { padding: 28px 20px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+
+  <div class="page-wrap">
+    <header>
+      <div class="logo">
+        <span class="logo-dot"></span>
+        Found by AI
+        <span class="logo-dot"></span>
+      </div>
+
+      <h1>Run your<br /><em>AI Visibility Audit</em></h1>
+      <p class="subtitle">Find out if ChatGPT, Claude and Perplexity are recommending your brand — and get a full action plan to fix it.</p>
+
+      <div class="trust-pills">
+        <span class="pill">⚡ Results in ~2 minutes</span>
+        <span class="pill">🤖 Tests 3 AI engines</span>
+        <span class="pill">📊 6-part report</span>
+      </div>
+    </header>
+
+    <div class="form-card" id="formCard">
+      <form id="auditForm" novalidate>
+
+        <!-- ACCESS TOKEN -->
+        <div class="section-label">Access</div>
+
+        <div class="field token-field">
+          <label for="token">Access Token <span class="req">*</span></label>
+          <input type="text" id="token" name="Access Token" required
+            placeholder="Paste your token from your welcome email" autocomplete="off" />
+          <div class="token-hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Check your welcome email from Found by AI
+          </div>
+        </div>
+
+        <!-- BRAND INFO -->
+        <div class="section-label">Your Brand</div>
+
+        <div class="field">
+          <label for="brandName">Brand Name <span class="req">*</span></label>
+          <input type="text" id="brandName" name="Brand Name" required placeholder="e.g. Metagenics" />
+        </div>
+
+        <div class="field">
+          <label for="websiteUrl">Website URL <span class="req">*</span></label>
+          <input type="url" id="websiteUrl" name="Website URL" required placeholder="https://yourbrand.com" />
+        </div>
+
+        <div class="field">
+          <label for="productCategory">Product Category <span class="req">*</span></label>
+          <input type="text" id="productCategory" name="Product Category" required
+            placeholder="e.g. professional-grade nutritional supplements for gut health" />
+        </div>
+
+        <div class="field">
+          <label for="competitors">Top 3 Competitors <span class="req">*</span></label>
+          <input type="text" id="competitors" name="Top 3 Competitors (brand names)" required
+            placeholder="e.g. Thorne, Pure Encapsulations, Designs for Health" />
+        </div>
+
+        <div class="field">
+          <label for="customerProblem">Primary Customer Problem You Solve <span class="req">*</span></label>
+          <textarea id="customerProblem" name="Primary customer problem you solve" required
+            placeholder="Describe the core problem your customers come to you with..."></textarea>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="section-label">Products</div>
+
+        <div class="field">
+          <label for="product1">Top Product 1 — Name & key specs <span class="req">*</span></label>
+          <textarea id="product1" name="Top Product 1 — Name and key specs" required
+            placeholder="e.g. UltraFlora Balance — probiotic with 30 billion CFU, clinically studied strains, shelf-stable"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="product2">Top Product 2 — Name & key specs <span class="opt">optional</span></label>
+          <textarea id="product2" name="Top Product 2 — Name and key specs"
+            placeholder="e.g. OmegaGenics EPA-DHA 720 — pharmaceutical-grade fish oil, 720mg EPA+DHA per serve"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="product3">Top Product 3 — Name & key specs <span class="opt">optional</span></label>
+          <textarea id="product3" name="Top Product 3 — Name and key specs"
+            placeholder="e.g. PhytoMulti — phytonutrient-packed multivitamin with DNA protection blend"></textarea>
+        </div>
+
+        <!-- BRAND DETAILS -->
+        <div class="section-label">Brand Details</div>
+
+        <div class="field">
+          <label for="certifications">Certifications <span class="opt">optional</span></label>
+          <input type="text" id="certifications" name="Certifications"
+            placeholder="e.g. TGA Listed, GMP Certified, Certified B Corp" />
+        </div>
+
+        <div class="field">
+          <label for="priceRange">Price Range <span class="req">*</span></label>
+          <input type="text" id="priceRange" name="Price range" required
+            placeholder="e.g. $40–$120 per product" />
+        </div>
+
+        <div class="field">
+          <label for="guarantee">Return or Guarantee Policy <span class="opt">optional</span></label>
+          <input type="text" id="guarantee" name="Return or guarantee policy"
+            placeholder="e.g. 30-day money-back guarantee" />
+        </div>
+
+        <!-- RESULTS EMAIL -->
+        <div class="section-label">Delivery</div>
+
+        <div class="field">
+          <label for="email">Contact Email for Results <span class="req">*</span></label>
+          <input type="email" id="email" name="Contact email for results" required
+            placeholder="you@yourbrand.com" />
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-text">Run My AI Audit →</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+        <div class="error-msg" id="errorMsg">
+          Something went wrong. Please check your access token and try again, or email <a href="/cdn-cgi/l/email-protection#325a575e5e5d7257565557414647565b5d5a431c515d5f1c5347"><span class="__cf_email__" data-cfemail="1c74797070735c79787b796f6869787573746d327f7371327d69">[email&#160;protected]</span></a>
+        </div>
+
+      </form>
+
+      <!-- SUCCESS STATE -->
+      <div class="success-state" id="successState">
+        <div class="success-icon">✓</div>
+        <h2>Your audit is running.</h2>
+        <p>Your AI Visibility Report will land in your inbox within 2 minutes.<br /><br />
+        While you wait — check your spam folder just in case, and add <strong style="color:#fff"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3c54595050537c59585b594f4849585553544d125f5351125d49">[email&#160;protected]</a></strong> to your contacts.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>A product by <a href="https://edgestudiohq.com.au" target="_blank">Edge Studio HQ</a> &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection#d0b8b5bcbcbf90b5b4b7b5a3a4a5b4b9bfb8a1feb3bfbdfeb1a5"><span class="__cf_email__" data-cfemail="ee868b828281ae8b8a898b9d9a9b8a8781869fc08d8183c08f9b">[email&#160;protected]</span></a></p>
+    </footer>
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    const N8N_FORM_URL = 'https://edgestudio.app.n8n.cloud/form/c95cbbce-c8ec-4524-a14c-36474a0afe46';
+
+    const form = document.getElementById('auditForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const btnText = submitBtn.querySelector('.btn-text');
+    const errorMsg = document.getElementById('errorMsg');
+    const successState = document.getElementById('successState');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Basic validation
+      const required = form.querySelectorAll('[required]');
+      let valid = true;
+      required.forEach(field => {
+        if (!field.value.trim()) {
+          field.style.borderColor = 'var(--error)';
+          valid = false;
+        } else {
+          field.style.borderColor = '';
+        }
+      });
+
+      if (!valid) {
+        const firstError = form.querySelector('[required]:not([value]), [required]');
+        firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Loading state
+      submitBtn.disabled = true;
+      btnText.style.opacity = '0';
+      spinner.style.display = 'block';
+      errorMsg.style.display = 'none';
+
+      try {
+        const formData = new FormData(form);
+        const response = await fetch(N8N_FORM_URL, {
+          method: 'POST',
+          body: formData,
+          mode: 'no-cors'
+        });
+
+        // no-cors means we can't read respons
