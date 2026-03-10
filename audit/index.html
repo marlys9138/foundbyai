@@ -372,7 +372,7 @@
     </header>
 
     <div class="form-card" id="formCard">
-      <form id="auditForm" novalidate>
+      <form id="auditForm" action="https://edgestudio.app.n8n.cloud/form/5a2ffa16-3fdc-44fc-937a-436d6b9c6df3" method="POST" novalidate>
 
         <!-- ACCESS TOKEN -->
         <div class="section-label">Access</div>
@@ -497,27 +497,21 @@
     </footer>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     (function () {
-      // ── FIXED: correct production webhook URL ──
-      const N8N_FORM_URL = 'https://edgestudio.app.n8n.cloud/form/5a2ffa16-3fdc-44fc-937a-436d6b9c6df3';
+      const form      = document.getElementById('auditForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const spinner   = document.getElementById('spinner');
+      const btnText   = submitBtn.querySelector('.btn-text');
+      const errorMsg  = document.getElementById('errorMsg');
 
-      const form        = document.getElementById('auditForm');
-      const submitBtn   = document.getElementById('submitBtn');
-      const spinner     = document.getElementById('spinner');
-      const btnText     = submitBtn.querySelector('.btn-text');
-      const errorMsg    = document.getElementById('errorMsg');
-      const successState= document.getElementById('successState');
-      const formCard    = document.getElementById('formCard');
-
-      // Guard against double-submit
       let submitted = false;
 
-      form.addEventListener('submit', async function (e) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (submitted) return;
 
-        // Validate required fields
+        // Client-side required field validation
         const required = form.querySelectorAll('[required]');
         let valid = true;
         required.forEach(function (field) {
@@ -530,38 +524,18 @@
         });
 
         if (!valid) {
-          const firstError = form.querySelector('[required]');
+          const firstError = form.querySelector('[required]:not([value])');
           if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
 
-        // Lock submission
+        // Lock and submit — n8n handles the POST and redirects to /submitted
         submitted = true;
         submitBtn.disabled = true;
         btnText.style.opacity = '0';
         spinner.style.display = 'block';
         errorMsg.style.display = 'none';
-
-        try {
-          // FormData, no explicit Content-Type — browser sets multipart/form-data with boundary
-          // This is what n8n's formTrigger requires and accepts
-          await fetch(N8N_FORM_URL, {
-            method: 'POST',
-            body: new FormData(form),
-            mode: 'no-cors'
-          });
-
-          window.location.href = '/submitted';
-
-        } catch (err) {
-          // fetch failed (network error etc)
-          submitted = false;
-          submitBtn.disabled = false;
-          btnText.style.opacity = '1';
-          spinner.style.display = 'none';
-          errorMsg.style.display = 'block';
-          errorMsg.textContent = 'Something went wrong. Please try again or email hello@foundbyai.com.au';
-        }
+        form.submit();
       });
     })();
   </script>
