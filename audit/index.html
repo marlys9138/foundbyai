@@ -543,21 +543,17 @@
         errorMsg.style.display = 'none';
 
         try {
-          // URL-encoded body — more reliably parsed by n8n's form trigger
-          const formData = new FormData(form);
-          const urlEncoded = new URLSearchParams();
-          formData.forEach(function(value, key) { urlEncoded.append(key, value); });
+          // FormData with no explicit Content-Type — required for no-cors mode
+          // Browser sets multipart/form-data automatically (a CORS-safe content type)
           await fetch(N8N_FORM_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: urlEncoded.toString(),
+            body: new FormData(form),
             mode: 'no-cors'
           });
 
-          // no-cors means we can't read the response status
-          // but if we got here without throwing, treat as success
-          form.style.display = 'none';
-          successState.style.display = 'block';
+          // no-cors = opaque response, can't read status
+          // if we got here without throwing, treat as success
+          window.location.href = '/submitted';
 
         } catch (err) {
           // fetch failed (network error etc)
