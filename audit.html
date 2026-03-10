@@ -185,5 +185,24 @@ button[type=submit]:hover { opacity: 0.85; }
 
   <p class="footer-note">foundbyai.com.au &nbsp;&mdash;&nbsp; by Edge Studio</p>
 </div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+  const btn = form.querySelector('button[type=submit]');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    mode: 'no-cors'
+  }).catch(function() {});
+  setTimeout(function() {
+    window.location.href = 'https://foundbyai.com.au/submitted';
+  }, 400);
+});
+</script>
 </body>
 </html>
