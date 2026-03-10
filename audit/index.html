@@ -379,7 +379,7 @@
 
         <div class="field token-field">
           <label for="token">Access Token <span class="req">*</span></label>
-          <input type="text" id="token" name="field-11" required
+          <input type="text" id="token" name="Access token" required
             placeholder="Paste your token from your welcome email" autocomplete="off" />
           <div class="token-hint">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -395,29 +395,29 @@
 
         <div class="field">
           <label for="brandName">Brand Name <span class="req">*</span></label>
-          <input type="text" id="brandName" name="field-0" required placeholder="e.g. Metagenics" />
+          <input type="text" id="brandName" name="Brand Name" required placeholder="e.g. Metagenics" />
         </div>
 
         <div class="field">
           <label for="websiteUrl">Website URL <span class="req">*</span></label>
-          <input type="url" id="websiteUrl" name="field-1" required placeholder="https://yourbrand.com" />
+          <input type="url" id="websiteUrl" name="Website URL" required placeholder="https://yourbrand.com" />
         </div>
 
         <div class="field">
           <label for="productCategory">Product Category <span class="req">*</span></label>
-          <input type="text" id="productCategory" name="field-2" required
+          <input type="text" id="productCategory" name="Product Category" required
             placeholder="e.g. professional-grade nutritional supplements for gut health" />
         </div>
 
         <div class="field">
           <label for="competitors">Top 3 Competitors <span class="req">*</span></label>
-          <input type="text" id="competitors" name="field-6" required
+          <input type="text" id="competitors" name="Top 3 Competitors (brand names)" required
             placeholder="e.g. Thorne, Pure Encapsulations, Designs for Health" />
         </div>
 
         <div class="field">
           <label for="customerProblem">Primary Customer Problem You Solve <span class="req">*</span></label>
-          <textarea id="customerProblem" name="field-7" required
+          <textarea id="customerProblem" name="Primary customer problem you solve" required
             placeholder="Describe the core problem your customers come to you with..."></textarea>
         </div>
 
@@ -426,19 +426,19 @@
 
         <div class="field">
           <label for="product1">Top Product 1 — Name & key specs <span class="req">*</span></label>
-          <textarea id="product1" name="field-3" required
+          <textarea id="product1" name="Top Product 1 — Name and key specs" required
             placeholder="e.g. UltraFlora Balance — probiotic with 30 billion CFU, clinically studied strains, shelf-stable"></textarea>
         </div>
 
         <div class="field">
           <label for="product2">Top Product 2 — Name & key specs <span class="opt">optional</span></label>
-          <textarea id="product2" name="field-4"
+          <textarea id="product2" name="Top Product 2 — Name and key specs"
             placeholder="e.g. OmegaGenics EPA-DHA 720 — pharmaceutical-grade fish oil, 720mg EPA+DHA per serve"></textarea>
         </div>
 
         <div class="field">
           <label for="product3">Top Product 3 — Name & key specs <span class="opt">optional</span></label>
-          <textarea id="product3" name="field-5"
+          <textarea id="product3" name="Top Product 3 — Name and key specs"
             placeholder="e.g. PhytoMulti — phytonutrient-packed multivitamin with DNA protection blend"></textarea>
         </div>
 
@@ -447,19 +447,19 @@
 
         <div class="field">
           <label for="certifications">Certifications <span class="opt">optional</span></label>
-          <input type="text" id="certifications" name="field-8"
+          <input type="text" id="certifications" name="Certifications"
             placeholder="e.g. TGA Listed, GMP Certified, Certified B Corp" />
         </div>
 
         <div class="field">
           <label for="priceRange">Price Range <span class="req">*</span></label>
-          <input type="text" id="priceRange" name="field-9" required
+          <input type="text" id="priceRange" name="Price range" required
             placeholder="e.g. $40–$120 per product" />
         </div>
 
         <div class="field">
           <label for="guarantee">Return or Guarantee Policy <span class="opt">optional</span></label>
-          <input type="text" id="guarantee" name="field-10"
+          <input type="text" id="guarantee" name="Return or guarantee policy"
             placeholder="e.g. 30-day money-back guarantee" />
         </div>
 
@@ -468,7 +468,7 @@
 
         <div class="field">
           <label for="email">Contact Email for Results <span class="req">*</span></label>
-          <input type="email" id="email" name="field-12" required
+          <input type="email" id="email" name="Contact email for results" required
             placeholder="you@yourbrand.com" />
         </div>
 
@@ -543,10 +543,14 @@
         errorMsg.style.display = 'none';
 
         try {
+          // URL-encoded body — more reliably parsed by n8n's form trigger
           const formData = new FormData(form);
+          const urlEncoded = new URLSearchParams();
+          formData.forEach(function(value, key) { urlEncoded.append(key, value); });
           await fetch(N8N_FORM_URL, {
             method: 'POST',
-            body: formData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: urlEncoded.toString(),
             mode: 'no-cors'
           });
 
