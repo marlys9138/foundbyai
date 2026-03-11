@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Found By AI — Sand & Sky</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f0e8;color:#2c2c2c;font-family:'Outfit',sans-serif}
+a{color:#8B6F47}
+.hdr{background:#1a1a1a;color:#f5f0e8;padding:48px 40px}
+.hdr-inner{max-width:960px;margin:0 auto}
+.hdr small{opacity:.5;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.hdr h1{font-family:'Playfair Display',serif;font-size:2.6rem;margin:6px 0 4px;line-height:1.1}
+.hdr p{opacity:.55;font-size:.92rem}
+.hero{background:#fff;border-radius:16px;padding:32px 36px;margin:28px auto;max-width:960px;display:flex;align-items:center;gap:32px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.score-ring{width:110px;height:110px;border-radius:50%;background:#c0392b;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.score-ring .n{font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;font-weight:700;line-height:1}
+.score-ring .d{font-size:.72rem;color:rgba(255,255,255,.65)}
+.band{display:inline-block;background:#c0392b;color:#fff;padding:3px 14px;border-radius:20px;font-size:.78rem;font-weight:600;margin-bottom:8px}
+.sec{background:#fff;border-radius:16px;padding:32px 36px;margin:20px auto;max-width:960px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.sec h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:8px}
+.sec h3{font-size:1rem;margin:20px 0 6px;color:#1a1a1a}
+.sec h4{font-size:.95rem;margin:4px 0 8px}
+.sec p{color:#555;line-height:1.7;margin-bottom:10px}
+.sec ul{margin:8px 0 12px 20px;color:#555;line-height:1.8}
+.eng-card{background:#f5f0e8;border-radius:12px;padding:24px;text-align:center;flex:1}
+.eng-cards{display:flex;gap:16px;margin:20px 0}
+.audit-table{width:100%;border-collapse:collapse;font-size:.87rem;margin-top:8px}
+.audit-table th{background:#1a1a1a;color:#f5f0e8;padding:10px 14px;text-align:left;font-size:.75rem;font-weight:600;letter-spacing:.04em}
+.audit-table tr.pr:hover td{background:#fffdf8}
+.audit-table td{border-bottom:1px solid #f0ebe3;vertical-align:middle}
+.td-num{color:#bbb;font-size:.8rem;width:28px;padding:10px 8px}
+.td-type{padding:10px 8px;width:120px}
+.td-q{padding:10px 14px;font-size:.87rem;color:#444}
+.td-tick{text-align:center;padding:10px 8px;width:80px}
+.td-arrow{color:#ccc;width:20px;padding:10px 8px;font-size:.8rem;text-align:right}
+.badge{font-size:.7rem;background:#f0ebe3;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#8B6F47}
+.badge-dim{font-size:.7rem;background:#f5f5f5;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#bbb;border:1px solid #e8e0d5}
+.tick{padding:2px 10px;border-radius:20px;font-size:.75rem}
+.tick-yes{background:#2d6a4f;color:#fff}
+.tick-no{background:#e8e0d5;color:#999}
+.branded-divider{background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;padding:12px 18px;margin:24px 0 8px;display:flex;align-items:flex-start;gap:12px}
+.branded-divider-title{font-size:.85rem;font-weight:600;color:#8B6F47}
+.branded-divider-sub{font-size:.79rem;color:#aaa;margin-top:2px}
+.dl-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0ebe3;flex-wrap:wrap}
+.dl-bar h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:4px}
+.dl-bar p{font-size:.85rem;color:#888;margin:0;line-height:1.5;max-width:600px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;font-family:'Outfit',sans-serif;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.dl-btn:hover{background:#333}
+pre{background:#f5f5f2;padding:16px;border-radius:8px;overflow-x:auto;font-size:.82rem;margin-top:8px;line-height:1.5}
+.action{border:1px solid #f0ebe3;border-radius:10px;padding:18px 20px;margin:10px 0}
+.priority{font-size:.7rem;font-weight:700;color:#8B6F47;letter-spacing:.08em;text-transform:uppercase}
+.meta{font-size:.78rem;color:#aaa;margin-top:6px}
+.resp-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.claude-label{color:#8B6F47}
+.gpt-label{color:#2563eb}
+.resp-body{font-size:.83rem;color:#444;line-height:1.65;white-space:pre-wrap}
+.ftr{text-align:center;padding:40px 24px;color:#aaa;font-size:.82rem}
+.expand-hint{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:#aaa;background:#f5f0e8;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.bench-row{display:grid;grid-template-columns:180px 1fr 56px 160px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f0e8}
+.bench-row:last-of-type{border-bottom:none}
+.brand-row{padding:12px 0 10px}
+.bench-label{font-size:.88rem;color:#555;font-weight:400}
+.brand-name-label{font-weight:600;color:#1a1a1a}
+.bench-you{font-size:.75rem;color:#8B6F47;font-weight:600;margin-left:4px}
+.bench-bar-wrap{background:#f0ebe3;border-radius:20px;height:10px;overflow:hidden}
+.bench-bar{background:#c8bba8;height:10px;border-radius:20px}
+.brand-bar{background:#c0392b}
+.bench-score{font-family:'Playfair Display',serif;font-size:1.1rem;color:#444;text-align:right}
+.bench-note{font-size:.75rem;color:#aaa}
+.gap-statement{margin-top:18px;padding:14px 18px;background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;font-size:.88rem;color:#8B6F47;font-weight:500;line-height:1.6}
+.quick-wins .action{border-color:#e8f0e8;background:#fafdf8}
+.quick-wins .priority{color:#2d6a4f}
+</style>
+<script>
+function tgl(id){
+  const r=document.getElementById(id);
+  if(!r)return;
+  const open=r.style.display!=='none'&&r.style.display!=='';
+  r.style.display=open?'none':'table-row';
+  const prev=r.previousElementSibling;
+  if(prev){const a=prev.querySelector('.td-arrow');if(a)a.textContent=open?'▾':'▴';}
+}
+function dlBlob(content,filename,type){
+  const blob=new Blob([content],{type:type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function dlJSON(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const items=Array.from(el.querySelectorAll('li')).map(li=>li.innerText.trim()).filter(Boolean);
+  dlBlob(JSON.stringify(items,null,2),filename,'application/json');
+}
+function dlSchema(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const pre=el.querySelector('pre,code');
+  dlBlob(pre?pre.innerText:el.innerText,filename,'application/json');
+}
+function dlPDF(contentId,title,filename){
+  const el=document.getElementById(contentId);
+  if(!el||typeof html2pdf==='undefined'){alert('PDF library not loaded yet — try again in a moment.');return;}
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='font-family:Georgia,serif;color:#2c2c2c;line-height:1.7;font-size:13px;padding:8px';
+  const heading=document.createElement('h1');
+  heading.style.cssText='font-size:20px;margin-bottom:4px;color:#1a1a1a;font-family:Georgia,serif';
+  heading.textContent=title;
+  const sub=document.createElement('p');
+  sub.style.cssText='font-size:10px;color:#aaa;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;font-family:sans-serif';
+  sub.textContent='Generated by Found By AI · Edge Studio · foundbyai.com.au';
+  wrapper.appendChild(heading);
+  wrapper.appendChild(sub);
+  const clone=el.cloneNode(true);
+  clone.querySelectorAll('h2').forEach(h=>{h.style.cssText='font-size:16px;margin:16px 0 8px;color:#1a1a1a;font-family:Georgia,serif';});
+  clone.querySelectorAll('h3').forEach(h=>{h.style.cssText='font-size:13px;margin:14px 0 6px;font-weight:600';});
+  clone.querySelectorAll('h4').forEach(h=>{h.style.cssText='font-size:12px;margin:10px 0 4px;font-weight:600';});
+  clone.querySelectorAll('p').forEach(p=>{p.style.cssText='margin-bottom:8px;color:#444;font-size:13px';});
+  clone.querySelectorAll('ul').forEach(u=>{u.style.cssText='margin:6px 0 10px 18px';});
+  clone.querySelectorAll('li').forEach(l=>{l.style.cssText='margin-bottom:5px;color:#444;font-size:13px';});
+  clone.querySelectorAll('.action').forEach(a=>{a.style.cssText='border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px;margin:8px 0;page-break-inside:avoid';});
+  clone.querySelectorAll('.priority').forEach(p=>{p.style.cssText='font-size:10px;font-weight:700;color:#8B6F47;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px';});
+  clone.querySelectorAll('.meta').forEach(m=>{m.style.cssText='font-size:10px;color:#aaa;margin-top:4px';});
+  wrapper.appendChild(clone);
+  html2pdf().set({
+    margin:[12,14,12,14],
+    filename:filename,
+    image:{type:'jpeg',quality:0.97},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(wrapper).save();
+}
+</script>
+</head>
+<body>
+<div class="hdr"><div class="hdr-inner"><small>Found By AI · AI Visibility Audit</small><h1>Sand & Sky</h1><p>Powered by Edge Studio</p></div></div>
+
+<div class="hero">
+  <div class="score-ring"><span class="n">6</span><span class="d">/20</span></div>
+  <div>
+    <div class="band">C — Weak</div>
+    <div style="font-size:1.3rem;font-weight:600;margin-bottom:6px">AI Visibility Score</div>
+    <div style="color:#666;font-size:.9rem;line-height:1.6">Tested across 28 prompts on Claude and ChatGPT.<br>How often Sand & Sky appears when buyers ask AI for recommendations.</div>
+  </div>
+</div>
+
+<div class="sec"><h2>Competitor Benchmarking</h2><p style="color:#888;font-size:.88rem;margin-bottom:20px">Based on the same 18 organic prompts used in your audit.</p><div class="bench-row brand-row"><div class="bench-label brand-name-label">Sand & Sky <span class="bench-you">(you)</span></div><div class="bench-bar-wrap"><div class="bench-bar brand-bar" style="width:30%"></div></div><div class="bench-score">6<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned your brand</div></div><div class="bench-row"><div class="bench-label">Origins Clear Improvement</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:25%"></div></div><div class="bench-score">5<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="bench-row"><div class="bench-label">Aztec Secret</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:35%"></div></div><div class="bench-score">7<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="gap-statement">Your closest competitor appears in 1 more AI responses than Sand & Sky. That's the visibility gap Found By AI is designed to close.</div></div>
+
+<div class="sec">
+  <h2>Prompt Audit</h2>
+  <span class="expand-hint">👆 Click any row to see full AI responses</span>
+  <div class="eng-cards"><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">Claude</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">0<span style="font-size:.9rem;color:#bbb">/18</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">ChatGPT</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">2<span style="font-size:.9rem;color:#bbb">/18</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div></div>
+  <table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r0')" style="cursor:pointer">
+    <td class="td-num">1</td>
+    <td class="td-type"><span class="badge">clay mask</span></td>
+    <td class="td-q">What's the best pink clay face mask for clogged pores and blackheads?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r0" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Pink Clay Masks for Clogged Pores &amp; Blackheads
+
+**Top pick: Aztec Secret Indian Healing Clay**
+- The classic choice, though it's actually calcium montmorillonite (not pink, but extremely effective)
+- Mix with water or apple cider vinegar for deep pore cleansing
+- Very affordable (~$8) and highly rated for blackheads
+- Warning: Can be drying—use 1-2x weekly max
+
+**If you specifically want pink clay:**
+
+**Herbivore Botanicals Pink Clay Mask**
+- Gentle pink clay with rosehip and cucumber
+- Better for sensitive skin than harsh clays
+- Around $48—pricey but luxe formula
+- Good for maintenanc…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For addressing clogged pores and blackheads, consider the following pink clay face masks:
+
+1. **L'Oréal Paris Skincare Pure-Clay Face Mask with Pink Clay**: This mask is designed to exfoliate and illuminate your skin while helping to clear out impurities and unclog pores.
+
+2. **Herbivore Botanicals Pink Clay Gentle Cleanser Mask**: This product is both a mask and a cleanser, incorporating pink clay to help decongest the skin while being gentle enough for sensitive skin types.
+
+3. **Sand &amp; Sky Australian Pink Clay Mask**: Known for its detoxifying properties, this mask helps to draw out impurit…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r1')" style="cursor:pointer">
+    <td class="td-num">2</td>
+    <td class="td-type"><span class="badge">exfoliating treatment</span></td>
+    <td class="td-q">Which AHA exfoliating treatment works best for dull uneven skin texture?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r1" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top AHA Exfoliants for Dull, Uneven Texture
+
+**Best Overall: The Ordinary Glycolic Acid 7%**
+- Most affordable ($5-8)
+- Simple, effective formula
+- Great for beginners; use 2-3x weekly
+
+**Best Luxury Option: Paula's Choice Resist Weekly Resurfacing Treatment 10% AHA**
+- Higher concentration, more gentle delivery
+- Includes soothing ingredients (allantoin, chamomile)
+- Around $45; worth it if budget allows
+
+**Best for Sensitive Skin: Drunk Elephant T.L.C. Framboos Glycolic Night Serum 12%**
+- Well-formulated with antioxidants
+- Expensive ($68) but effective
+- Good if you have reactive skin
+
+*…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For dull and uneven skin texture, here are some effective AHA exfoliating treatments:
+
+1. **Drunk Elephant T.L.C. Glycolic Night Serum** - This serum contains 12% glycolic acid and is designed to exfoliate and resurface the skin overnight.
+
+2. **The Ordinary Glycolic Acid 7% Toning Solution** - A budget-friendly option, this toner helps improve skin texture and radiance with 7% glycolic acid.
+
+3. **Paula's Choice Skin Perfecting 8% AHA Gel Exfoliant** - This lightweight gel contains 8% glycolic acid and aims to enhance skin texture while minimizing the appearance of fine lines.
+
+4. **Mario Bad…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r2')" style="cursor:pointer">
+    <td class="td-num">3</td>
+    <td class="td-type"><span class="badge">pore mask</span></td>
+    <td class="td-q">Best 10-minute face mask for tightening pores and fighting breakouts?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r2" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best 10-Minute Face Masks for Pores &amp; Breakouts
+
+## Top Picks:
+
+**Best Overall: Aztec Secret Indian Healing Clay**
+- Pure calcium bentonite clay, incredibly affordable (~$8)
+- Mix with water or apple cider vinegar
+- Genuinely effective for pore-tightening and oil control
+- Can feel harsh—use 1-2x weekly max
+
+**Best Pre-Made: Neutrogena Hydro Boost Hydrating Cleansing Mask**
+- 10 minutes exactly
+- Won't over-dry; good for combo skin
+- Under $7, widely available
+
+**Best for Active Breakouts: Kiehl's Rare Earth Deep Pore Cleansing Mask**
+- Amazon clay-based, non-irritating formula
+- Suitable fo…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some effective 10-minute face masks that can help tighten pores and combat breakouts:
+
+1. **Origins Clear Improvement Active Charcoal Mask** – This mask draws out impurities and helps minimize the appearance of pores with activated charcoal.
+
+2. **Aztec Secret Indian Healing Clay Mask** – Mix it with apple cider vinegar for an invigorating treatment that deeply cleanses and can help reduce breakouts.
+
+3. **Innisfree Super Volcanic Pore Clay Mask** – This lightweight clay mask absorbs excess sebum and tightens pores while soothing the skin.
+
+4. **Freeman Facial Charcoal and Black Sugar…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r3')" style="cursor:pointer">
+    <td class="td-num">4</td>
+    <td class="td-type"><span class="badge">resurfacing mask</span></td>
+    <td class="td-q">Which AHA/BHA resurfacing mask gives the best results for texture issues?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r3" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best AHA/BHA Masks for Texture
+
+**Top pick: Drunk Elephant A-Passata Exfoliating Mask**
+- 10% AHA blend (glycolic, lactic, tartaric acids)
+- Excellent for smoothing bumpy texture
+- Lightweight, non-irritating formula
+- Real results within 2-3 weeks of weekly use
+- Premium price ($68) but effective
+
+**Best budget option: The Ordinary AHA 30% + BHA 2% Peeling Solution**
+- Potent dual-acid blend
+- ~$10 for visible texture improvement
+- Stronger/potentially irritating for beginners
+- Use 10 minutes max, start weekly
+
+**Most gentle: Paula's Choice 9% BHA Mask**
+- Salicylic acid-focused (better fo…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for an effective AHA/BHA resurfacing mask to address texture issues, consider the following options:
+
+1. **Drunk Elephant T.L.C. Sukari Babyfacial** - This highly-rated product contains 25% AHA and 2% BHA, promoting cell turnover and improving skin texture while providing a glow.
+
+2. **The Ordinary AHA 30% + BHA 2% Peeling Solution** - This popular offering has a potent formula with a blend of 30% alpha hydroxy acids and 2% beta hydroxy acid, making it effective for dealing with uneven texture and dullness. 
+
+3. **Paula's Choice Skin Perfecting 25% AHA + 2% BHA Exfoliant Peel…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r4')" style="cursor:pointer">
+    <td class="td-num">5</td>
+    <td class="td-type"><span class="badge">brightening mask</span></td>
+    <td class="td-q">What's the most effective face mask for brightening dull skin tone quickly?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r4" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Brightening Face Masks for Dull Skin
+
+**Top recommendation: Dr. Dennis Gross Hyaluronic Hydra-Mask**
+- Contains vitamin C and hyaluronic acid for immediate radiance
+- Results visible after one use
+- Works quickly (10-15 minutes)
+- Pricey but effective ($68)
+
+**Best budget option: The Ordinary Vitamin C Suspension 23% + HA Spheres**
+- More affordable ($5.90)
+- Powerful brightening with vitamin C
+- Apply as a mask or layer it
+- Slightly grittier texture but very effective
+
+**Best all-around: Tatcha Luminous Deep Hydration Firming Mask**
+- Brightens while hydrating
+- Premium quality ($68)
+…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For brightening dull skin tone quickly, consider the following effective face masks:
+
+1. **Olay Luminous Tone Perfecting Mask** - This mask helps to even out skin tone and brighten the complexion with its advanced formula.
+
+2. **Origins GinZing Peel-Off Mask** - This brightening peel-off mask contains Coffee and Panax Ginseng, which can help revitalize and brighten dull skin.
+
+3. **Kiehl's Turmeric &amp; Cranberry Seed Energizing Radiance Mask** - Infused with turmeric and cranberry, this mask can enhance your skin's radiance and brighten it up quickly.
+
+4. **Fresh Vitamin C Glow Routine Mask** - …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r5')" style="cursor:pointer">
+    <td class="td-num">6</td>
+    <td class="td-type"><span class="badge">clay treatment</span></td>
+    <td class="td-q">Best Australian clay-based treatment for persistent breakouts and large pores?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r5" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Australian Clay Treatments for Breakouts &amp; Pores
+
+## Top Recommendation: **Australian Bodycare Tea Tree Clay Mask**
+- Contains Australian tea tree oil + kaolin clay
+- Specifically formulated for breakout-prone skin
+- Good pore-minimizing effects
+- Available at Priceline, Chemist Warehouse, and online retailers
+- Budget-friendly ($15-20 AUD)
+
+## Premium Option: **Grown Alchemist Clay Masque**
+- Australian-made with kaolin clay
+- Includes natural extracts (avocado, chamomile)
+- More luxurious but higher quality
+- Around $65 AUD
+- Better for sensitive breakout-prone skin
+
+## Clinical/Stron…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For treating persistent breakouts and large pores with a clay-based treatment in Australia, consider the following products:
+
+1. **Swisse Purifying Clay Face Mask** - This mask contains kaolin clay, which helps to detoxify the skin and minimize the appearance of pores while reducing breakouts.
+
+2. **LUSH Mask of Magnaminty** - A popular choice, this mask features bentonite clay, which helps to absorb excess oil and clear impurities, making it effective against breakouts and large pores.
+
+3. **La Roche-Posay Effaclar Purifying Clay Face Mask** - Formulated for oily and acne-prone skin, this mas…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r6')" style="cursor:pointer">
+    <td class="td-num">7</td>
+    <td class="td-type"><span class="badge">clogged pores</span></td>
+    <td class="td-q">I have really clogged pores and persistent breakouts - which brand makes the best treatment for this?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r6" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Recommendations for Clogged Pores &amp; Breakouts
+
+**Best Overall: Neutrogena Rapid Clear**
+- Their **Benzoyl Peroxide 2.5% Spot Treatment** is effective and affordable ($7-10)
+- Also try their **Rapid Clear Stubborn Acne Daily Leave-On Mask** (salicylic acid) for prevention
+
+**Best Prescription-Strength Alternative: Differin Gel**
+- **Adapalene 0.1%** (retinoid) is now over-the-counter
+- Excellent for preventing clogged pores and reducing breakouts long-term
+- Takes 4-8 weeks to see full results ($12-15)
+
+**Best For Severe Clogging: Paulas Choice 2% BHA Liquid**
+- Exfoliates inside pores wi…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For clogged pores and persistent breakouts, consider the following brands and specific products:
+
+1. **Paula's Choice**:
+   - **Skin Perfecting 2% BHA Liquid Exfoliant**: This salicylic acid exfoliant helps to unclog pores and reduce breakouts.
+
+2. **The Ordinary**:
+   - **Niacinamide 10% + Zinc 1%**: This serum can help control oil and minimize the appearance of pores, which may help with breakouts.
+
+3. **La Roche-Posay**:
+   - **Effaclar Duo Acne Treatment**: This treatment contains benzoyl peroxide and is effective at reducing acne and preventing clogged pores.
+
+4. **Neutrogena**:
+   - **Ra…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r7')" style="cursor:pointer">
+    <td class="td-num">8</td>
+    <td class="td-type"><span class="badge">dull skin</span></td>
+    <td class="td-q">My skin is dull and uneven with stubborn blackheads - what product brand should I try?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r7" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Recommended Products for Dull, Uneven Skin &amp; Blackheads
+
+**For blackheads specifically:**
+- **Niacinamide serums** (like The Ordinary Niacinamide 10% + Zinc 1% or Paula's Choice 10% Niacinamide Booster) help shrink pores and reduce sebum
+- **Salicylic acid cleansers** (CeraVe SA Cleanser or Neutrogena Acne Proofing) dissolve the sebum plugging pores
+- **Clay masks** (Aztec Indian Healing Clay with apple cider vinegar, or Biore Charcoal Pore Strips for quick results)
+
+**For overall dullness &amp; uneven texture:**
+- **AHAs** (The Ordinary Glycolic Acid 7% or Drunk Elephant TLC Framboos) exfoliate…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For dull and uneven skin with stubborn blackheads, I recommend trying the following products:
+
+1. **Paula's Choice** - Skin Perfecting 2% BHA Liquid Exfoliant: This salicylic acid-based product can help unclog pores and improve skin texture.
+
+2. **The Ordinary** - Lactic Acid 5% + HA: This gentle exfoliating serum can brighten dull skin and even out tone.
+
+3. **COSRX** - BHA Blackhead Power Liquid: Formulated with betaine salicylate, this product helps remove blackheads and clear pores.
+
+4. **Neutrogena** - Oil-Free Acne Wash with Salicylic Acid: A classic for treating blackheads and preventin…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r8')" style="cursor:pointer">
+    <td class="td-num">9</td>
+    <td class="td-type"><span class="badge">texture issues</span></td>
+    <td class="td-q">I need something to fix my rough skin texture and minimize pores - which brand works best?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r8" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Options for Rough Skin &amp; Pores
+
+**Top recommendation: The Ordinary Niacinamide 10% + Zinc 1%**
+- Inexpensive ($5-7), clinically proven to minimize pores and improve texture
+- Lightweight serum that works well under moisturizer
+- Takes 4-6 weeks to see results
+
+**If you have a bigger budget:**
+
+**Paula's Choice 10% Niacinamide Booster**
+- Higher concentration, smoother texture than The Ordinary
+- Better for sensitive skin ($44)
+
+**For exfoliation (addresses texture directly):**
+- **Cos De Baha Glycolic Acid 7%** ($8) - budget option, effective
+- **The Ordinary Salicylic Acid 2%** ($5) - …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For improving rough skin texture and minimizing pores, consider the following specific brands and products:
+
+1. **Paula's Choice**:
+   - **Skin Perfecting 2% BHA Liquid Exfoliant**: This chemical exfoliant helps unclog pores and smooths skin texture.
+
+2. **The Ordinary**:
+   - **AHA 30% + BHA 2% Peeling Solution**: A strong exfoliating solution that resurfaces the skin and can help minimize pores.
+
+3. **Dr. Dennis Gross**:
+   - **Alpha Beta Universal Daily Peel**: These at-home peels combine AHA and BHA for effective exfoliation without irritation.
+
+4. **SkinCeuticals**:
+   - **LHA Cleanser**:…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r9')" style="cursor:pointer">
+    <td class="td-num">10</td>
+    <td class="td-type"><span class="badge">breakout prone</span></td>
+    <td class="td-q">I'm breakout-prone with enlarged pores - what's the best mask brand for deep cleaning?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r9" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Deep-Cleaning Masks for Breakout-Prone Skin
+
+**Top picks for your concerns:**
+
+**Clay masks (best for oil control &amp; pores):**
+- **Aztec Secret Indian Healing Clay** – affordable, powerful, and dermatologist-approved. Mix with water or apple cider vinegar. Use 1-2x weekly.
+- **Clinique Pore Refining Solutions Cleansing Mask** – gentler clay formula, won't over-dry
+- **Murad Clarifying Mask** – contains salicylic acid to address breakouts while cleansing
+
+**Chemical exfoliating masks (deeper clean without scrubbing):**
+- **Paula's Choice Skin Perfecting 8% AHA Lotion Mask** – hydroxy acid…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For breakout-prone skin with enlarged pores, I recommend the following masks:
+
+1. **Clinique Anti-Blemish Solutions Oil-Control Cleansing Mask** - This mask contains salicylic acid to help clear breakouts and reduce oiliness.
+
+2. **Origins Clear Improvement Active Charcoal Mask** - This mask uses charcoal to draw out impurities and unclog pores while being gentle on the skin.
+
+3. **Aztec Secret Indian Healing Clay** - A popular choice, this 100% natural calcium bentonite clay can be mixed with water or apple cider vinegar for a deep cleaning mask that helps absorb excess oil.
+
+4. **Dr. Jart+ D…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r10')" style="cursor:pointer">
+    <td class="td-num">11</td>
+    <td class="td-type"><span class="badge">ready buy</span></td>
+    <td class="td-q">I'm ready to buy a good clay mask for blackheads - which brand should I choose?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r10" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Clay Masks for Blackheads
+
+**Top recommendation: Aztec Secret Indian Healing Clay**
+- The gold standard for blackheads due to bentonite clay's excellent pore-cleansing power
+- Mix with water or apple cider vinegar
+- Very affordable ($10-15)
+- No frills, but highly effective
+
+**If you want convenience (pre-made):**
+- **Neutrogena Ultra Gentle Hydrating Creamy Cleanser** isn't a mask, but their **Neutrogena Oil-Free Acne Wash Facial Mask** is solid and readily available
+- **Aztec Secret also makes a pre-mixed version** (slightly pricier but no mixing needed)
+
+**Premium option:**
+- **Glow …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For a good clay mask that targets blackheads, consider the following options:
+
+1. **Aztec Secret Indian Healing Clay** - This highly-rated bentonite clay mask is known for deep cleansing and detoxifying the skin. Mix it with apple cider vinegar or water for optimal results.
+
+2. **L'Oréal Paris Skincare Pure-Clay Mask** - This line includes a Purifying and Mattifying mask that specifically helps with blackheads and oily skin.
+
+3. **Origins Clear Improvement Active Charcoal Mask** - While not strictly a clay mask, it's an effective option that combines charcoal and clay to draw out impurities, m…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r11')" style="cursor:pointer">
+    <td class="td-num">12</td>
+    <td class="td-type"><span class="badge">need recommendation</span></td>
+    <td class="td-q">Need a recommendation for the best AHA treatment to smooth skin texture immediately</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r11" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best AHA Treatments for Texture
+
+**For immediate visible results:**
+
+**The Ordinary Glycolic Acid 7% Toning Solution** (~$7)
+- Most affordable option
+- Noticeable smoothing within days
+- Simple formula, easy to use
+- Best for beginners
+
+**Paula's Choice 8% AHA Lotion** (~$40)
+- More effective than The Ordinary's
+- Gentler, better for sensitive skin
+- Visible results in 3-5 days
+- Best overall value
+
+**Drunk Elephant A-Passioni Retinol Alternative Serum** (~$68)
+- Premium option combining retinol with smoothing actives
+- Faster visible texture improvement
+- If you want luxury branding
+
+## Rea…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For immediate smoothing of skin texture, I recommend the following AHA treatments:
+
+1. **Paula's Choice Skin Perfecting 8% AHA Gel Exfoliant** - This gel formula is lightweight and effective at sloughing off dead skin cells, improving texture quickly.
+
+2. **The Ordinary Lactic Acid 10% + HA** - A mild exfoliating serum that provides immediate smoothing effects while also hydrating the skin.
+
+3. **Drunk Elephant T.L.C. Framboos Glycolic Night Serum** - Contains a blend of AHA and BHA, this serum targets uneven texture and delivers dramatic results overnight.
+
+4. **Algenist Genius Liquid Collage…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r12')" style="cursor:pointer">
+    <td class="td-num">13</td>
+    <td class="td-type"><span class="badge">buying today</span></td>
+    <td class="td-q">Looking to purchase an effective pore-refining mask today - what do you recommend?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r12" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">Here are my top recommendations for effective pore-refining masks:
+
+**Best Overall: Clay-Based**
+- **Aztec Secret Indian Healing Clay** (~$10-15) - Bentonite clay that deeply cleanses and minimizes pores. Mix with water or apple cider vinegar. Affordable and genuinely effective.
+- **Clinique Pore Refining Solutions Exfoliating Mask** (~$35) - Combines clay with gentle exfoliants. Good for regular use without irritation.
+
+**Best for Oily/Congested Skin**
+- **Origins Clear Improvement Charcoal Mask** (~$28) - Charcoal and kaolin clay combo that's gentler than pure clay masks while still refining…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For an effective pore-refining mask, I recommend the following products:
+
+1. **Origins Clear Improvement Active Charcoal Mask** - This mask uses activated charcoal to draw out impurities and refine pores.
+
+2. **The Ordinary Salicylic Acid 2% Masque** - Formulated with salicylic acid, this mask helps to target blemishes and minimize the appearance of pores.
+
+3. **Innisfree Super Volcanic Pore Clay Mask** - A clay mask that deeply cleanses and helps control excess oil while refining pores.
+
+4. **Peter Thomas Roth Irish Moor Mud Mask** - This mask contains Irish moor mud and helps detoxify and re…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r13')" style="cursor:pointer">
+    <td class="td-num">14</td>
+    <td class="td-type"><span class="badge">local brand</span></td>
+    <td class="td-q">What's the best Australian-made clay mask brand for pore problems?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r13" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Australian Clay Mask for Pores
+
+**Ultraceuticals Ultra Purifying Clay Mask** is a strong choice if you can find it, but it's become harder to source.
+
+For readily available Australian brands, I'd recommend:
+
+**Australis AC Solution Pore Minimising Clay Mask** - specifically formulated for pore concerns, affordable, and genuinely Australian-owned. It contains kaolin and bentonite clay.
+
+**Sukin Super Greens Clay Mask** - Australian brand (though now under international ownership) with charcoal and green tea. Good for congested pores at a budget price.
+
+**Bonus mention:** **Natures Organi…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the best Australian-made clay mask brands for pore problems is **Kylie Cosmetics** with their **Kylie Skin Detox Clay Mask**. Another excellent option is **Go-To Skincare**, which offers the **Face Hero Cleansing Clay Mask**. Both are known for their effectiveness in unclogging pores and improving overall skin texture.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r14')" style="cursor:pointer">
+    <td class="td-num">15</td>
+    <td class="td-type"><span class="badge">AU stockists</span></td>
+    <td class="td-q">Which Australian retailers stock the best pink clay face masks for blackheads?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r14" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Australian Retailers for Pink Clay Face Masks
+
+Here are your best options for finding quality pink clay masks locally:
+
+## Major Retailers
+- **Sephora** - Stocks brands like Aztec Secret Indian Healing Clay and various premium lines
+- **Mecca** - Good range of skincare including clay masks at various price points
+- **Priceline** - Budget-friendly options; carries brands like Neutrogena and Cetaphil clay masks
+- **Chemist Warehouse** - Competitive pricing on therapeutic and drugstore brands
+
+## Specific Recommended Products
+
+**Budget-friendly:**
+- **Cetaphil Rich Hydrating Night Cream with Cl…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some Australian retailers that stock popular pink clay face masks, especially for tackling blackheads:
+
+1. **Adore Beauty**:
+   - **Sand &amp; Sky Australian Pink Clay Mask**: This is a well-known product that helps detoxify the skin and minimize the appearance of blackheads.
+
+2. **Sephora Australia**:
+   - **Wander Beauty Lift Off Purifying &amp; Brightening Peel Off Mask**: Although not a pure pink clay mask, it contains pink clay and helps to draw out impurities.
+
+3. **David Jones**:
+   - **Natio Pink Clay Face Mask**: A budget-friendly option that helps cleanse and purify the skin, making…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r15')" style="cursor:pointer">
+    <td class="td-num">16</td>
+    <td class="td-type"><span class="badge">like Origins</span></td>
+    <td class="td-q">What are the best clay mask brands like Origins Clear Improvement but more effective?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r15" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Better Clay Mask Alternatives to Origins
+
+**Most Effective:**
+
+1. **Aztec Secret Indian Healing Clay** (~$10)
+   - Pure bentonite clay, incredibly potent
+   - Mix with apple cider vinegar or water
+   - Strongest extraction power but can be drying—use 1-2x weekly max
+
+2. **Farmacy Super Bounce Brightening Hydrogel Mask** (~$38)
+   - Gel formula (not pure clay) but more effective at cleansing + hydrating
+   - Gentler than Origins, won't over-dry
+   - Better for regular use
+
+3. **La Roche-Posay Effaclar Mask** (~$15)
+   - Clay with salicylic acid—targets congestion better
+   - Dries out less th…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for clay masks that are known to be more effective than Origins Clear Improvement, here are some top brands and products to consider:
+
+1. **Aztec Secret Indian Healing Clay** - This is a highly popular bentonite clay mask that is known for its deep cleansing properties. It's often praised for its ability to absorb impurities and unclog pores.
+
+2. **Tatcha Luminous Dewy Skin Mask** - While not a traditional clay mask, this hydrating sheet mask combines a blend of Japanese superfoods and can be used for deep hydration and pore refinement.
+
+3. **Innisfree Super Volcanic Pore Cla…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r16')" style="cursor:pointer">
+    <td class="td-num">17</td>
+    <td class="td-type"><span class="badge">Aztec alternative</span></td>
+    <td class="td-q">Best alternative to Aztec Secret clay mask that's gentler but still effective?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r16" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Gentler Alternatives to Aztec Secret Indian Healing Clay
+
+The Aztec mask is notoriously drying and can irritate sensitive skin. Here are solid alternatives:
+
+## Best Overall Replacement
+**Aztec Secret makes a gentler version**: Their **Green Healing Clay** (same brand, different formula) is less intense while still drawing out impurities. It's the obvious choice if you like their brand but need something milder.
+
+## Other Strong Options
+
+**Kaolin-based (similar but gentler):**
+- **Dermalogica MultiActive Clearing Mask** – kaolin clay with calming ingredients, much less harsh
+- **Mario Badesc…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for a gentler yet effective alternative to the Aztec Secret Indian Healing Clay Mask, consider the following options:
+
+1. **Kiehl’s Rare Earth Deep Pore Cleansing Masque** - This mask contains Amazonian white clay and is designed to help remove impurities and minimize pore appearance without being overly harsh on the skin.
+
+2. **L’Oréal Paris Skincare Pure-Clay Mask** - The Detox &amp; Brighten variant combines three pure clays with charcoal, offering a gentle yet purifying experience that helps to clear the skin.
+
+3. **Bioré Charcoal Pore Minimizer** - This mask utilizes charcoa…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r17')" style="cursor:pointer">
+    <td class="td-num">18</td>
+    <td class="td-type"><span class="badge">similar brands</span></td>
+    <td class="td-q">Brands similar to Glow Recipe for AHA treatments but with better pore-refining results?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r17" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># AHA Brands with Strong Pore-Refining Results
+
+**Best direct alternatives:**
+
+1. **The Ordinary Glycolic Acid 7% Toning Solution**
+   - Most affordable option
+   - Straightforward glycolic acid formulation
+   - Excellent for pore clarity, minimal frills
+   - Budget-friendly for testing tolerance
+
+2. **Paula's Choice Skin Perfecting 8% AHA Lotion**
+   - Gold standard for pore refinement
+   - Larger molecular weight AHA stays on surface (better for pores specifically)
+   - Includes antioxidants and hydrators
+   - Worth the premium price
+
+3. **Exuviance Professional 30% AHA Glycolic Acid Mask**
+…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for alternatives to Glow Recipe for AHA treatments that provide better pore-refining results, consider the following brands and products:
+
+1. **Paula's Choice**:
+   - *Skin Perfecting 2% BHA Liquid Exfoliant*: While it's a BHA, it's excellent for pore refinement and has a cult following for its efficacy.
+
+2. **The Ordinary**:
+   - *Glycolic Acid 7% Toning Solution*: This AHA treatment is affordable and helps improve skin texture and refine pores.
+
+3. **Drunk Elephant**:
+   - *T.L.C. Framboos Glycolic Night Serum*: This is a blend of glycolic, salicylic, and tartaric acids des…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+  <div class="branded-divider"><span style="font-size:1.1rem;line-height:1.4;margin-right:4px">🎯</span><div><div class="branded-divider-title">Prompts naming Sand & Sky directly</div><div class="branded-divider-sub">These prompts reference Sand & Sky by name — not included in the organic score above.</div></div></div><table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r18')" style="cursor:pointer">
+    <td class="td-num">19</td>
+    <td class="td-type"><span class="badge">vs Origins</span></td>
+    <td class="td-q">Sand & Sky Australian Pink Clay mask vs Origins Clear Improvement - which is better for blackheads?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r18" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky vs Origins for Blackheads
+
+**Sand &amp; Sky Australian Pink Clay** is the better choice here.
+
+**Why:**
+- Contains **kaolin clay** (more absorbent than Origins' formula) plus salicylic acid, which actively exfoliates and unclogs pores
+- The clay is drying and extractive—ideal for blackhead-prone skin
+- Grittier texture provides mechanical exfoliation
+- Designed specifically for congestion and oil control
+
+**Origins Clear Improvement:**
+- Primarily a salicylic acid treatment without clay
+- More of a gentle chemical exfoliant than a pore-clearing mask
+- Better for overall skin clarity t…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For addressing blackheads, the **Origins Clear Improvement Active Charcoal Mask** is generally more effective. It contains activated charcoal, which helps draw out impurities and excess oil from the pores, making it a good choice for blackhead removal.
+
+On the other hand, the **Sand &amp; Sky Australian Pink Clay Mask** is excellent for rejuvenating the skin and can help with overall clarity and texture, but it may not be as targeted for blackhead removal as the Origins mask.
+
+If blackhead reduction is your primary goal, I recommend going with **Origins Clear Improvement**.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r19')" style="cursor:pointer">
+    <td class="td-num">20</td>
+    <td class="td-type"><span class="badge">vs Aztec</span></td>
+    <td class="td-q">Is Sand & Sky pink clay mask better than Aztec Secret for clogged pores?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r19" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky vs. Aztec Secret for Clogged Pores
+
+**Aztec Secret wins for clogged pores.** Here's why:
+
+**Aztec Secret Indian Healing Clay** is more aggressive and effective for congestion:
+- Pure calcium bentonite clay—stronger pore-cleansing power
+- Mix-it-yourself format lets you control consistency
+- Excellent at extracting sebum and impurities
+- Better for stubborn, oily congestion
+- Much cheaper ($10-15)
+
+**Sand &amp; Sky Pink Clay** is gentler:
+- Kaolin and bentonite blend (less potent)
+- Pre-mixed convenience
+- Added skincare ingredients (hyaluronic acid, kakadu plum)
+- Better for sensitive…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing Sand &amp; Sky Pink Clay Mask to Aztec Secret Indian Healing Clay for clogged pores, both have their strengths:
+
+1. **Sand &amp; Sky Pink Clay Mask**: This mask is designed specifically to detoxify and brighten the skin. It's formulated with Australian pink clay, which helps reduce the appearance of pores and improve skin texture. It’s also infused with ingredients like licorice, which can help with skin discoloration and irritation.
+
+2. **Aztec Secret Indian Healing Clay**: This product is a powerful deep pore cleansing mask made from 100% calcium bentonite clay. It’s known for its abi…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r20')" style="cursor:pointer">
+    <td class="td-num">21</td>
+    <td class="td-type"><span class="badge">vs Glow Recipe</span></td>
+    <td class="td-q">Sand & Sky Flash Perfection vs Glow Recipe AHA treatment - which gives better results?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r20" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky vs Glow Recipe AHA: Direct Comparison
+
+**Sand &amp; Sky Flash Perfection Facial**
+- **Active**: Physical exfoliant (walnut shell powder) + chemical exfoliants
+- **Best for**: Quick brightening, textured skin
+- **Reality check**: Very gritty; can irritate sensitive skin. Better as an occasional treatment than regular use
+- **Results timeline**: Immediate glow but temporary
+
+**Glow Recipe Watermelon Nourishing Hydration Toner** (or their AHA products)
+- **Active**: Gentle AHAs (glycolic acid typically around 5%)
+- **Best for**: Regular use, gradual smoothing, hydration
+- **Reality check…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing Sand &amp; Sky Flash Perfection Exfoliating Treatment to Glow Recipe's AHA Treatment, both products have their strengths, but they cater to different skin concerns.
+
+1. **Sand &amp; Sky Flash Perfection Exfoliating Treatment**:
+   - **Key Ingredients**: This product contains Australian pink clay, which helps to detoxify, and other gentle exfoliating ingredients that promote smoother skin texture.
+   - **Results**: It's designed to brighten and refine skin texture, making it great for dull or uneven skin. Users often notice immediate results in terms of smoothness and radiance.
+
+2. **Glo…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r21')" style="cursor:pointer">
+    <td class="td-num">22</td>
+    <td class="td-type"><span class="badge">worth it</span></td>
+    <td class="td-q">Is Sand & Sky Australian Pink Clay mask actually worth the hype and price?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r21" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky Australian Pink Clay Mask: My Take
+
+**The honest answer: It's solid, but not revolutionary for the price.**
+
+## What it does well
+- **Genuinely effective** for most skin types—gentle exfoliation + oil control without harshness
+- **Pleasant sensory experience**: smells good, feels luxurious
+- **Good for sensitive skin**: less aggressive than charcoal masks
+- **Decent ingredient list**: pink clay, hyaluronic acid, and antioxidants are legit
+
+## The catches
+- **Price**: $65 for 100ml is steep when comparable masks cost $15-30
+- **Results aren't dramatically better** than budget alter…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">The Sand &amp; Sky Australian Pink Clay Mask has garnered significant attention and praise, primarily for its claims of detoxifying and brightening the skin. Here are some specifics to consider regarding its worth:
+
+**Pros:**
+1. **Ingredients:** The mask contains Australian pink clay, which is known for its cleansing and calming properties. It also includes other beneficial ingredients like aloe vera and vitamin E.
+2. **Effects:** Many users report that it helps to remove impurities, reduce the appearance of pores, and leave skin looking brighter and more radiant after use.
+3. **Brand Reputation:*…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r22')" style="cursor:pointer">
+    <td class="td-num">23</td>
+    <td class="td-type"><span class="badge">quality check</span></td>
+    <td class="td-q">Are Sand & Sky skincare products good quality or just Instagram marketing?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r22" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">Sand &amp; Sky has some legitimacy, but it's a mixed bag:
+
+**What works:**
+- Their **Australian Pink Clay Mask** is genuinely popular and has decent exfoliating ingredients (kaolin clay, willowbark extract). It does what it claims for most people
+- Products contain actual active ingredients, not just filler
+- They're transparent about ingredients
+
+**The Instagram marketing reality:**
+- They've built their brand heavily on aesthetics and influencer partnerships, which inflates perception of quality
+- Pricing is higher than what the formulations justify (typical for Instagram-first brands)
+- The "lu…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Sand &amp; Sky skincare products have gained popularity largely through social media, particularly Instagram, but they do have some positive attributes that suggest they offer quality as well. 
+
+1. **Australian Pink Clay Mask**: This is one of their flagship products, known for its ability to detoxify and brighten the skin. It contains natural ingredients like kaolin and willow bark, which can provide skincare benefits.
+
+2. **Glowgetter Exfoliating Treatment**: This product offers a mix of natural exfoliants and is reported to improve skin texture and brightness.
+
+3. **Hydrating Mist**: This is ma…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r23')" style="cursor:pointer">
+    <td class="td-num">24</td>
+    <td class="td-type"><span class="badge">reviews real</span></td>
+    <td class="td-q">Do Sand & Sky face masks actually work or are the reviews fake?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r23" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">Sand &amp; Sky makes legitimate products, but here's what I'd say:
+
+**What's real:**
+- Their masks (particularly the Australian Pink Clay mask) do contain actual active ingredients—kaolin and bentonite clays genuinely absorb oil and can help some people
+- The brand is sold through major retailers (Sephora, Ulta, etc.), so there's real quality control
+- Some customer reviews are authentic
+
+**The honest caveats:**
+- Reviews on their own site are likely curated—companies typically show positive ones
+- Third-party sites like Amazon show mixed results; not everyone gets dramatic results
+- Price point (…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Sand &amp; Sky face masks, particularly the Australian Pink Clay Mask, have garnered a lot of attention and reviews. Many users report positive experiences, such as cleaner, brighter skin and improved texture. The product is formulated with natural ingredients like Australian pink clay, which is known for its detoxifying properties, and it's designed to draw out impurities and reduce the appearance of pores.
+
+While there are many favorable reviews, it's important to note that individual results can vary based on skin type and concerns. Some users with sensitive skin may experience irritation, so a…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r24')" style="cursor:pointer">
+    <td class="td-num">25</td>
+    <td class="td-type"><span class="badge">buy Australia</span></td>
+    <td class="td-q">Where can I buy Sand & Sky Australian Pink Clay mask in Australia with fast shipping?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r24" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky Pink Clay Mask - Australian Retailers
+
+Here are your best options for fast shipping in Australia:
+
+## **Official &amp; Direct**
+- **Sand &amp; Sky website** (sandskybeauty.com.au) - Usually 2-3 business days within Australia. Most reliable for stock and authenticity.
+
+## **Major Beauty Retailers**
+- **Sephora Australia** (Sephora.com.au) - 1-2 business day delivery in metro areas; physical stores for instant pickup
+- **Mecca** (Mecca.com.au) - Fast metro delivery; click &amp; collect available
+- **Adore Beauty** (Adorebeauty.com.au) - Same-day or next-day delivery in major cities
+
+## **Depart…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can purchase the Sand &amp; Sky Australian Pink Clay Mask from several retailers in Australia that offer fast shipping:
+
+1. **Sand &amp; Sky Official Website** - Buying directly from their website often ensures the latest products and promotions, plus they offer speedy shipping options.
+
+2. **Sephora Australia** - Sephora stocks Sand &amp; Sky products and typically provides quick shipping and various delivery options.
+
+3. **Adore Beauty** - This online beauty retailer carries Sand &amp; Sky products and is known for prompt shipping within Australia.
+
+4. **David Jones** - Their online store offers Sand &amp; …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r25')" style="cursor:pointer">
+    <td class="td-num">26</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">What are the best Sand & Sky products for clogged pores and dull skin?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r25" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky Product Recommendations
+
+For your concerns, I'd recommend:
+
+## **Australian Biomineral Mask** (their flagship product)
+- Best for clogged pores and dullness
+- Clay-based with kaolin and bentonite to draw out impurities
+- Contains native Australian minerals that exfoliate and brighten
+- Use 1-2x weekly for best results
+- This is genuinely their star product
+
+## **Face Wash Creamy Cleanser**
+- Gentle daily cleanse to prevent pore buildup
+- Won't over-dry, pairs well with the mask
+
+## **Body Serum Hydrating Antioxidant Oil** (for face)
+- Addresses dullness with luminizing ingredients…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For clogged pores and dull skin, two standout products from Sand &amp; Sky are:
+
+1. **Sand &amp; Sky Australian Pink Clay Porefining Face Mask** - This mask helps to detoxify and purify the skin, reducing the appearance of clogged pores while brightening the complexion. The pink clay works to draw out impurities and excess oil.
+
+2. **Sand &amp; Sky Aussie Glow Berry Brightening Eye Cream** - While primarily for the under-eye area, this cream contains brightening ingredients that can help with overall dullness. It hydrates and revitalizes the skin, giving it a more radiant look.
+
+Using these products toget…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r26')" style="cursor:pointer">
+    <td class="td-num">27</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Where's the best place to buy Sand & Sky Australian Pink Clay mask online?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r26" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Places to Buy Sand &amp; Sky Pink Clay Mask Online
+
+**Official &amp; Direct:**
+- **Sand &amp; Sky's official website** (sandsky.com) - Often has the best deals and exclusive offers
+- **Sephora.com** - Reliable, frequent sales, free returns
+
+**Other Reliable Retailers:**
+- **Ulta Beauty** - Good rewards program, regular discounts
+- **Amazon** - Competitive pricing, but verify it's sold by an authorized seller to avoid counterfeits
+- **Cultbeauty.com** - UK-based but ships internationally with good pricing
+
+**Money-Saving Tips:**
+- Check Sephora/Ulta first during their seasonal sales (Rouge sales, cl…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can buy the Sand &amp; Sky Australian Pink Clay Mask online at several reputable retailers. Here are some options:
+
+1. **Amazon** - Offers a variety of options often with fast shipping.
+2. **Sephora** - Carries the product and frequently has promotions or discounts.
+3. **Ulta** - Another beauty retailer that stocks the mask and may have sales.
+4. **Sand &amp; Sky's Official Website** - They often have exclusive offers or bundles.
+
+Be sure to compare prices and check for any shipping deals!</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r27')" style="cursor:pointer">
+    <td class="td-num">28</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Are Sand & Sky face mask reviews legitimate or is it overhyped?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r27" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Sand &amp; Sky Face Mask Reality Check
+
+**The honest assessment:** Mixed legitimacy with some hype.
+
+## What actually works:
+- **Australian Pink Clay Mask** ($68): Their flagship product has genuine positive reviews. The clay does absorb oil and the mask feels pleasant. It's effective for oily/combination skin, though not revolutionary.
+- Real ingredients (kaolin clay, rose hip oil) that have actual skincare benefits
+- Consistent quality across batches
+
+## The hype aspects:
+- **Price premium**: You're paying significantly more than equivalent clay masks (Aztec Indian Healing Clay at $8 or Glamgl…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Sand &amp; Sky offers several products, but their Australian Pink Clay Mask has gained significant attention and reviews. Many users report positive results, claiming it effectively detoxifies the skin, minimizes pores, and enhances brightness. Specific brands like Sephora and Ulta carry this product, and you can typically find a mix of reviews online ranging from very positive to some negative experiences, often depending on individual skin types and conditions.
+
+However, the hype can sometimes overshadow the fact that results can vary. If you're considering it, checking reviews on multiple platf…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+</div>
+
+<div class="sec quick-wins"><div class="dl-bar"><div><h2>Quick Wins — Do These First</h2><p>Three actions you can complete in the next 48 hours to improve Sand & Sky's AI visibility. No content creation, no technical builds required.</p></div></div>
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Update Google My Business with Pink Clay Mask Specialization</h4>
+<p><strong>What to do:</strong> Add "Pink Clay Face Masks" and "Australian Clay Treatments" to your primary business categories and description. Include "blackhead removal" and "pore treatment" in your business description.</p>
+<p><strong>Why it matters:</strong> You appeared in only 2/18 prompts and both were pink clay related on ChatGPT only. This signals AI models need stronger entity signals about your clay mask specialty to cite you in broader clay mask and pore treatment queries.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Claim Wikipedia Brand Mention</h4>
+<p><strong>What to do:</strong> Create or update your brand's Wikipedia page with focus on "Australian skincare" and "pink clay mask innovation." Include citations to press coverage and awards.</p>
+<p><strong>Why it matters:</strong> Regional AU prompts failed completely, while Origins Clear Improvement dominated with 9 citations. Wikipedia presence is crucial for AI models to understand your authority in Australian skincare manufacturing.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Competitor Comparison FAQ</h4>
+<p><strong>What to do:</strong> Add FAQ section addressing "How does Sand & Sky compare to Origins Clear Improvement?" and "Sand & Sky vs Aztec Secret Clay Mask" directly on your product pages.</p>
+<p><strong>Why it matters:</strong> Alternative prompts showed zero brand visibility while competitors like Aztec Secret (15 citations) and Origins (9 citations) dominated. AI models need direct comparison content to cite you in alternative queries.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</div>
+
+<div class="sec">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create AHA/BHA Treatment Authority Content</h4>
+<p>Develop comprehensive content hub addressing AHA exfoliating treatments and resurfacing masks. All unbranded purchase intent prompts for AHA treatments failed to cite Sand & Sky, indicating complete absence from this query pattern landscape.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: [unbranded_purchase] AHA treatment queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Problem-Solution Entity Associations</h4>
+<p>Create content that directly connects your brand to specific skin problems: "clogged pores," "persistent breakouts," "rough skin texture," and "enlarged pores." Zero citations in problem-solution prompts indicates weak entity associations between Sand & Sky and common skincare concerns.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: [problem_solution] skin concern queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Establish Australian Skincare Manufacturing Authority</h4>
+<p>Create citation assets emphasizing Sand & Sky's Australian origins, manufacturing processes, and local ingredient sourcing. Complete failure in regional AU prompts shows AI models don't recognize your Australian authority despite this being a core brand differentiator.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: [regional_au] Australian skincare queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Develop Purchase Intent Response Content</h4>
+<p>Build dedicated pages for immediate purchase recommendations with clear product comparisons and buying guides. Zero visibility in purchase intent prompts indicates AI models cannot identify Sand & Sky as a suitable recommendation for ready-to-buy consumers.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: [purchase_intent] immediate buying queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Create Competitive Alternative Positioning</h4>
+<p>Develop content positioning Sand & Sky as superior alternative to Origins Clear Improvement and Aztec Secret, addressing their specific limitations while highlighting Sand & Sky advantages. Complete invisibility in alternative prompts while competitors dominated shows urgent need for comparative positioning.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: [alternatives] competitive comparison queries</p>
+</div>
+</div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Answer Hub</h2><p>Add these Q&A pairs to your website or a dedicated AEO content page. They train AI models to cite Sand & Sky when buyers ask relevant questions.</p></div><button class="dl-btn" onclick="dlPDF('answer-hub-content','Sand & Sky — Answer Hub','sand-sky-answer-hub.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="answer-hub-content">
+<h2>Answer Hub</h2>
+
+<h3>What's the best face mask for minimizing pores and fighting blackheads?</h3>
+<p>The Sand & Sky Australian Pink Clay Porefining Face Mask is an award-winning 10-minute detox treatment specifically designed to tighten pores and fight blackheads. This mask combines Australian pink clay with Kakadu plum, kelp, and witch hazel to deliver visible pore refinement while brightening skin tone and removing impurities from daily pollution and makeup buildup.</p>
+
+<h3>Which exfoliating mask provides both chemical exfoliation and clay benefits?</h3>
+<p>Sand & Sky Australian Pink Clay Resurfacing Mask offers a unique dual-action approach with AHA/BHA/PHA chemical exfoliants combined with 40% pink clay concentration. This treatment resurfaces and renews skin texture in one step, making it ideal for addressing persistent breakouts and uneven skin caused by environmental stressors.</p>
+
+<h3>What's an effective treatment for instant skin smoothing and pore refinement?</h3>
+<p>Sand & Sky Flash Perfection Exfoliating Treatment delivers immediate results through AHA exfoliation enhanced with bamboo and macadamia ingredients. This treatment provides instant smoothing, brightening, and pore refinement, specifically targeting dull, uneven skin texture from daily environmental exposure.</p>
+
+<h3>Which Australian skincare brand specializes in pink clay treatments?</h3>
+<p>Sand & Sky is the leading Australian skincare brand known for their pink clay formulations. Their product range focuses on solving clogged pores, persistent breakouts, and dull uneven skin using Australian pink clay combined with native ingredients like Kakadu plum.</p>
+
+<h3>What's the fastest way to detox skin and brighten complexion?</h3>
+<p>Sand & Sky Australian Pink Clay Porefining Face Mask provides rapid skin detoxification in just 10 minutes. The award-winning formula combines pink clay with Kakadu plum for brightening effects, while kelp and witch hazel work to remove impurities and environmental pollutants.</p>
+
+<h3>Which face mask combines multiple types of chemical exfoliants with clay?</h3>
+<p>Sand & Sky Australian Pink Clay Resurfacing Mask uniquely combines AHA, BHA, and PHA exfoliants with 40% Australian pink clay concentration. This comprehensive approach addresses both surface-level concerns and deeper pore congestion in a single treatment.</p>
+
+<h3>What skincare treatment works best for pollution-damaged skin?</h3>
+<p>Sand & Sky skincare products are specifically formulated to address skin damage from daily pollution, makeup, and environmental stressors. Their Australian Pink Clay Porefining Face Mask and Flash Perfection Exfoliating Treatment work together to remove environmental buildup while restoring skin clarity and smoothness.</p>
+
+<h3>Which exfoliating treatment contains bamboo and macadamia for gentle smoothing?</h3>
+<p>Sand & Sky Flash Perfection Exfoliating Treatment features AHA exfoliation enhanced with bamboo and macadamia ingredients. This combination provides effective yet gentle exfoliation for instant smoothing and pore refinement without over-irritating the skin.</p>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Brand Facts</h2><p>Upload this JSON to your AI platform's knowledge base so AI models accurately describe Sand & Sky.</p></div><button class="dl-btn" onclick="dlJSON('brand-facts-content','sand-sky-brand-facts.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="brand-facts-content">
+<h2>Brand Facts</h2>
+<ul>
+<li>Sand & Sky is an Australian skincare brand specializing in pink clay-based treatments</li>
+<li>Australian Pink Clay Porefining Face Mask is award-winning and works in 10 minutes</li>
+<li>Australian Pink Clay Porefining Face Mask contains Kakadu plum, kelp, and witch hazel</li>
+<li>Australian Pink Clay Resurfacing Mask contains 40% pink clay concentration</li>
+<li>Australian Pink Clay Resurfacing Mask combines AHA, BHA, and PHA exfoliants</li>
+<li>Flash Perfection Exfoliating Treatment features bamboo and macadamia ingredients</li>
+<li>Products specifically target clogged pores, persistent breakouts, and dull uneven skin</li>
+<li>Formulations address skin damage from daily pollution, makeup, and environmental stressors</li>
+<li>Australian Pink Clay Resurfacing Mask resurfaces and renews skin texture in one step</li>
+<li>Flash Perfection Exfoliating Treatment provides instant smoothing, brightening, and pore refinement</li>
+<li>Brand focuses on combining Australian native ingredients with proven skincare actives</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>AI Content Architecture</h2><p>Share with your content team. Each item is a citation asset to create that increases Sand & Sky's chances of being recommended by AI.</p></div><button class="dl-btn" onclick="dlPDF('content-arch-content','Sand & Sky — AI Content Architecture','sand-sky-content-architecture.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="content-arch-content">
+<h2>AI Content Architecture</h2>
+
+<ul>
+<li>Ultimate Guide to Pink Clay Face Masks for Blackhead Removal — [unbranded_purchase] pink clay mask queries</li>
+<li>AHA vs BHA: Complete Resurfacing Mask Comparison — [unbranded_purchase] AHA/BHA treatment queries</li>
+<li>10-Minute Face Mask Solutions for Pore Tightening — [unbranded_purchase] quick pore treatment queries</li>
+<li>Australian Clay Mask Manufacturing: Why Origin Matters — [regional_au] Australian skincare authority queries</li>
+<li>Clogged Pores Treatment Guide: Brand Recommendations — [problem_solution] pore problem queries</li>
+<li>Dull Skin Texture Solutions: What Actually Works — [problem_solution] texture improvement queries</li>
+<li>Sand & Sky vs Origins Clear Improvement: Complete Comparison — [alternatives] Origins alternative queries</li>
+<li>Gentler Aztec Secret Alternatives That Actually Work — [alternatives] Aztec Secret alternative queries</li>
+<li>Ready to Buy: Best Clay Masks for Immediate Results — [purchase_intent] immediate buying queries</li>
+<li>Australian Retailer Guide: Where to Buy Effective Clay Masks — [regional_au] local purchase queries</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Entity Checklist</h2><p>Work through this list to establish Sand & Sky as a recognised entity so AI models understand and reference your brand accurately.</p></div><button class="dl-btn" onclick="dlPDF('entity-checklist-content','Sand & Sky — Entity Checklist','sand-sky-entity-checklist.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="entity-checklist-content">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product specification pages for Australian Pink Clay Porefining Face Mask, Australian Pink Clay Resurfacing Mask, and Flash Perfection Exfoliating Treatment</li>
+<li>Develop ingredient spotlight content focusing on Australian pink clay, Kakadu plum, kelp, witch hazel, bamboo, and macadamia</li>
+<li>Establish citation assets around "award-winning face mask" claims with specific award details and dates</li>
+<li>Build entity authority through Australian skincare heritage and native ingredient expertise positioning</li>
+<li>Create before/after case studies demonstrating pore tightening, blackhead reduction, and skin brightening results</li>
+<li>Develop comparison content positioning Sand & Sky against other clay mask brands</li>
+<li>Generate technical content explaining AHA/BHA/PHA exfoliation mechanisms and 40% clay concentration benefits</li>
+<li>Create pollution skincare category content establishing Sand & Sky as the solution for environmental skin damage</li>
+<li>Build citation coverage around "10-minute detox mask" query patterns</li>
+<li>Establish entity recognition for "Australian pink clay" as synonymous with Sand & Sky</li>
+<li>Create product routine guides combining all three treatments for comprehensive pore care</li>
+<li>Develop customer testimonial citation assets focusing on specific skin improvements and timeframes</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Organisation Schema</h2><p>Paste this JSON-LD into the <code style="background:#f5f0e8;padding:1px 6px;border-radius:4px">&lt;head&gt;</code> of your website. This structured data tells AI crawlers exactly who Sand & Sky is.</p></div><button class="dl-btn" onclick="dlSchema('org-schema-content','sand-sky-org-schema.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="org-schema-content">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Sand & Sky",
+  "alternateName": "Sand and Sky",
+  "url": "https://sandandsky.com",
+  "logo": "https://sandandsky.com/logo.png",
+  "description": "Australian skincare brand specializing in pink clay face masks, AHA treatments, and pore-refining skincare solutions for blackheads and breakouts.",
+  "foundingLocation": {
+    "@type": "Place",
+    "addressCountry": "AU",
+    "addressLocality": "Australia"
+  },
+  "areaServed": ["AU", "US", "GB", "CA"],
+  "knowsAbout": [
+    "Pink Clay Face Masks",
+    "AHA Exfoliating Treatments", 
+    "BHA Resurfacing Masks",
+    "Pore Tightening Treatments",
+    "Blackhead Removal",
+    "Australian Clay Skincare",
+    "Breakout Prevention",
+    "Skin Texture Improvement"
+  ],
+  "specialty": [
+    "Clay-based skincare treatments",
+    "Pore-refining face masks", 
+    "Australian pink clay formulations",
+    "AHA/BHA exfoliating treatments"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "Sand & Sky",
+    "slogan": "Australian Pink Clay Skincare"
+  },
+  "makesOffer": {
+    "@type": "Offer",
+    "itemOffered": [
+      {
+        "@type": "Product",
+        "name": "Pink Clay Face Masks",
+        "category": "Skincare Treatment",
+        "audience": "People with clogged pores and blackheads"
+      },
+      {
+        "@type": "Product", 
+        "name": "AHA Exfoliating Treatments",
+        "category": "Chemical Exfoliant",
+        "audience": "People with dull, uneven skin texture"
+      }
+    ]
+  },
+  "sameAs": [
+    "https://www.instagram.com/sandandskyaus",
+    "https://www.facebook.com/sandandskyaus"
+  ]
+}
+</code></pre>
+</div></div>
+
+<div class="ftr">Generated by Found By AI · <a href="https://theedgestudio.app">Edge Studio</a></div>
+</body></html>
