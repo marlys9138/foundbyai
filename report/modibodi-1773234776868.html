@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Found By AI — Modibodi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f0e8;color:#2c2c2c;font-family:'Outfit',sans-serif}
+a{color:#8B6F47}
+.hdr{background:#1a1a1a;color:#f5f0e8;padding:48px 40px}
+.hdr-inner{max-width:960px;margin:0 auto}
+.hdr small{opacity:.5;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.hdr h1{font-family:'Playfair Display',serif;font-size:2.6rem;margin:6px 0 4px;line-height:1.1}
+.hdr p{opacity:.55;font-size:.92rem}
+.hero{background:#fff;border-radius:16px;padding:32px 36px;margin:28px auto;max-width:960px;display:flex;align-items:center;gap:32px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.score-ring{width:110px;height:110px;border-radius:50%;background:#2d6a4f;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.score-ring .n{font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;font-weight:700;line-height:1}
+.score-ring .d{font-size:.72rem;color:rgba(255,255,255,.65)}
+.band{display:inline-block;background:#2d6a4f;color:#fff;padding:3px 14px;border-radius:20px;font-size:.78rem;font-weight:600;margin-bottom:8px}
+.sec{background:#fff;border-radius:16px;padding:32px 36px;margin:20px auto;max-width:960px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.sec h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:8px}
+.sec h3{font-size:1rem;margin:20px 0 6px;color:#1a1a1a}
+.sec h4{font-size:.95rem;margin:4px 0 8px}
+.sec p{color:#555;line-height:1.7;margin-bottom:10px}
+.sec ul{margin:8px 0 12px 20px;color:#555;line-height:1.8}
+.eng-card{background:#f5f0e8;border-radius:12px;padding:24px;text-align:center;flex:1}
+.eng-cards{display:flex;gap:16px;margin:20px 0}
+.audit-table{width:100%;border-collapse:collapse;font-size:.87rem;margin-top:8px}
+.audit-table th{background:#1a1a1a;color:#f5f0e8;padding:10px 14px;text-align:left;font-size:.75rem;font-weight:600;letter-spacing:.04em}
+.audit-table tr.pr:hover td{background:#fffdf8}
+.audit-table td{border-bottom:1px solid #f0ebe3;vertical-align:middle}
+.td-num{color:#bbb;font-size:.8rem;width:28px;padding:10px 8px}
+.td-type{padding:10px 8px;width:120px}
+.td-q{padding:10px 14px;font-size:.87rem;color:#444}
+.td-tick{text-align:center;padding:10px 8px;width:80px}
+.td-arrow{color:#ccc;width:20px;padding:10px 8px;font-size:.8rem;text-align:right}
+.badge{font-size:.7rem;background:#f0ebe3;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#8B6F47}
+.badge-dim{font-size:.7rem;background:#f5f5f5;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#bbb;border:1px solid #e8e0d5}
+.tick{padding:2px 10px;border-radius:20px;font-size:.75rem}
+.tick-yes{background:#2d6a4f;color:#fff}
+.tick-no{background:#e8e0d5;color:#999}
+.branded-divider{background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;padding:12px 18px;margin:24px 0 8px;display:flex;align-items:flex-start;gap:12px}
+.branded-divider-title{font-size:.85rem;font-weight:600;color:#8B6F47}
+.branded-divider-sub{font-size:.79rem;color:#aaa;margin-top:2px}
+.dl-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0ebe3;flex-wrap:wrap}
+.dl-bar h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:4px}
+.dl-bar p{font-size:.85rem;color:#888;margin:0;line-height:1.5;max-width:600px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;font-family:'Outfit',sans-serif;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.dl-btn:hover{background:#333}
+pre{background:#f5f5f2;padding:16px;border-radius:8px;overflow-x:auto;font-size:.82rem;margin-top:8px;line-height:1.5}
+.action{border:1px solid #f0ebe3;border-radius:10px;padding:18px 20px;margin:10px 0}
+.priority{font-size:.7rem;font-weight:700;color:#8B6F47;letter-spacing:.08em;text-transform:uppercase}
+.meta{font-size:.78rem;color:#aaa;margin-top:6px}
+.resp-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.claude-label{color:#8B6F47}
+.gpt-label{color:#2563eb}
+.resp-body{font-size:.83rem;color:#444;line-height:1.65;white-space:pre-wrap}
+.ftr{text-align:center;padding:40px 24px;color:#aaa;font-size:.82rem}
+.expand-hint{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:#aaa;background:#f5f0e8;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.bench-row{display:grid;grid-template-columns:180px 1fr 56px 160px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f0e8}
+.bench-row:last-of-type{border-bottom:none}
+.brand-row{padding:12px 0 10px}
+.bench-label{font-size:.88rem;color:#555;font-weight:400}
+.brand-name-label{font-weight:600;color:#1a1a1a}
+.bench-you{font-size:.75rem;color:#8B6F47;font-weight:600;margin-left:4px}
+.bench-bar-wrap{background:#f0ebe3;border-radius:20px;height:10px;overflow:hidden}
+.bench-bar{background:#c8bba8;height:10px;border-radius:20px}
+.brand-bar{background:#2d6a4f}
+.bench-score{font-family:'Playfair Display',serif;font-size:1.1rem;color:#444;text-align:right}
+.bench-note{font-size:.75rem;color:#aaa}
+.gap-statement{margin-top:18px;padding:14px 18px;background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;font-size:.88rem;color:#8B6F47;font-weight:500;line-height:1.6}
+.quick-wins .action{border-color:#e8f0e8;background:#fafdf8}
+.quick-wins .priority{color:#2d6a4f}
+</style>
+<script>
+function tgl(id){
+  const r=document.getElementById(id);
+  if(!r)return;
+  const open=r.style.display!=='none'&&r.style.display!=='';
+  r.style.display=open?'none':'table-row';
+  const prev=r.previousElementSibling;
+  if(prev){const a=prev.querySelector('.td-arrow');if(a)a.textContent=open?'▾':'▴';}
+}
+function dlBlob(content,filename,type){
+  const blob=new Blob([content],{type:type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function dlJSON(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const items=Array.from(el.querySelectorAll('li')).map(li=>li.innerText.trim()).filter(Boolean);
+  dlBlob(JSON.stringify(items,null,2),filename,'application/json');
+}
+function dlSchema(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const pre=el.querySelector('pre,code');
+  dlBlob(pre?pre.innerText:el.innerText,filename,'application/json');
+}
+function dlPDF(contentId,title,filename){
+  const el=document.getElementById(contentId);
+  if(!el||typeof html2pdf==='undefined'){alert('PDF library not loaded yet — try again in a moment.');return;}
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='font-family:Georgia,serif;color:#2c2c2c;line-height:1.7;font-size:13px;padding:8px';
+  const heading=document.createElement('h1');
+  heading.style.cssText='font-size:20px;margin-bottom:4px;color:#1a1a1a;font-family:Georgia,serif';
+  heading.textContent=title;
+  const sub=document.createElement('p');
+  sub.style.cssText='font-size:10px;color:#aaa;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;font-family:sans-serif';
+  sub.textContent='Generated by Found By AI · Edge Studio · foundbyai.com.au';
+  wrapper.appendChild(heading);
+  wrapper.appendChild(sub);
+  const clone=el.cloneNode(true);
+  clone.querySelectorAll('h2').forEach(h=>{h.style.cssText='font-size:16px;margin:16px 0 8px;color:#1a1a1a;font-family:Georgia,serif';});
+  clone.querySelectorAll('h3').forEach(h=>{h.style.cssText='font-size:13px;margin:14px 0 6px;font-weight:600';});
+  clone.querySelectorAll('h4').forEach(h=>{h.style.cssText='font-size:12px;margin:10px 0 4px;font-weight:600';});
+  clone.querySelectorAll('p').forEach(p=>{p.style.cssText='margin-bottom:8px;color:#444;font-size:13px';});
+  clone.querySelectorAll('ul').forEach(u=>{u.style.cssText='margin:6px 0 10px 18px';});
+  clone.querySelectorAll('li').forEach(l=>{l.style.cssText='margin-bottom:5px;color:#444;font-size:13px';});
+  clone.querySelectorAll('.action').forEach(a=>{a.style.cssText='border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px;margin:8px 0;page-break-inside:avoid';});
+  clone.querySelectorAll('.priority').forEach(p=>{p.style.cssText='font-size:10px;font-weight:700;color:#8B6F47;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px';});
+  clone.querySelectorAll('.meta').forEach(m=>{m.style.cssText='font-size:10px;color:#aaa;margin-top:4px';});
+  wrapper.appendChild(clone);
+  html2pdf().set({
+    margin:[12,14,12,14],
+    filename:filename,
+    image:{type:'jpeg',quality:0.97},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(wrapper).save();
+}
+</script>
+</head>
+<body>
+<div class="hdr"><div class="hdr-inner"><small>Found By AI · AI Visibility Audit</small><h1>Modibodi</h1><p>Powered by Edge Studio</p></div></div>
+
+<div class="hero">
+  <div class="score-ring"><span class="n">17</span><span class="d">/20</span></div>
+  <div>
+    <div class="band">A — Visible</div>
+    <div style="font-size:1.3rem;font-weight:600;margin-bottom:6px">AI Visibility Score</div>
+    <div style="color:#666;font-size:.9rem;line-height:1.6">Tested across 28 prompts on Claude and ChatGPT.<br>How often Modibodi appears when buyers ask AI for recommendations.</div>
+  </div>
+</div>
+
+<div class="sec"><h2>Competitor Benchmarking</h2><p style="color:#888;font-size:.88rem;margin-bottom:20px">Based on the same 21 organic prompts used in your audit.</p><div class="bench-row brand-row"><div class="bench-label brand-name-label">Modibodi <span class="bench-you">(you)</span></div><div class="bench-bar-wrap"><div class="bench-bar brand-bar" style="width:85%"></div></div><div class="bench-score">17<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned your brand</div></div><div class="bench-row"><div class="bench-label">Thinx</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:80%"></div></div><div class="bench-score">16<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="bench-row"><div class="bench-label">Knix</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:75%"></div></div><div class="bench-score">15<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="gap-statement">Modibodi is already outperforming its closest competitors in AI visibility — now is the time to extend that lead before they catch up.</div></div>
+
+<div class="sec">
+  <h2>Prompt Audit</h2>
+  <span class="expand-hint">👆 Click any row to see full AI responses</span>
+  <div class="eng-cards"><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">Claude</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">14<span style="font-size:.9rem;color:#bbb">/21</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">ChatGPT</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">20<span style="font-size:.9rem;color:#bbb">/21</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div></div>
+  <table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r0')" style="cursor:pointer">
+    <td class="td-num">1</td>
+    <td class="td-type"><span class="badge">period undies</span></td>
+    <td class="td-q">What are the best period undies that can replace tampons completely for heavy flow days?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r0" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Period Underwear for Heavy Flow
+
+For heavy flow days, these are the most reliable options:
+
+**Top performers:**
+
+- **Thinx Hi-Waist or Hiphugger** - Hold up to 2 tampons' worth of fluid. Their heavy-flow styles are genuinely effective and comfortable.
+- **Knix Hiphugger or Boyshort (Heavy Flow)** - Canadian brand, holds similar capacity. Good leak protection with wider gusset coverage.
+- **Aerie Real Happy Period** (American Eagle) - Budget-friendly alternative (~$40), holds about 1.5 tampons' worth.
+
+**For the heaviest days:**
+
+- **Modibodi Ultimate** (Australian brand, available online) - …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For heavy flow days, some of the best period underwear brands that can serve as reliable alternatives to tampons include:
+
+1. **Thinx** - Their "Thinx for All" and "Thinx Boyshort" are designed to hold significant amounts of menstrual fluid (up to 4-5 tampons worth) and are very absorbent, making them a popular choice.
+
+2. **Rael** - The "Rael High-Waist Period Underwear" offers excellent absorbency and is made from organic cotton, ensuring comfort with heavy flow.
+
+3. **Modibodi** - Their "Classic Bikini" or "Full Brief" can absorb heavy flow (up to 3-4 tampons worth), and they also have opti…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r1')" style="cursor:pointer">
+    <td class="td-num">2</td>
+    <td class="td-type"><span class="badge">leak-proof activewear</span></td>
+    <td class="td-q">Which leak-proof activewear underwear is best for hot yoga and high-intensity workouts?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r1" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Leak-Proof Activewear for Hot Yoga &amp; HIIT
+
+## Top Picks
+
+**Knix Sport** (my #1 recommendation for your needs)
+- Absorbent gusset technology specifically designed for workouts
+- Moisture-wicking fabric keeps you dry during sweating
+- Thong and boyshort styles available
+- Great for high-intensity exercise
+
+**Thinx Sport**
+- Heavy-duty absorbency without bulk
+- Designed for workouts and menstrual protection
+- Minimal visible panty lines
+- Machine washable
+
+**Aisle** (Canadian brand)
+- Ultra-thin construction—won't add bulk under tight yoga pants
+- Breathable fabric ideal for hot environmen…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For leak-proof activewear underwear suitable for hot yoga and high-intensity workouts, consider the following brands and products:
+
+1. **Thinx**: 
+   - **Thinx Sport**: Specifically designed for high-impact activities, offering breathability and moisture-wicking properties.
+
+2. **Modibodi**: 
+   - **Active Brief**: These feature a light absorbency level and are made with breathable fabrics that are ideal for workouts.
+
+3. **Lunapads (now known as Aisle)**:
+   - **Aisle Reusable Period Underwear**: Their active line is designed for movement and moisture control, making them suitable for intense…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r2')" style="cursor:pointer">
+    <td class="td-num">3</td>
+    <td class="td-type"><span class="badge">period swimwear</span></td>
+    <td class="td-q">Best period swimwear brands that actually work for swimming during menstruation?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r2" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Period Swimwear Brands
+
+**Top performers:**
+
+**Knix** - Their swim collection is genuinely absorbent. The Hiphugger and High-Waist styles hold up well for moderate flow. Reliable for 8 hours in water.
+
+**Thinx** - The original period underwear company. Their swim line (Hiphugger, High-Waist) works decently, though some users report slight leakage on heavier days. Good for light-to-moderate flow.
+
+**Modibodi** - Australian brand with excellent absorption technology. Their swim styles are among the most absorbent options. Generally outperforms Thinx for heavier periods.
+
+**Ruby Love** - S…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some top brands that offer period swimwear designed for swimming during menstruation:
+
+1. **Swimwear by Modibodi** - Modibodi offers swimwear that features absorbent technology and is designed for use during menstruation. Their swim bikinis and one-pieces are stylish and functional.
+
+2. **Thinx** - Thinx launched a line of swimwear that includes period-proof bikinis and one-pieces. They are designed to absorb menstrual flow and provide comfort while swimming.
+
+3. **Dawnc** - Dawnc specializes in swimwear that is specifically made for menstruation. Their suits are designed to prevent l…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r3')" style="cursor:pointer">
+    <td class="td-num">4</td>
+    <td class="td-type"><span class="badge">seamless workout</span></td>
+    <td class="td-q">Which seamless period underwear won't show lines under tight leggings at the gym?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r3" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Seamless Period Underwear for Under Leggings
+
+**Top picks that won't show visible lines:**
+
+**Thinx Hiphugger or Thong**
+- Ultra-flat waistband and leg openings
+- Minimal thickness overall
+- The thong style is nearly invisible under tight clothing
+
+**Knix Thong or High-Waist**
+- Designed specifically to be discreet under fitted clothes
+- Flat-lock stitching minimizes bulk
+- The thong disappears completely
+
+**Aisle Cheeky or Thong**
+- Very thin profile
+- Seamless construction that doesn't create panty lines
+- Good for intense workouts
+
+**Modibodi Thong or Bikini**
+- Extremely flat design…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For seamless period underwear that won't show lines under tight leggings at the gym, consider the following brands and products:
+
+1. **Thinx** - The **Thinx Hiphugger** is designed to be seamless and comfortable, providing good coverage without visible lines.
+
+2. **Knix** - Their **Knix Leakproof Brief** is known for its smooth fit and seamless design, making it a great choice under tight-fitting apparel.
+
+3. **Hanky Panky** - The **Hanky Panky Signature Lace Boyshort** is both flattering and comfortable, offering a seamless look that pairs well with leggings.
+
+4. **Bambody** - The **Bambody P…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r4')" style="cursor:pointer">
+    <td class="td-num">5</td>
+    <td class="td-type"><span class="badge">heavy absorption</span></td>
+    <td class="td-q">What period underwear can absorb 2+ tampons worth for overnight protection?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r4" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Period Underwear for Heavy Overnight Protection
+
+For 2+ tampons absorption capacity, these are your best options:
+
+**Top Picks:**
+
+- **Thinx Hi-Waist or Boyshort** - Absorbs up to 2 tampons worth. Their heavy-flow styles are genuinely reliable for overnight.
+
+- **Knix Hiphugger or Boyshort (Heavy/Super)** - Rated for heavy flow and specifically marketed for overnight. Many users report excellent overnight performance.
+
+- **Aisle Seamless Bikini or High Waist (Heavy)** - Specifically designed for heavier periods; absorbs equivalent to 2+ tampons.
+
+- **Dear Kate Hiphugger (Heavy)** - Good over…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For overnight protection that can absorb 2+ tampons' worth, consider the following brands and products:
+
+1. **Thinx** - Their style "Thinx Air" or "Thinx Sleep" are both designed for overnight use and can hold up to 5 tampons worth of flow.
+
+2. **Knix** - The "Knix Sleepover Shorts" and "Knix Leakproof Brief" offer significant absorbency, designed to hold 4 tampons worth, making them ideal for overnight wear.
+
+3. **Modibodi** - The "Modibodi Overnight Maxi" can absorb approximately 5 tampons' worth and comes in various styles to suit your preference.
+
+4. **Luna** - Their "Luna Overnight Absorb…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r5')" style="cursor:pointer">
+    <td class="td-num">6</td>
+    <td class="td-type"><span class="badge">swim bikinis</span></td>
+    <td class="td-q">Where can I buy swim bikinis with built-in period protection that actually work?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r5" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Swim Bikinis with Period Protection
+
+Here are your best options:
+
+## Direct Purchase (Most Reliable)
+- **Knix Swim** - Their swim line includes bikini tops and bottoms with absorbent gussets. Available on knix.com and Amazon
+- **Thinx** - Period-proof swimwear collection with bikini styles, sold on thinx.com
+- **Speax by Thinx** - Similar to Thinx, focused on incontinence/period protection
+
+## Department Stores
+- **Target** - Carries some period-proof swim brands in their swimwear section
+- **Amazon** - Widest selection; read reviews carefully for absorbency claims
+
+## What Actually Works
+Th…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can find swim bikinis with built-in period protection from the following brands:
+
+1. **Thinx** - Their *Thinx Swim* line offers several styles of swimwear, including bikinis and one-pieces with built-in absorbent technology.
+
+2. **Modibodi** - They provide swimwear options that combine fashionable bikini styles with leak-proof technology suitable for menstrual protection.
+
+3. **Knix** - Known for their leak-proof underwear, Knix also offers *Swimwear* that includes bikini options with period protection.
+
+4. **Aerie** - Aerie’s *Period Swimwear* line features cute bikinis that provide prote…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r6')" style="cursor:pointer">
+    <td class="td-num">7</td>
+    <td class="td-type"><span class="badge">tampon replacement</span></td>
+    <td class="td-q">I want to stop using tampons and pads entirely - what brand makes underwear that can replace them completely?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r6" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Period Underwear Brands
+
+The most established options that can genuinely replace tampons/pads:
+
+**Top tier:**
+- **Thinx** - The original and most tested. Wide range for different flows. Good absorbency data.
+- **Knix** - Canadian brand, comparable performance, slightly lower price point
+- **Modibodi** - Australian brand, very reliable, good variety
+
+**Strong alternatives:**
+- **Aisle** (Canada) - Good quality, mid-range pricing
+- **Ruby Love** - Higher-end option with sleeker designs
+- **Proof** - Budget-friendly without sacrificing absorbency
+
+## Realistic expectations:
+
+**They work best fo…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you want to stop using tampons and pads entirely, consider the following brands that offer high-quality period underwear:
+
+1. **Thinx** - Their "Thinx Super" style can hold up to 5 tampons’ worth of flow and comes in various sizes and styles.
+
+2. **Modibodi** - They offer a range of styles that can absorb varying amounts of menstrual flow, including their "Heavy" and “Moderate” absorbency options.
+
+3. **Knix** - The "Knix Super Leakproof Period Underwear" is designed to hold 4 regular tampons’ worth and is available in different options for varying levels of flow.
+
+4. **Saxx** - Their "Saxx…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r7')" style="cursor:pointer">
+    <td class="td-num">8</td>
+    <td class="td-type"><span class="badge">gym leaks</span></td>
+    <td class="td-q">I keep getting leaks during CrossFit workouts - which brand makes the best leak-proof activewear underwear?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r7" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Leak-Proof Options for High-Impact Activity
+
+For CrossFit, I'd recommend:
+
+**Top choice: Knix or Thinx**
+- Both make high-performance leak-proof underwear designed for intense exercise
+- Multiple absorbency levels available
+- Comfortable enough for WODs without feeling bulky
+- Knix's "Active" line is specifically marketed for workouts
+
+**Budget-friendly alternative: Proof**
+- Slightly less expensive than Knix/Thinx
+- Solid performance during cardio and lifting
+- Good customer reviews for CrossFit specifically
+
+**If you want maximum coverage: Modibodi**
+- Australian brand with excellent …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For leak-proof activewear underwear that can handle intense CrossFit workouts, consider these brands and products:
+
+1. **Thinx** - Their **Thinx Sport** line is specifically designed for active lifestyles and provides great absorbency while remaining comfortable and stylish.
+
+2. **Saxx Underwear** - Look for their **Saxx Vibe** or **Saxx Ultra** styles, which are known for their comfortable fit and moisture-wicking properties. While not marketed solely for leaks, their secure fit can help.
+
+3. **Bamboo Basics** - Their **Leak-proof Bamboo Briefs** are designed to absorb light leaks and offer a…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r8')" style="cursor:pointer">
+    <td class="td-num">9</td>
+    <td class="td-type"><span class="badge">swim confidence</span></td>
+    <td class="td-q">I avoid swimming during my period because of leaks - what swimwear brand gives full waterproof protection?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r8" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I understand the concern. Here's the honest assessment:
+
+**No swimwear brand offers truly waterproof protection** that will completely prevent leaks during your period. Water-resistant materials can delay seeping, but they won't stop it entirely—especially during active swimming.
+
+**Your actual best options:**
+
+1. **Menstrual products designed for water:**
+   - **Tampax or Kotex tampons** (inserted properly, can work for light-to-moderate flow)
+   - **Menstrual cups** (Saalt, Diva Cup, Flex Cup) - many swimmers prefer these; they create a seal and hold more capacity
+   - **Period-proof swim bo…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For full waterproof protection during your period while swimming, consider the following brands and products:
+
+1. **Modibodi** - Their "Active Swim" range includes swimwear with a built-in absorbent lining designed to hold menstrual flow without leaking.
+
+2. **Thinx** - Their "Thinx for Swim" collection offers swim bottoms that provide leak-proof protection with a stylish design.
+
+3. **Ruby Love** - This brand specializes in menstrual swimwear, with designs that include built-in absorbency and waterproof layers to keep you protected.
+
+4. **Saxx** - Known for their performance swimwear, they of…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r9')" style="cursor:pointer">
+    <td class="td-num">10</td>
+    <td class="td-type"><span class="badge">waste reduction</span></td>
+    <td class="td-q">I'm tired of the waste and cost of disposable period products - which sustainable underwear brand should I try?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r9" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">Here are the most established sustainable period underwear brands worth trying:
+
+**Thinx** - The market leader. Comfortable, absorbent (they have varying flow levels), and their styles actually look like normal underwear. Pricey ($34-45 per pair), but reliable.
+
+**Knix** - Canadian brand with good absorbency and a wider range of cuts/styles. Similar price point ($32-48). They're transparent about their supply chain.
+
+**Aisle** - UK-based, slightly cheaper ($20-35), good reviews on comfort. Smaller selection but solid quality.
+
+**Dear Kate** - Fashion-focused designs if you want something that …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For sustainable period underwear, consider trying:
+
+1. **Thinx** - Offers a range of styles and absorbencies. Their period underwear is known for its reliability and comfort.
+
+2. **Knix** - Known for high-quality, absorbent underwear with a range of sizes and styles. They also have a "Feelgood" collection made from sustainable materials.
+
+3. **Modibodi** - Provides a variety of options, including swimwear and activewear that can be used during menstruation. They focus on eco-friendly materials.
+
+4. **Ruby Love** - Features period underwear that incorporates a pocket for a pad or panty liner, o…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r10')" style="cursor:pointer">
+    <td class="td-num">11</td>
+    <td class="td-type"><span class="badge">ready buy</span></td>
+    <td class="td-q">I'm ready to invest in period underwear - which brand offers the best value for money?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r10" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Value Period Underwear Brands
+
+**Top recommendation: Thinx**
+- $32-38 per pair, moderate absorbency levels
+- Reliable, widely available, good longevity (2-3 years with proper care)
+- Extensive size range
+- Solid track record, though pricier than budget options
+
+**Best budget option: Knix**
+- $24-32 per pair
+- Similar performance to Thinx at lower cost
+- Good variety of styles and absorbencies
+- Canadian brand with decent customer service
+
+**Most affordable: Aisle**
+- $18-26 per pair
+- Surprisingly decent quality for the price
+- Less flashy marketing = lower costs passed to you
+- Good ab…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When it comes to period underwear that offers great value for money, consider the following brands:
+
+1. **Thinx** - They are one of the pioneers in period underwear and offer a wide range with varying absorbency levels. Their "Sport" and "Hiphugger" styles provide good value for daily use.
+
+2. **Bambody** - Known for their affordability, Bambody's period underwear is both effective and comfortable. They often have sales, making them a good option for budget-conscious consumers.
+
+3. **Knix** - Offers a great balance of quality and price. Their " Leakproof Brief" and "Boyshort" styles are popula…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r11')" style="cursor:pointer">
+    <td class="td-num">12</td>
+    <td class="td-type"><span class="badge">first purchase</span></td>
+    <td class="td-q">Never tried period underwear before - recommend the best brand for a beginner?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r11" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Period Underwear for Beginners
+
+**Thinx** is your best starting point. They're the most established brand, widely available, and beginner-friendly:
+- Good absorption across their range
+- Comfortable fit (feels like regular underwear)
+- Clear sizing and style options
+- Reliable quality
+
+**Runner-up options:**
+
+**Knix** - Great if you prefer lighter flow options or want to try before committing to full price (they run sales frequently)
+
+**Aerie** (American Eagle's line) - Most affordable entry point, decent quality for the price
+
+## What to know before buying:
+
+- **Start with a lighter-fl…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For someone new to period underwear, I recommend trying **Thinx**. Their original line offers good absorbency and comfort. Another excellent option is **Knix**, which also has a variety of styles and levels of absorbency. **Modibodi** is another great choice, known for their eco-friendly materials and diverse sizing. All of these brands provide a variety of styles to help you find what fits best for you.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r12')" style="cursor:pointer">
+    <td class="td-num">13</td>
+    <td class="td-type"><span class="badge">complete switch</span></td>
+    <td class="td-q">Want to switch completely from tampons to period underwear - which brand should I start with?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r12" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best starter period underwear brands:
+
+**Thinx** is the safest first choice. They pioneered the category and have the most reliable absorbency. Start with their Classic style for moderate flow—they're genuinely absorbent, not just marketing hype.
+
+**Knix** is excellent if you want lower price point ($32-40 vs Thinx's $38-48). Their absorbency is comparable, and many people find them more comfortable.
+
+**Aisle** is great if you want maximum absorbency without feeling bulky. They're pricier but genuinely effective.
+
+## Practical tips for switching:
+
+- **Start with one pair** during a lighter f…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking to switch completely from tampons to period underwear, here are some top brands to consider:
+
+1. **Thinx**: A well-known brand that offers various styles and absorbency levels. Their "Super" style can hold up to 4 tampons worth of fluid.
+
+2. **Knix**: Offers a range of comfortable and stylish period underwear that can hold up to 3 tampons worth. They also have options for different body types and preferences.
+
+3. **Modibodi**: Known for their wide range of absorbency levels and sizes, including options for lighter flow to heavy overnight protection.
+
+4. **Saxx**: This brand i…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r13')" style="cursor:pointer">
+    <td class="td-num">14</td>
+    <td class="td-type"><span class="badge">quality reviews</span></td>
+    <td class="td-q">What do real customers say about the quality and durability of period underwear brands?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r13" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Real Customer Feedback on Period Underwear
+
+## Top-Rated Brands
+
+**Thinx**
+- Customers praise the leak protection and comfort for light-to-moderate flow
+- Common complaint: pricey ($32-38 per pair), though some say longevity justifies it
+- Durability: Users report 2-3 years of regular use before elastic weakens
+- Fit issues reported by some; runs small according to reviews
+
+**Knix**
+- Generally rated for comfort and discreteness
+- Better value than Thinx ($28-35)
+- Mixed durability reports: some last 2+ years, others see issues within 6-12 months
+- Praised for breathability
+
+**Aisle**
+- Soli…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some insights based on real customer feedback regarding the quality and durability of popular period underwear brands:
+
+1. **Thinx**: Many customers appreciate the comfort and absorbency of Thinx underwear. However, some reviews mention issues with durability after multiple washes, leading to loss of elasticity over time. Users recommend following wash instructions closely to prolong lifespan.
+
+2. **Knix**: Users typically praise Knix for their softness and effective leak protection. Customers often highlight the durability, stating that they last well even after repeated use. Some ha…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r14')" style="cursor:pointer">
+    <td class="td-num">15</td>
+    <td class="td-type"><span class="badge">brand reputation</span></td>
+    <td class="td-q">Which period underwear brand has the best reputation for actually preventing leaks?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r14" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Performers for Leak Protection
+
+**Thinx** has the strongest overall reputation for leak prevention. Their products genuinely perform—they use a patented absorbent gusset and are backed by solid science. They're pricey ($30-40 per pair) but considered worth it by most reviewers.
+
+**Knix** is a close second and often cheaper ($20-35). Very reliable leak protection and comfortable for daily wear.
+
+**Aisle** (Canadian brand) gets consistent praise for heavy-flow options and actually holds up well over time through multiple washes.
+
+## Important caveats:
+
+- **No period underwear is 100% leak-…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the most reputable brands known for effectively preventing leaks in period underwear is **Thinx**. Their products are designed with multiple layers of absorbent material and have received positive reviews for both comfort and leak protection.
+
+Another highly regarded brand is **Knix**, which offers a variety of styles and absorbency levels to fit different needs. Many users praise Knix for their reliability and discretion.
+
+Lastly, **Modibodi** is also a strong contender, offering a range of sizes and absorbency options, and is well-reviewed for its leak-proof capabilities.
+
+Consider tr…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r15')" style="cursor:pointer">
+    <td class="td-num">16</td>
+    <td class="td-type"><span class="badge">Australia shipping</span></td>
+    <td class="td-q">Best Australian period underwear brands with fast shipping and local customer service?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r15" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Australian Period Underwear Brands
+
+## Top Local Picks
+
+**Modibodi**
+- Australia's market leader; founded in Melbourne
+- Ships same-day from Sydney warehouse
+- Excellent local customer service team
+- Range from light to heavy flow
+- Premium pricing but reliable quality
+
+**Messy Wearables**
+- Brisbane-based brand
+- Fast local shipping
+- Good value for money
+- Friendly, responsive customer service
+- Strong community focus
+
+**Aisle**
+- Sydney-based; newer entrant
+- Quick delivery across Australia
+- Responsive local support
+- Contemporary designs
+- Competitive pricing
+
+**Flux Undies**
+- Mel…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some notable Australian period underwear brands known for fast shipping and local customer service:
+
+1. **Modibodi** - A pioneer in the period underwear market in Australia, Modibodi offers a wide range of styles for menstruation and bladder leaks. They have a strong customer service team and offer quick shipping across Australia.
+
+2. **Hippybot** - This brand focuses on eco-friendly and sustainable period underwear. They have a variety of styles available and offer good customer service with local shipping options.
+
+3. **NanaMia** - A newer player in the market, NanaMia provides styl…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r16')" style="cursor:pointer">
+    <td class="td-num">17</td>
+    <td class="td-type"><span class="badge">local stores</span></td>
+    <td class="td-q">Where can I buy period swimwear in Australia - online or physical stores?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r16" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Where to Buy Period Swimwear in Australia
+
+## Online Retailers
+- **Aerie** (American Eagle's brand) - ships to Australia; sells their Aerie swimwear line
+- **Amazon Australia** - stocks various period swimwear brands
+- **eBay Australia** - multiple sellers offering period-specific options
+- **iKOU** - Australian online retailer carrying period swimwear
+- **Adore Me** - ships period swimwear to Australia
+
+## Specific Brands Available in Australia
+- **Modibodi** - Australian company, excellent built-in protection; available online and select physical stores
+- **Bonds** - Australian brand with …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">In Australia, you can find period swimwear from several brands both online and in physical stores. Here are some options:
+
+1. **Modibodi** - Known for their period-proof swimwear, Modibodi offers a variety of styles and sizes. You can shop online at their website or find selected products in stores like Target.
+
+2. **Bondi Sands** - They have a range of swimwear that includes period options. Available online through their website and at various retail outlets.
+
+3. **Nurture*** - This brand offers stylish, sustainable period swimwear. You can purchase directly from their website.
+
+4. **Ruby Lov…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r17')" style="cursor:pointer">
+    <td class="td-num">18</td>
+    <td class="td-type"><span class="badge">Aussie brands</span></td>
+    <td class="td-q">What are the top Australian-made period underwear brands I can support locally?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r17" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Australian-Made Period Underwear Brands
+
+## **Modibodi**
+The market leader. Sydney-based, they pioneered leak-proof period underwear in Australia. Wide range of styles and absorbency levels. Trusted by many Australian women and sold internationally.
+
+## **Libra** (Libra Australia)
+While primarily a traditional period product company, they've expanded into period underwear. Good local option with established quality standards.
+
+## **Knix** (partial Australian presence)
+Canadian-founded but manufactures some products in Australia. Worth mentioning if you want some local manufacturing invol…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some top Australian-made period underwear brands you can consider:
+
+1. **Modibodi** - A leading brand in the market, Modibodi offers a wide range of period underwear that combines comfort with effective protection. They have options for various flows and styles.
+
+2. **Juju** - Known for their eco-friendly approach, Juju offers period underwear that is made from organic cotton and is designed for sustainability.
+
+3. **Nixit** - While primarily focused on menstrual cups, Nixit also offers period underwear that is designed to be leak-proof and comfortable.
+
+4. **Tommy T** - This brand co…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r18')" style="cursor:pointer">
+    <td class="td-num">19</td>
+    <td class="td-type"><span class="badge">like Thinx</span></td>
+    <td class="td-q">What are the best alternatives to Thinx period underwear available in Australia?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r18" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Thinx Alternatives in Australia
+
+Here are the top period underwear options:
+
+## Premium Brands
+**Modibodi** (Australian-made)
+- Best overall alternative - comparable absorbency and comfort
+- Wide range of styles and absorbency levels
+- Easier to find in Australian retailers
+- Generally slightly cheaper than Thinx
+
+**Knixwear**
+- Canadian brand with excellent reviews
+- High-quality construction
+- Good absorbency across their range
+
+## Budget-Friendly
+**Bonds Invisible Boyleg** (with period-proof technology)
+- Most affordable option
+- Basic protection but decent quality
+- Widely available…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some good alternatives to Thinx period underwear available in Australia:
+
+1. **Modibodi**: This Australian brand offers a range of period underwear designed for various flow levels. They have multiple styles, including high-waisted and bikini cuts, and are made from breathable fabrics.
+
+2. **Clean Period**: This is another Australian option that provides stylish and comfortable period underwear. They focus on sustainability and use organic materials, offering a variety of sizes and styles.
+
+3. **Bamboo Bubbles**: Known for their eco-friendly approach, Bamboo Bubbles offers period unde…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r19')" style="cursor:pointer">
+    <td class="td-num">20</td>
+    <td class="td-type"><span class="badge">better than</span></td>
+    <td class="td-q">Which brands are better alternatives to Knix for leak-proof activewear underwear?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r19" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Leak-Proof Activewear Alternatives to Knix
+
+Here are solid options across different price points:
+
+## Premium/Mid-Range
+- **Thinx** - Similar positioning to Knix; strong reputation for absorbency and comfort. Good range of styles.
+- **Aisle** - Canadian brand (like Knix) with excellent leak protection and breathable fabrics. Generally well-reviewed.
+- **Proof** - Premium option with high absorbency; pricier but durable.
+
+## More Affordable
+- **Modibodi** - Australian brand, widely available, good reviews for moderate flow. Less expensive per pair.
+- **Saalt** - Competitive pricing with solid…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for alternatives to Knix for leak-proof activewear underwear, consider these brands:
+
+1. **Thinx** - Known for their absorbent period underwear, Thinx offers a range of leak-proof styles that are comfortable and effective.
+
+2. **Modibodi** - This brand specializes in leak-proof underwear with various absorbency levels, great for both activewear and everyday use.
+
+3. **Saxx Underwear** - Although primarily known for men's underwear, Saxx offers a line of leak-proof options that are great for active lifestyles.
+
+4. **Lunapads** - Their leak-proof underwear features a comfortabl…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r20')" style="cursor:pointer">
+    <td class="td-num">21</td>
+    <td class="td-type"><span class="badge">similar brands</span></td>
+    <td class="td-q">Recommend brands similar to Bonds Bloody Comfy but with better absorption capacity?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r20" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Absorbent Menstrual Underwear Alternatives to Bonds Bloody Comfy
+
+Based on absorption capacity, here are stronger options:
+
+## Best Overall Absorption
+**Knix** (Canada/US)
+- Designed specifically for heavy flow
+- Can hold up to 2 tampons worth of fluid
+- Excellent leak protection
+
+**Thinx** (US)
+- Multiple styles for different flows
+- Heavy-flow options hold significantly more than Bonds
+- Proven leak prevention
+
+## High Absorption with Comfort
+**Modibodi** (Australian brand - closest to Bonds)
+- Better absorption than Bonds while maintaining comfort
+- Wider range of flow options
+- Good for …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for brands that offer products similar to Bonds Bloody Comfy but with better absorption capacity, consider the following:
+
+1. **Modibodi** - Their "Classic Bikini" and "Full Brief" styles are designed for menstrual flow and feature high absorption capabilities.
+
+2. **Thinx** - Known for their absorbent period underwear, Thinx offers a range of styles, such as their "Super" and "Period Briefs," that are effective for heavy flow days.
+
+3. **Knix** - Their "Underwear for Women" line includes absorbent options like the "Leakproof Brief" and "Pants," which provide excellent protec…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+  <div class="branded-divider"><span style="font-size:1.1rem;line-height:1.4;margin-right:4px">🎯</span><div><div class="branded-divider-title">Prompts naming Modibodi directly</div><div class="branded-divider-sub">These prompts reference Modibodi by name — not included in the organic score above.</div></div></div><table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r21')" style="cursor:pointer">
+    <td class="td-num">22</td>
+    <td class="td-type"><span class="badge">vs Thinx</span></td>
+    <td class="td-q">Modibodi vs Thinx period underwear - which brand is better for heavy flow?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r21" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi vs Thinx for Heavy Flow
+
+**Modibodi is the stronger choice for heavy flow.**
+
+## Why Modibodi wins:
+
+- **Higher absorbency options**: Their "Heavy" and "Extra Heavy" lines hold up to 40ml and 60ml respectively, compared to Thinx's standard capacity of around 30ml
+- **Better for overnight**: The Modibodi Overnight style is specifically designed for heavy sleepers and holds significantly more
+- **More fabric coverage**: Generally thicker gusset in their heavy-flow styles
+- **Proven leak protection**: Consistently better reviews from heavy-flow users
+
+## Thinx strengths (if you want to…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For heavy flow, both Modibodi and Thinx offer effective options, but Modibodi generally has a broader range of absorbency levels, including specific products designed for heavy flow. Here’s a breakdown:
+
+1. **Modibodi**:
+   - **Model to consider**: The "Classic Brief" and "Heavy Flow" styles (absorbency up to 20ml).
+   - **Features**: They offer various absorbency levels, including swimwear and overnight options. Their technology includes Merino wool for temperature regulation.
+   
+2. **Thinx**:
+   - **Model to consider**: The "Super" and "Extra Heavy" styles (absorbency up to 4-5 tampons wort…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r22')" style="cursor:pointer">
+    <td class="td-num">23</td>
+    <td class="td-type"><span class="badge">vs Knix</span></td>
+    <td class="td-q">Should I choose Modibodi or Knix for leak-proof activewear underwear?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r22" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi vs Knix
+
+Both are solid choices, but here's how they compare:
+
+## **Modibodi** (better overall)
+- **Absorbency**: Generally superior technology across their range
+- **Fit options**: Wider variety (high-waisted, boyshorts, thongs, sports styles)
+- **Comfort**: Tends to feel less bulky
+- **Price**: Slightly higher upfront, but lasts longer (3-5 years typical)
+- **Best for**: Heavy flow, everyday leak protection, sports
+
+## **Knix**
+- **Accessibility**: Easier to find in stores (including Sephora)
+- **Fit**: Good but less variety than Modibodi
+- **Feel**: Can feel slightly thicker/more…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Both Modibodi and Knix offer high-quality leak-proof activewear underwear, but they cater to slightly different preferences.
+
+**Modibodi**:
+- **Product**: Modibodi Active Brief
+- **Features**: These underwear have a sweat-wicking material, are breathable, and have an innovative design for active movement. They offer good absorbency and are particularly recommended for light to moderate leaks.
+- **Sustainability**: Modibodi focuses on eco-friendly materials and practices.
+
+**Knix**:
+- **Product**: Knix Active Brief
+- **Features**: These are made with their signature 4-way stretch fabric, which …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r23')" style="cursor:pointer">
+    <td class="td-num">24</td>
+    <td class="td-type"><span class="badge">vs Bonds</span></td>
+    <td class="td-q">Modibodi Classic Bikini vs Bonds Bloody Comfy - which period undies last longer?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r23" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi vs Bonds Period Undies: Durability Comparison
+
+**Modibodi Classic Bikini wins on longevity.**
+
+Modibodi's are built tougher:
+- **Fabric quality**: Their proprietary Modifier® technology holds up better through repeated washing
+- **Seam construction**: Stronger stitching that resists degradation
+- **Expected lifespan**: 2-3 years with proper care vs Bonds' 1-2 years
+- **Cost per wear**: Better value despite higher upfront cost ($35-45 vs $30-35)
+
+**Bonds Bloody Comfy strengths:**
+- More comfortable initially—genuinely soft fabric
+- Better for lighter flows
+- Quicker to dry
+
+**The cat…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing Modibodi Classic Bikini and Bonds Bloody Comfy period underwear in terms of longevity, Modibodi generally has a reputation for durability and lasting performance. Modibodi’s underwear is designed with high-quality fabrics and an innovative absorbent core that can last through multiple washes, often up to 200 washes if cared for properly.
+
+Bonds Bloody Comfy, while also well-regarded, may not have the same longevity as Modibodi. Users report that Bonds underwear can start to lose absorbency and elastic quality after about 50-100 washes, depending on care.
+
+In summary, if you're l…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r24')" style="cursor:pointer">
+    <td class="td-num">25</td>
+    <td class="td-type"><span class="badge">worth investment</span></td>
+    <td class="td-q">Is Modibodi period underwear actually worth the high price compared to cheaper alternatives?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r24" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi vs. Cheaper Alternatives: Honest Assessment
+
+**What you're paying for:**
+- Modibodi's tech is legitimately good—their absorbent gusset holds 10ml+ reliably, and the fabric quality is solid
+- They last 2+ years with proper care, which amortizes the cost
+- Design/comfort is above average
+
+**Where cheaper alternatives compete well:**
+
+- **Knix** ($35-45): Nearly identical absorbency, comparable durability, often better designs. Many users find it the sweet spot value-wise
+- **Thinx** ($32-38): Similar performance, though some report longevity issues after 1-2 years
+- **Periodo** ($20-3…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Modibodi period underwear is often considered worth the higher price due to several specific features:
+
+1. **Absorbency**: Modibodi offers various absorbency levels, catering to different flow types. Their moisture-wicking fabric and multiple layers can hold up to 20ml of fluid, providing reliable protection.
+
+2. **Sustainability**: The brand uses sustainable materials and promotes a zero-waste lifestyle, which appeals to eco-conscious consumers.
+
+3. **Variety and Comfort**: Modibodi provides a wide range of styles and sizes, ensuring a good fit and comfort for different body types compared to…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r25')" style="cursor:pointer">
+    <td class="td-num">26</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Are Modibodi Classic Bikini Period Undies actually as good as the reviews claim?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r25" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi Classic Bikini Honest Assessment
+
+**The good parts that reviews get right:**
+
+- **Genuine leak protection**: They legitimately hold 1-2 tampons' worth of fluid. This isn't marketing fluff—they use absorbent gusseting that works.
+- **Comfortable**: The material is soft and doesn't feel bulky compared to alternatives like period pads
+- **Discreet**: Look like normal underwear, which appeals to many people
+- **Reasonable lifespan**: Most users get 2-3 years with proper care
+
+**Where reviews are overstated:**
+
+- **They're not a complete replacement** for most people's heavy flow days—th…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Modibodi Classic Bikini Period Undies have received generally positive reviews for their absorbency, comfort, and style. Many users praise them for effectively managing menstrual flow without leaks and for their soft, breathable fabric. 
+
+Key features include a moisture-wicking layer, odor control, and a range of absorbency options to suit different flow levels. Customers often mention that they can wear them alone on lighter days or as backup protection on heavier days.
+
+However, some users have reported issues with sizing, so it's recommended to consult the size chart carefully before purcha…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r26')" style="cursor:pointer">
+    <td class="td-num">27</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Where is the best place to buy Modibodi Active Hi-Leg Seamfree Undies in Australia?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r26" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Places to Buy Modibodi Active Hi-Leg Seamfree Undies in Australia
+
+**1. Modibodi Official Website (modibodi.com.au)**
+- Direct from the source
+- Full size range and color options
+- Regular sales and member discounts
+- Free shipping on orders over $50
+
+**2. Myer**
+- Stockist in major stores and online
+- Occasionally has sales
+- Use Myer credit card for discounts
+
+**3. David Jones**
+- Carries Modibodi activewear range
+- In-store and online options
+- Good return policies
+
+**4. Amazon Australia**
+- Convenient if you have Prime
+- Check seller ratings carefully
+- Good return protection
+
+**5. …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">The best places to buy Modibodi Active Hi-Leg Seamfree Undies in Australia include:
+
+1. **Modibodi Official Website** - They often have the full range of sizes and colors, plus occasional discounts and promotions.
+2. **Amazon Australia** - Offers a selection of Modibodi products, often with Prime shipping options.
+3. **The Iconic** - Known for fashion and swimwear, they carry a variety of Modibodi styles including the Active Hi-Leg options.
+4. **David Jones** - A good department store that stocks Modibodi products both online and in select physical locations.
+5. **Big W or Target** - Occasiona…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r27')" style="cursor:pointer">
+    <td class="td-num">28</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Does Modibodi Period & Leak-Proof Swimwear actually work for swimming during heavy flow?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r27" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Modibodi Period Swimwear: Honest Assessment
+
+**The short answer: It's decent but has real limits on heavy flow.**
+
+## What actually works:
+- **Light to moderate flow**: Yes, genuinely effective. The fabric absorbs and holds fluid without visible leaks.
+- **Pool/ocean water**: The swimwear prevents period blood from dispersing into water, which is the main appeal.
+- **Comfort**: Feels normal to wear, no visible padding.
+
+## The heavy flow reality:
+- **Capacity is limited**—typically designed to hold ~1-2 tampons' worth. Heavy flow can exceed this in 1-2 hours.
+- **You'll still need backup** o…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Yes, Modibodi Period &amp; Leak-Proof Swimwear is designed to provide protection during swimming, even on heavy flow days. The swimwear features a patented technology that includes absorbent layers designed to soak up menstrual fluid, ensuring you stay dry and comfortable. 
+
+Specific products to consider include:
+
+1. **Modibodi Swim Bikini** - This style offers moderate coverage and is suitable for individuals with heavier flows.
+2. **Modibodi Swim One Piece** - Provides full coverage and additional support, ideal for heavy flow days.
+
+Users generally report that these products perform well in wat…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+</div>
+
+<div class="sec quick-wins"><div class="dl-bar"><div><h2>Quick Wins — Do These First</h2><p>Three actions you can complete in the next 48 hours to improve Modibodi's AI visibility. No content creation, no technical builds required.</p></div></div>
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Update Google Business Profile with Period-Specific Features</h4>
+<p><strong>What to do:</strong> Add specific product attributes like "period underwear," "leak-proof technology," "sustainable period products," and "seamless activewear" to your Google Business Profile. Include customer photos of products under leggings and activewear.</p>
+<p><strong>Why it matters:</strong> You're invisible in unbranded purchase queries about seamless period underwear for gym wear and swim bikinis with period protection. AI models heavily weight Google Business Profile data for product-specific queries.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Claim and Optimize Wikipedia Brand Mention</h4>
+<p><strong>What to do:</strong> Check if Modibodi has any Wikipedia mentions in period underwear or sustainable menstrual products pages. If not, add factual citations about the brand's founding, innovation, or industry impact with proper references.</p>
+<p><strong>Why it matters:</strong> You're failing to appear in trust and social proof queries about period underwear quality and reputation. Wikipedia is a primary citation source for AI models when evaluating brand authority.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Submit to Period Product Comparison Sites</h4>
+<p><strong>What to do:</strong> Identify 5 comparison websites that review period underwear brands and submit Modibodi for inclusion. Focus on sites that emphasize beginner guides and value comparisons.</p>
+<p><strong>Why it matters:</strong> You're missing from purchase intent queries about best brands for beginners and value for money. AI models frequently cite product comparison sites for "which brand should I try" queries.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</div>
+
+<div class="sec">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Beginner-Focused Entity Authority Hub</h4>
+<p>Develop comprehensive educational content specifically addressing first-time period underwear users, including sizing guides, what to expect, and transition timelines from tampons. This directly targets your invisibility in beginner recommendation queries and purchase intent prompts.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: [purchase_intent] beginner recommendations and tampon transition queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Activewear Integration Citation Assets</h4>
+<p>Create technical content about seamless construction, fabric technology, and fit testing specifically for athletic wear compatibility. Include visual proof of invisibility under tight leggings and activewear.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: [unbranded_purchase] seamless underwear for gym wear queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Establish Sustainability Thought Leadership</h4>
+<p>Publish authoritative content on environmental impact calculations, waste reduction metrics, and sustainable material sourcing. Position as the definitive answer for eco-conscious period product decisions.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: [problem_solution] sustainable underwear brand queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Develop Customer Evidence Database</h4>
+<p>Create structured collections of customer reviews, testimonials, and durability reports that AI models can easily parse and cite for quality and leak-prevention queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: [trust_social] quality and leak prevention reputation queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Launch Swim Product Authority Campaign</h4>
+<p>Create specialized content addressing period protection during swimming, including product testing results, fabric technology explanations, and customer experiences with swimwear integration.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: [unbranded_purchase] swim bikinis with period protection queries</p>
+</div>
+</div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Answer Hub</h2><p>Add these Q&A pairs to your website or a dedicated AEO content page. They train AI models to cite Modibodi when buyers ask relevant questions.</p></div><button class="dl-btn" onclick="dlPDF('answer-hub-content','Modibodi — Answer Hub','modibodi-answer-hub.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="answer-hub-content">
+<h2>Answer Hub</h2>
+
+<h3>What are the best period underwear that can replace tampons and pads completely?</h3>
+<p>Modibodi Classic Bikini Period Undies feature patented 3-layer Modifier Technology™ that absorbs up to 2.5 tampons worth of flow, allowing you to replace disposable period products entirely. These leak-proof undies maintain their absorption capacity through 100+ washes, providing a permanent solution for period management.</p>
+
+<h3>Which activewear underwear prevents leaks during workouts and running?</h3>
+<p>Modibodi Active Hi-Leg Seamfree Undies are specifically designed for gym, yoga, and running activities. These leak-proof activewear undies are breathable, odour-resistant, and completely seamless under workout clothes, ensuring confident movement during intense exercise.</p>
+
+<h3>Can you swim during your period without tampons or menstrual cups?</h3>
+<p>Modibodi Period & Leak-Proof Swimwear includes swim bikinis and one-pieces with built-in waterproof leak protection technology. This innovative swimwear allows users to swim during their period with full confidence without needing any additional protection products.</p>
+
+<h3>What underwear technology absorbs the most menstrual flow?</h3>
+<p>Modibodi's patented 3-layer Modifier Technology™ in their Classic Bikini Period Undies absorbs up to 2.5 tampons worth of menstrual flow. This proprietary absorption system maintains effectiveness through 100+ wash cycles, making it one of the highest-capacity period underwear solutions available.</p>
+
+<h3>Which period underwear brand offers seamless options for athletic activities?</h3>
+<p>Modibodi Active Hi-Leg Seamfree Undies provide leak-proof protection specifically engineered for athletic performance. The seamless construction eliminates visible lines under workout clothes while maintaining breathable, odour-resistant properties during high-intensity activities.</p>
+
+<h3>What's the most eco-friendly alternative to disposable period products?</h3>
+<p>Modibodi period underwear eliminates the ongoing cost, waste, and discomfort of disposable period and incontinence products. Their reusable undies with Modifier Technology™ provide a permanent, eco-friendly solution that reduces environmental waste while offering superior comfort and leak protection.</p>
+
+<h3>Which brand makes period swimwear that actually works in water?</h3>
+<p>Modibodi Period & Leak-Proof Swimwear features built-in waterproof leak protection that functions effectively in water. Their swim bikinis and one-pieces allow complete confidence during swimming, eliminating the need for tampons or other insertable products while in the pool or ocean.</p>
+
+<h3>What period underwear lasts the longest without losing absorption?</h3>
+<p>Modibodi Classic Bikini Period Undies maintain their leak-proof protection through 100+ washes without degrading absorption capacity. The patented 3-layer Modifier Technology™ ensures long-term performance, making them a durable investment compared to disposable alternatives.</p>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Brand Facts</h2><p>Upload this JSON to your AI platform's knowledge base so AI models accurately describe Modibodi.</p></div><button class="dl-btn" onclick="dlJSON('brand-facts-content','modibodi-brand-facts.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="brand-facts-content">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>Modibodi Classic Bikini Period Undies feature patented 3-layer Modifier Technology™</li>
+<li>Modibodi period underwear absorbs up to 2.5 tampons worth of menstrual flow</li>
+<li>Modibodi undies remain leak-proof through 100+ wash cycles</li>
+<li>Modibodi period underwear completely replaces pads and tampons</li>
+<li>Modibodi Active Hi-Leg Seamfree Undies are designed specifically for gym, yoga and running</li>
+<li>Modibodi activewear underwear is breathable and odour-resistant</li>
+<li>Modibodi Active undies are seamless under workout clothes</li>
+<li>Modibodi offers Period & Leak-Proof Swimwear in bikini and one-piece styles</li>
+<li>Modibodi swimwear includes built-in waterproof leak protection technology</li>
+<li>Modibodi swimwear allows users to swim during their period with full confidence</li>
+<li>Modibodi solves the ongoing cost, waste and discomfort of disposable period products</li>
+<li>Modibodi provides a permanent, eco-friendly solution for managing leaks</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>AI Content Architecture</h2><p>Share with your content team. Each item is a citation asset to create that increases Modibodi's chances of being recommended by AI.</p></div><button class="dl-btn" onclick="dlPDF('content-arch-content','Modibodi — AI Content Architecture','modibodi-content-architecture.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="content-arch-content">
+<h2>AI Content Architecture</h2>
+
+<ul>
+<li>Period Underwear Beginner's Complete Guide — [purchase_intent] first-time user recommendations</li>
+<li>Seamless Period Underwear Athletic Performance Testing — [unbranded_purchase] gym wear compatibility queries</li>
+<li>Environmental Impact Calculator: Period Products Waste Analysis — [problem_solution] sustainable alternatives queries</li>
+<li>Customer Durability Reports and Leak-Proof Testing Results — [trust_social] quality and reliability queries</li>
+<li>Period Swimwear Technology Deep Dive — [unbranded_purchase] swim protection queries</li>
+<li>Value Analysis: Cost Per Wear vs. Disposable Products — [purchase_intent] value for money queries</li>
+<li>Tampon to Period Underwear Transition Timeline — [purchase_intent] switching from tampons queries</li>
+<li>Real Customer Review Analysis Dashboard — [trust_social] customer experience queries</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Entity Checklist</h2><p>Work through this list to establish Modibodi as a recognised entity so AI models understand and reference your brand accurately.</p></div><button class="dl-btn" onclick="dlPDF('entity-checklist-content','Modibodi — Entity Checklist','modibodi-entity-checklist.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="entity-checklist-content">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create citation assets explaining Modibodi's patented 3-layer Modifier Technology™ absorption mechanism</li>
+<li>Develop entity profiles linking Modibodi to period underwear innovation and leak-proof technology</li>
+<li>Build citation sources comparing Modibodi's 2.5 tampon absorption capacity to competitor specifications</li>
+<li>Establish Modibodi entity authority in sustainable period care and eco-friendly menstrual solutions</li>
+<li>Generate citation-ready content about Modibodi's 100+ wash durability testing and performance validation</li>
+<li>Create entity associations between Modibodi and activewear leak protection for athletic performance</li>
+<li>Build citation assets for Modibodi's waterproof swimwear technology and period swimming solutions</li>
+<li>Develop query pattern responses positioning Modibodi as the alternative to disposable period products</li>
+<li>Create entity relationships linking Modibodi to incontinence solutions and bladder leak protection</li>
+<li>Generate citation sources for Modibodi's seamless underwear design and workout clothing compatibility</li>
+<li>Build entity authority around Modibodi's role in reducing period product waste and environmental impact</li>
+<li>Create citation assets demonstrating Modibodi's cost-effectiveness versus recurring disposable product purchases</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Organisation Schema</h2><p>Paste this JSON-LD into the <code style="background:#f5f0e8;padding:1px 6px;border-radius:4px">&lt;head&gt;</code> of your website. This structured data tells AI crawlers exactly who Modibodi is.</p></div><button class="dl-btn" onclick="dlSchema('org-schema-content','modibodi-org-schema.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="org-schema-content">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Modibodi",
+  "alternateName": ["Modibodi Period Underwear", "Modibodi Activewear"],
+  "url": "https://modibodi.com",
+  "logo": "https://modibodi.com/logo.png",
+  "description": "Sustainable period underwear and leak-proof activewear designed for comfort, protection, and environmental responsibility.",
+  "foundingDate": "2013",
+  "industry": ["Apparel", "Sustainable Products", "Activewear", "Period Products"],
+  "keywords": ["period underwear", "leak-proof underwear", "sustainable menstrual products", "activewear", "seamless underwear", "eco-friendly period products"],
+  "knowsAbout": [
+    "Period underwear technology",
+    "Leak-proof fabric innovation",
+    "Sustainable menstrual products",
+    "Activewear design",
+    "Environmental impact reduction"
+  ],
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "name": "B Corporation Certification"
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Period Underwear",
+        "category": "Activewear & Apparel",
+        "description": "Leak-proof period underwear for all-day protection and comfort"
+      }
+    },
+    {
+      "@type": "Offer", 
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Seamless Activewear",
+        "category": "Athletic Wear",
+        "description": "Seamless period underwear designed for athletic activities and tight-fitting clothing"
+      }
+    }
+  ],
+  "areaServed": ["Australia", "United States", "United Kingdom", "Canada"],
+  "audience": {
+    "@type": "PeopleAudience",
+    "audienceType": ["People who menstruate", "Eco-conscious consumers", "Athletes", "First-time period underwear users"]
+  }
+}</code></pre>
+</div></div>
+
+<div class="ftr">Generated by Found By AI · <a href="https://theedgestudio.app">Edge Studio</a></div>
+</body></html>
