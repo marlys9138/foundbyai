@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Found By AI — P.E Nation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f0e8;color:#2c2c2c;font-family:'Outfit',sans-serif}
+a{color:#8B6F47}
+.hdr{background:#1a1a1a;color:#f5f0e8;padding:48px 40px}
+.hdr-inner{max-width:960px;margin:0 auto}
+.hdr small{opacity:.5;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.hdr h1{font-family:'Playfair Display',serif;font-size:2.6rem;margin:6px 0 4px;line-height:1.1}
+.hdr p{opacity:.55;font-size:.92rem}
+.hero{background:#fff;border-radius:16px;padding:32px 36px;margin:28px auto;max-width:960px;display:flex;align-items:center;gap:32px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.score-ring{width:110px;height:110px;border-radius:50%;background:#c0392b;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.score-ring .n{font-family:'Playfair Display',serif;font-size:2.2rem;color:#fff;font-weight:700;line-height:1}
+.score-ring .d{font-size:.72rem;color:rgba(255,255,255,.65)}
+.band{display:inline-block;background:#c0392b;color:#fff;padding:3px 14px;border-radius:20px;font-size:.78rem;font-weight:600;margin-bottom:8px}
+.sec{background:#fff;border-radius:16px;padding:32px 36px;margin:20px auto;max-width:960px;box-shadow:0 2px 20px rgba(0,0,0,.07)}
+.sec h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:8px}
+.sec h3{font-size:1rem;margin:20px 0 6px;color:#1a1a1a}
+.sec h4{font-size:.95rem;margin:4px 0 8px}
+.sec p{color:#555;line-height:1.7;margin-bottom:10px}
+.sec ul{margin:8px 0 12px 20px;color:#555;line-height:1.8}
+.eng-card{background:#f5f0e8;border-radius:12px;padding:24px;text-align:center;flex:1}
+.eng-cards{display:flex;gap:16px;margin:20px 0}
+.audit-table{width:100%;border-collapse:collapse;font-size:.87rem;margin-top:8px}
+.audit-table th{background:#1a1a1a;color:#f5f0e8;padding:10px 14px;text-align:left;font-size:.75rem;font-weight:600;letter-spacing:.04em}
+.audit-table tr.pr:hover td{background:#fffdf8}
+.audit-table td{border-bottom:1px solid #f0ebe3;vertical-align:middle}
+.td-num{color:#bbb;font-size:.8rem;width:28px;padding:10px 8px}
+.td-type{padding:10px 8px;width:120px}
+.td-q{padding:10px 14px;font-size:.87rem;color:#444}
+.td-tick{text-align:center;padding:10px 8px;width:80px}
+.td-arrow{color:#ccc;width:20px;padding:10px 8px;font-size:.8rem;text-align:right}
+.badge{font-size:.7rem;background:#f0ebe3;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#8B6F47}
+.badge-dim{font-size:.7rem;background:#f5f5f5;padding:2px 8px;border-radius:20px;white-space:nowrap;color:#bbb;border:1px solid #e8e0d5}
+.tick{padding:2px 10px;border-radius:20px;font-size:.75rem}
+.tick-yes{background:#2d6a4f;color:#fff}
+.tick-no{background:#e8e0d5;color:#999}
+.branded-divider{background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;padding:12px 18px;margin:24px 0 8px;display:flex;align-items:flex-start;gap:12px}
+.branded-divider-title{font-size:.85rem;font-weight:600;color:#8B6F47}
+.branded-divider-sub{font-size:.79rem;color:#aaa;margin-top:2px}
+.dl-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0ebe3;flex-wrap:wrap}
+.dl-bar h2{font-family:'Playfair Display',serif;font-size:1.5rem;margin-bottom:4px}
+.dl-bar p{font-size:.85rem;color:#888;margin:0;line-height:1.5;max-width:600px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;padding:9px 18px;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;border:none;font-family:'Outfit',sans-serif;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.dl-btn:hover{background:#333}
+pre{background:#f5f5f2;padding:16px;border-radius:8px;overflow-x:auto;font-size:.82rem;margin-top:8px;line-height:1.5}
+.action{border:1px solid #f0ebe3;border-radius:10px;padding:18px 20px;margin:10px 0}
+.priority{font-size:.7rem;font-weight:700;color:#8B6F47;letter-spacing:.08em;text-transform:uppercase}
+.meta{font-size:.78rem;color:#aaa;margin-top:6px}
+.resp-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.claude-label{color:#8B6F47}
+.gpt-label{color:#2563eb}
+.resp-body{font-size:.83rem;color:#444;line-height:1.65;white-space:pre-wrap}
+.ftr{text-align:center;padding:40px 24px;color:#aaa;font-size:.82rem}
+.expand-hint{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:#aaa;background:#f5f0e8;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.bench-row{display:grid;grid-template-columns:180px 1fr 56px 160px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f0e8}
+.bench-row:last-of-type{border-bottom:none}
+.brand-row{padding:12px 0 10px}
+.bench-label{font-size:.88rem;color:#555;font-weight:400}
+.brand-name-label{font-weight:600;color:#1a1a1a}
+.bench-you{font-size:.75rem;color:#8B6F47;font-weight:600;margin-left:4px}
+.bench-bar-wrap{background:#f0ebe3;border-radius:20px;height:10px;overflow:hidden}
+.bench-bar{background:#c8bba8;height:10px;border-radius:20px}
+.brand-bar{background:#c0392b}
+.bench-score{font-family:'Playfair Display',serif;font-size:1.1rem;color:#444;text-align:right}
+.bench-note{font-size:.75rem;color:#aaa}
+.gap-statement{margin-top:18px;padding:14px 18px;background:#fdf6ec;border:1px solid #f0e0c0;border-radius:10px;font-size:.88rem;color:#8B6F47;font-weight:500;line-height:1.6}
+.quick-wins .action{border-color:#e8f0e8;background:#fafdf8}
+.quick-wins .priority{color:#2d6a4f}
+</style>
+<script>
+function tgl(id){
+  const r=document.getElementById(id);
+  if(!r)return;
+  const open=r.style.display!=='none'&&r.style.display!=='';
+  r.style.display=open?'none':'table-row';
+  const prev=r.previousElementSibling;
+  if(prev){const a=prev.querySelector('.td-arrow');if(a)a.textContent=open?'▾':'▴';}
+}
+function dlBlob(content,filename,type){
+  const blob=new Blob([content],{type:type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function dlJSON(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const items=Array.from(el.querySelectorAll('li')).map(li=>li.innerText.trim()).filter(Boolean);
+  dlBlob(JSON.stringify(items,null,2),filename,'application/json');
+}
+function dlSchema(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const pre=el.querySelector('pre,code');
+  dlBlob(pre?pre.innerText:el.innerText,filename,'application/json');
+}
+function dlPDF(contentId,title,filename){
+  const el=document.getElementById(contentId);
+  if(!el||typeof html2pdf==='undefined'){alert('PDF library not loaded yet — try again in a moment.');return;}
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='font-family:Georgia,serif;color:#2c2c2c;line-height:1.7;font-size:13px;padding:8px';
+  const heading=document.createElement('h1');
+  heading.style.cssText='font-size:20px;margin-bottom:4px;color:#1a1a1a;font-family:Georgia,serif';
+  heading.textContent=title;
+  const sub=document.createElement('p');
+  sub.style.cssText='font-size:10px;color:#aaa;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;font-family:sans-serif';
+  sub.textContent='Generated by Found By AI · Edge Studio · foundbyai.com.au';
+  wrapper.appendChild(heading);
+  wrapper.appendChild(sub);
+  const clone=el.cloneNode(true);
+  clone.querySelectorAll('h2').forEach(h=>{h.style.cssText='font-size:16px;margin:16px 0 8px;color:#1a1a1a;font-family:Georgia,serif';});
+  clone.querySelectorAll('h3').forEach(h=>{h.style.cssText='font-size:13px;margin:14px 0 6px;font-weight:600';});
+  clone.querySelectorAll('h4').forEach(h=>{h.style.cssText='font-size:12px;margin:10px 0 4px;font-weight:600';});
+  clone.querySelectorAll('p').forEach(p=>{p.style.cssText='margin-bottom:8px;color:#444;font-size:13px';});
+  clone.querySelectorAll('ul').forEach(u=>{u.style.cssText='margin:6px 0 10px 18px';});
+  clone.querySelectorAll('li').forEach(l=>{l.style.cssText='margin-bottom:5px;color:#444;font-size:13px';});
+  clone.querySelectorAll('.action').forEach(a=>{a.style.cssText='border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px;margin:8px 0;page-break-inside:avoid';});
+  clone.querySelectorAll('.priority').forEach(p=>{p.style.cssText='font-size:10px;font-weight:700;color:#8B6F47;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px';});
+  clone.querySelectorAll('.meta').forEach(m=>{m.style.cssText='font-size:10px;color:#aaa;margin-top:4px';});
+  wrapper.appendChild(clone);
+  html2pdf().set({
+    margin:[12,14,12,14],
+    filename:filename,
+    image:{type:'jpeg',quality:0.97},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(wrapper).save();
+}
+</script>
+</head>
+<body>
+<div class="hdr"><div class="hdr-inner"><small>Found By AI · AI Visibility Audit</small><h1>P.E Nation</h1><p>Powered by Edge Studio</p></div></div>
+
+<div class="hero">
+  <div class="score-ring"><span class="n">7</span><span class="d">/20</span></div>
+  <div>
+    <div class="band">C — Weak</div>
+    <div style="font-size:1.3rem;font-weight:600;margin-bottom:6px">AI Visibility Score</div>
+    <div style="color:#666;font-size:.9rem;line-height:1.6">Tested across 28 prompts on Claude and ChatGPT.<br>How often P.E Nation appears when buyers ask AI for recommendations.</div>
+  </div>
+</div>
+
+<div class="sec"><h2>Competitor Benchmarking</h2><p style="color:#888;font-size:.88rem;margin-bottom:20px">Based on the same 18 organic prompts used in your audit.</p><div class="bench-row brand-row"><div class="bench-label brand-name-label">P.E Nation <span class="bench-you">(you)</span></div><div class="bench-bar-wrap"><div class="bench-bar brand-bar" style="width:35%"></div></div><div class="bench-score">7<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned your brand</div></div><div class="bench-row"><div class="bench-label">lululemon</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:70%"></div></div><div class="bench-score">14<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="bench-row"><div class="bench-label">Alo Yoga</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:30%"></div></div><div class="bench-score">6<span style="font-size:.75rem;color:#bbb;margin-left:2px">/20</span></div><div class="bench-note">AI mentioned their brand</div></div><div class="gap-statement">Your closest competitor appears in 7 more AI responses than P.E Nation. That's the visibility gap Found By AI is designed to close.</div></div>
+
+<div class="sec">
+  <h2>Prompt Audit</h2>
+  <span class="expand-hint">👆 Click any row to see full AI responses</span>
+  <div class="eng-cards"><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">Claude</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">1<span style="font-size:.9rem;color:#bbb">/18</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div><div class="eng-card"><div style="font-weight:600;margin-bottom:4px;font-size:.9rem">ChatGPT</div><div style="font-family:'Playfair Display',serif;font-size:2.2rem;color:#8B6F47;line-height:1">2<span style="font-size:.9rem;color:#bbb">/18</span></div><div style="font-size:.75rem;color:#aaa;margin-top:4px">organic mentions</div></div></div>
+  <table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r0')" style="cursor:pointer">
+    <td class="td-num">1</td>
+    <td class="td-type"><span class="badge">compression leggings</span></td>
+    <td class="td-q">Best high-waisted compression leggings with bold branding for women who want performance and style</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r0" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top High-Waisted Compression Leggings with Bold Branding
+
+## Premium Performance + Statement Style
+
+**Spanx Look At Me Now Seamless High-Waisted Leggings**
+- Sleek waistband with subtle branding
+- Lightweight compression without bulk
+- Moisture-wicking, squat-proof
+- Price: ~$128
+- Best for: Everyday wear + workouts
+
+**Lululemon Align High-Rise Pant**
+- Minimal but iconic branding (waistband logo)
+- Buttery-soft Nulu fabric with light compression
+- Four-way stretch, no-show
+- Price: ~$128
+- Best for: Yoga and casual lifestyle
+
+**Nike One Legging High-Rise (7/8)**
+- Bold Nike Swoosh on waistb…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For high-waisted compression leggings with bold branding that cater to both performance and style, consider the following options:
+
+1. **Gymshark Flex High Waisted Leggings** - Known for their sleek design and bold Gymshark logo, these leggings offer great compression and support during workouts.
+
+2. **Lululemon Align Pant 25"** - While not overly branded, these leggings have a distinctive Lululemon logo and are loved for their buttery-soft feel and high-waisted fit.
+
+3. **Nike One High-Rise 7/8 Tights** - Featuring the iconic Nike swoosh, these leggings provide a compressive fit and are versa…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r1')" style="cursor:pointer">
+    <td class="td-num">2</td>
+    <td class="td-type"><span class="badge">statement sports bra</span></td>
+    <td class="td-q">Which high-impact sports bra with cross-back design offers the best support and fashion appeal</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r1" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top High-Impact Sports Bras with Cross-Back Design
+
+## Best Overall: **Panache Sport Underwire**
+- Exceptional support from underwire + cross-back straps
+- Reduces bounce by up to 50%
+- Available in cup sizes A-J, regular to plus sizes
+- Stylish color options, flattering silhouette
+- Price: $60-75
+
+## Best for Fashion: **Freya Active Underwire**
+- Cross-back design with trendy prints and solids
+- Comfortable all-day wear (not just workouts)
+- Good support for larger cup sizes (D-K)
+- Price: $65-80
+
+## Best Budget Option: **Elomi Energise**
+- Solid support in full-cup design
+- Cross-back stra…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For a high-impact sports bra with a cross-back design that combines great support and fashion appeal, consider the following options:
+
+1. **Lululemon Enlite Bra** - This bra is known for its excellent support due to its targeted compression and breathable fabric. The cross-back design adds a stylish touch.
+
+2. **Nike Alpha Bra** - Offers high support with adjustable straps for a customized fit. Its sleek design and various color options make it fashionable as well.
+
+3. **Under Armour Infinity High Sports Bra** - Features seamless construction for comfort and a cross-back design. It delivers hi…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r2')" style="cursor:pointer">
+    <td class="td-num">3</td>
+    <td class="td-type"><span class="badge">coordinated tracksuit</span></td>
+    <td class="td-q">Best coordinated tracksuit sets that work for both workouts and streetwear</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r2" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Tracksuit Sets for Gym &amp; Street
+
+## Premium Options ($100-200)
+
+**Lululemon ABC Jogger + Metal Vent Tech Shorts combo**
+- Elevated aesthetic, excellent fabric quality
+- Worn casually by design
+- Great resale value
+
+**Reiss Essential Collection**
+- Tailored tracksuit sets in neutral colors
+- Bridges gym and upscale casual perfectly
+- Premium European aesthetic
+
+## Mid-Range Sweet Spot ($50-100)
+
+**Nike Sportswear Tech Fleece**
+- The gold standard for this category
+- Tapered silhouette works on and off court
+- Available in multiple colorways
+- Incredibly durable
+
+**Adidas Essentials Track…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some top-rated brands and products that offer coordinated tracksuit sets suitable for both workouts and streetwear:
+
+1. **Nike Sportswear**:
+   - **Nike Essential Tracksuit**: This set includes a comfortable jacket and pants, made from soft materials that work well for both gym sessions and casual outings.
+
+2. **Adidas**:
+   - **Adidas Originals Trefoil Tracksuit**: A classic with the iconic 3-stripes. It's stylish enough for streetwear while functional for light workouts.
+
+3. **PUMA**:
+   - **PUMA Essentials Tracksuit**: Offers a sporty yet fashionable look. The fabric is breathable …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r3')" style="cursor:pointer">
+    <td class="td-num">4</td>
+    <td class="td-type"><span class="badge">recycled activewear</span></td>
+    <td class="td-q">Top performance leggings made from recycled materials with standout designs</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r3" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Performance Leggings from Recycled Materials
+
+## Premium Standout Picks
+
+**Girlfriend Collective**
+- Made from recycled plastic bottles and fishnet
+- Distinctive high-waisted silhouettes with bold colorways
+- Compressive support, squat-proof
+- Price: $88–$108
+
+**Allbirds Move Leggings**
+- Made from recycled polyester and nylon
+- Minimalist aesthetic with breathable mesh panels
+- Lightweight, great for running and yoga
+- Price: ~$98
+
+**Patagonia Endless Ride Leggings**
+- Recycled nylon blend with distinctive color-blocked design
+- Four-way stretch, moisture-wicking
+- Reinforced seams for …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some top performance leggings made from recycled materials that feature standout designs:
+
+1. **Girlfriend Collective - High Rise Leggings**  
+   Made from recycled water bottles, these leggings are not only sustainable but also come in a variety of vibrant colors and prints.
+
+2. **Patagonia - Capilene Midweight Leggings**  
+   Crafted from recycled polyester, these leggings are designed for active use with excellent moisture-wicking properties, available in fun patterns and colors.
+
+3. **Nike - Renew Elevate Leggings**  
+   Made from recycled materials, these leggings offer stylish d…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r4')" style="cursor:pointer">
+    <td class="td-num">5</td>
+    <td class="td-type"><span class="badge">bold activewear</span></td>
+    <td class="td-q">Which activewear brand offers the most striking designs without compromising on performance</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r4" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Performers for Bold Activewear Design
+
+**Lululemon** stands out for striking aesthetics paired with genuine performance. Their prints are eye-catching (geometric patterns, vibrant colors), and the fabrics genuinely deliver—moisture-wicking, four-way stretch, durability.
+
+**Outdoor Voices** excels at modern minimalism with unexpected color blocking and statement pieces. Their "doing things" ethos backs up the design with functional cuts and quality materials.
+
+**Fabletics by Fabletics** (if you want value) offers surprisingly bold patterns and colorways at lower price points, with solid p…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For activewear that combines striking designs with high performance, consider the following brands and products:
+
+1. **Lululemon** - Their *Align* collection features vibrant colors and unique prints while providing excellent flexibility and comfort for yoga and general workouts.
+
+2. **Gymshark** - Known for bold colors and patterns, the *Vital Seamless* and *Flex* collections offer stylish designs alongside great performance for gym workouts.
+
+3. **Athleta** - Their *Salutation Stash Pocket Leggings* not only come in eye-catching patterns but are also highly functional, providing comfort and …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r5')" style="cursor:pointer">
+    <td class="td-num">6</td>
+    <td class="td-type"><span class="badge">fashion athletic wear</span></td>
+    <td class="td-q">Best athletic wear brands that prioritize fashion-forward designs over basic styles</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r5" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Fashion-Forward Athletic Wear Brands
+
+## Premium/Luxury Options
+- **Lululemon** – Elevated basics with excellent fits; their jackets and pants are investment pieces
+- **Outdoor Voices** – Minimalist aesthetic with clever color combos and thoughtful cuts
+- **Alo Yoga** – Sleek, Instagram-worthy designs; their leggings and biker shorts are standout pieces
+- **Moncler** – High-end technical wear with designer sensibilities
+
+## Contemporary Fashion-Focused
+- **Girlfriend Collective** – Colorful, flattering cuts; great for people who want bold options
+- **Aday** – Ultra-minimal, architectural sil…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you’re looking for athletic wear brands that focus on fashion-forward designs, consider the following:
+
+1. **Lululemon** - Known for their stylish leggings and innovative tops, Lululemon combines performance and chic designs. Look for their **Align Pant** and **Swiftly Tech Short Sleeve**.
+
+2. **Alo Yoga** - This brand is popular for its trendy looks that transition well from yoga class to casual outings. Their **Airlift Leggings** and **Muse Bra** are great examples of fashion-forward athletic wear.
+
+3. **Gymshark** - While known for performance, Gymshark also offers stylish options like t…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r6')" style="cursor:pointer">
+    <td class="td-num">7</td>
+    <td class="td-type"><span class="badge">style sacrifice</span></td>
+    <td class="td-q">I'm tired of boring activewear that has no personality - which brand makes bold performance pieces that actually look cool</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r6" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Brands with Bold Activewear Personality
+
+**Outdoor Voices** is probably your best bet right now. They lean into unexpected colors, bold graphics, and playful designs while maintaining solid technical performance. Their "Take it outside" ethos means pieces actually look intentional, not generic gym wear.
+
+**Nike's experimental lines** (especially collaborations like Sacai or their Undercover collections) push boundaries with asymmetrical cuts, unusual colorways, and statement pieces—though you'll pay premium prices.
+
+**Lululemon's limited releases** and newer collections have gotten bolder wi…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for bold and stylish activewear, consider these brands:
+
+1. **Gymshark** - They offer trendy and colorful pieces, particularly their "Flex" and "Energy" collections which feature eye-catching patterns and unique cuts.
+
+2. **Lululemon** - Known for high-quality performance wear, their "Align" and "Wunder Under" leggings often come in vibrant colors and fun prints.
+
+3. **Nike** - Their "Nike Air" and "Pro" collections include bold graphic designs and standout colorways that make a statement.
+
+4. **Alo Yoga** - This brand combines performance with fashion. Look for their "High-W…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r7')" style="cursor:pointer">
+    <td class="td-num">8</td>
+    <td class="td-type"><span class="badge">studio fashion</span></td>
+    <td class="td-q">Need activewear that looks stylish enough to wear outside the gym but still performs during high-intensity workouts</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r7" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Hybrid Activewear Picks
+
+## Tops
+**Lululemon Swiftly Tech Long-Sleeve** ($98)
+- Sleek, fitted look you can wear anywhere
+- Light, breathable fabric that wicks moisture fast
+- Minimal branding keeps it polished
+
+**Outdoor Voices Doing Things Bra or Tank** ($68-88)
+- Minimalist aesthetic that reads as regular fashion
+- Excellent support for high-impact activities
+- Great color range beyond typical gym fare
+
+## Bottoms
+**Girlfriend Collective High-Waisted Compression Legging** ($68)
+- Genuinely chic silhouette (not overly "athleisure")
+- Strong compression for intense workouts
+- Holds up w…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some brands and specific products that offer stylish activewear suitable for both high-intensity workouts and everyday wear:
+
+1. **Lululemon**:
+   - **Align Leggings**: High-waisted and made with buttery fabric, great for yoga and everyday style.
+   - **Swiftly Tech Short Sleeve Crew**: Lightweight and breathable, perfect for running or casual outings.
+
+2. **Alo Yoga**:
+   - **Airlift Legging**: These leggings offer a flattering look and perform well during high-intensity workouts.
+   - **Alosoft Move Bra**: Comfortable and stylish, with good support for various activities.
+
+3. **Outd…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r8')" style="cursor:pointer">
+    <td class="td-num">9</td>
+    <td class="td-type"><span class="badge">streetwear performance</span></td>
+    <td class="td-q">Looking for tracksuit sets that blend streetwear aesthetics with actual workout functionality</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r8" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Streetwear-Functional Tracksuits
+
+## Top Tier Options
+
+**Nike Tech Fleece**
+- The gold standard for this category. Tapered fit, zippered pockets, breathable but warm. Works equally well at the gym or for casual wear. Price: $130-180
+- Best for: Anyone wanting genuine Nike quality without hype markup
+
+**Adidas Essentials Tracksuit (3-Stripes)**
+- Clean, minimalist design. Lightweight knit construction, good stretch, moisture-wicking. Less bulky than competitors
+- Best for: Runners and people who want versatility
+
+**AAPE by A Bathing Ape**
+- Elevated streetwear with actual athletic constr…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some excellent tracksuit sets that combine streetwear aesthetics with practical workout functionality:
+
+1. **Nike Tech Fleece Tracksuit**
+   - **Product**: Nike Tech Fleece Pullover and Pants
+   - **Features**: Lightweight, breathable fleece material, flexible for workouts, and stylish enough for casual wear.
+
+2. **Adidas Originals 3-Stripes Tracksuit**
+   - **Product**: Adidas Originals Essential 3-Stripes Track Jacket and Pants
+   - **Features**: Classic streetwear look with moisture-wicking fabric, ideal for both casual outings and workouts.
+
+3. **Puma Amplified Tracksuit**
+   - **…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r9')" style="cursor:pointer">
+    <td class="td-num">10</td>
+    <td class="td-type"><span class="badge">standout designs</span></td>
+    <td class="td-q">Want activewear with standout seasonal colors and bold branding that makes a statement</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r9" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Standout Activewear Brands with Bold Seasonal Statements
+
+## High-Impact Branding &amp; Color
+
+**Lululemon**
+- Seasonal color drops (recent: vibrant teals, hot pinks, deep plums)
+- Visible logo placement on sleeves and backs
+- Collections change quarterly with distinctive hues
+- Price: Premium ($98-$128 for leggings)
+
+**Nike**
+- Swoosh is iconic and impossible to miss
+- Seasonal palettes rotate through bold jewel tones and neons
+- Nike Sportswear line has especially statement-making colors
+- More accessible price point ($60-$90)
+
+**Outdoor Voices**
+- "Doing Things" branding is minimalist but bol…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For activewear that features standout seasonal colors and bold branding, consider the following brands and products:
+
+1. **Lululemon**:
+   - **Align High-Rise Pants**: Available in vibrant colors like "Watermelon" and "Raspberry," these leggings offer comfort and bold style.
+   - **Swiftly Tech Long Sleeve**: Look for seasonal colors that pop, paired with the recognizable logo.
+
+2. **Nike**:
+   - **Nike Pro Tank Top**: Often comes in bright seasonal shades with the iconic swoosh across the chest or back.
+   - **Dri-FIT Training Pants**: Available in bold colors and featuring the prominent Nike…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r10')" style="cursor:pointer">
+    <td class="td-num">11</td>
+    <td class="td-type"><span class="badge">ready buy</span></td>
+    <td class="td-q">Ready to invest in premium activewear - recommend a brand with bold designs and excellent performance</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r10" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Recommendation: **Lululemon**
+
+**Why it's your best bet for premium activewear:**
+
+- **Bold designs**: Signature color drops, intentional cuts, and pattern collaborations (they regularly partner with designers). The "Scuba" collection and limited-edition prints get noticed.
+- **Performance**: Luon and Nulux fabrics are genuinely technical—sweat-wicking, durable, and hold shape
+- **Quality**: Four-way stretch, reinforced seams, and they back products with a quality promise
+- **Price**: $78-$168 for leggings/tops—premium but justified by durability
+
+**Alternative strong choices:**
+
+**Outdo…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For premium activewear with bold designs and excellent performance, I recommend **Lululemon**. Their **Align Pants** and **Swiftly Tech Long Sleeve** tops are particularly well-regarded for their comfort and performance. Another great option is **Alo Yoga**, known for its stylish designs and high-performance items like the **High-Waist Airlift Leggings** and **Alo Yoga Essential Sweatshirt**. Both brands not only focus on functionality but also on making a fashion statement with vibrant patterns and colors.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r11')" style="cursor:pointer">
+    <td class="td-num">12</td>
+    <td class="td-type"><span class="badge">high impact bra</span></td>
+    <td class="td-q">Need to buy a high-impact sports bra with cross-back detail that actually supports during intense workouts</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r11" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># High-Impact Sports Bra Recommendations
+
+## Best Overall Choice
+**Panache Sport Underwire Bra** (around $70-80)
+- Excellent support with adjustable straps and cross-back design
+- Underwire provides lift without bounce
+- Great for D+ cup sizes
+- Lasts through serious running, HIIT, and CrossFit
+
+## Budget-Friendly Option
+**Freya Active Underwire** (around $60-70)
+- Similar construction to Panache with cross-back straps
+- Excellent for larger cup sizes (DD+)
+- Durable and supportive
+
+## Minimalist High-Impact
+**Shefit High Impact Sports Bra** (around $68)
+- Extremely adjustable with customizabl…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For a high-impact sports bra with cross-back detail, consider the following options:
+
+1. **Nike** - **Nike Alpha Bra**: This bra offers supportive underwire and a stylish cross-back design, ideal for high-intensity workouts.
+
+2. **Under Armour** - **Under Armour Infinity High Sports Bra**: This model features a cross-back design and is known for excellent support and comfort during intense activities.
+
+3. **Lululemon** - **Lululemon Enlite Bra**: With a sleek cross-back design, this bra provides both support and flexibility for high-impact sports.
+
+4. **Brooks** - **Brooks Dare Crossback Run B…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r12')" style="cursor:pointer">
+    <td class="td-num">13</td>
+    <td class="td-type"><span class="badge">performance tracksuit</span></td>
+    <td class="td-q">Shopping for a two-piece tracksuit set with performance fabric and streetwear silhouette</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r12" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Two-Piece Tracksuit Recommendations
+
+## Top Picks
+
+**Nike Tech Fleece**
+- The gold standard for streetwear tracksuits
+- Tapered fit, premium lightweight fleece
+- $120-160 per set
+- Available at Nike.com, Foot Locker
+
+**Adidas Essentials 3-Stripes Tracksuit**
+- Clean aesthetic, great quality
+- Options in cotton-poly blend or tech fabrics
+- $80-120
+- Widely available at retailers
+
+**Puma Iconic T7**
+- Modern silhouette with tapered legs
+- Polyester blend that's durable
+- $90-130
+- Puma.com, Dick's Sporting Goods
+
+## Performance-Focused Options
+
+**Lululemon ABC Jogger + Metal Vent Tech**
+-…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some specific brands and products that offer two-piece tracksuit sets with performance fabric and a stylish streetwear silhouette:
+
+1. **Nike** - **Nike Sportswear Essential Tracksuit**
+   - Features Dri-FIT technology for moisture management.
+   - Modern fit with a streetwear vibe.
+
+2. **Adidas** - **Adidas Originals SST Tracksuit**
+   - Classic design with a sporty feel, made from a blend of polyester for durability and comfort.
+   - A timeless streetwear silhouette with the iconic three stripes.
+
+3. **Puma** - **Puma Essentials Tracksuit**
+   - Made with lightweight fabric and mois…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r13')" style="cursor:pointer">
+    <td class="td-num">14</td>
+    <td class="td-type"><span class="badge">Australian brand</span></td>
+    <td class="td-q">Best Australian activewear brands with bold designs and performance fabrics</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r13" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Australian Activewear Brands with Bold Designs
+
+## Premium Performance
+
+**P.E Nation**
+- Bold geometric prints and vibrant colorways
+- High-tech fabrics with 4-way stretch
+- Known for statement pieces and runway-quality designs
+- Pricier but excellent durability
+
+**Lorna Jane**
+- Signature bold patterns and tropical prints
+- Moisture-wicking Lorna Jane LJ Tech fabric
+- Great for high-impact activities
+- Well-established Australian institution
+
+## Mid-Range Bold Options
+
+**Ksubi**
+- Edgy, streetwear-influenced designs
+- Strong color blocking and graphic elements
+- Good quality performanc…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some of the best Australian activewear brands known for their bold designs and performance fabrics:
+
+1. **Lorna Jane** - Known for vibrant prints and high-performance materials, their activewear includes a range of leggings, sports bras, and tops.
+
+2. **Nimble Activewear** - Offers colorful and unique designs, using recycled materials in their activewear, including leggings and crop tops.
+
+3. **P.E. Nation** - Features bold graphics and modern designs, combining style and performance in their activewear collections.
+
+4. **Sportscraft** - Known for their blend of function and style, of…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r14')" style="cursor:pointer">
+    <td class="td-num">15</td>
+    <td class="td-type"><span class="badge">local activewear</span></td>
+    <td class="td-q">Top Australian-made activewear brands that compete with international names like lululemon</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r14" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Australian Activewear Brands
+
+## Premium Competitors to Lululemon
+
+**Lorna Jane**
+- Founded in Brisbane, now Australia's largest activewear export
+- High-quality leggings, sports bras, and tops
+- Strong focus on comfort technology and local manufacturing
+- Price point: Similar to Lululemon ($120-180 AUD for leggings)
+
+**P.E. Nation**
+- Sydney-based, founded by Pip Edwards and Claire Tregoning
+- Minimalist aesthetic, premium performance fabrics
+- Excellent sports bras and high-waisted leggings
+- Price point: Premium ($150-200 AUD)
+
+**Aldi Active**
+- Surprising quality from the supermarket…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some top Australian-made activewear brands that rival international names like Lululemon:
+
+1. **Lorna Jane** - Known for its high-quality yoga and fitness apparel, Lorna Jane offers a wide range of stylish and functional activewear.
+
+2. **Nimble Activewear** - This brand focuses on sustainable practices and offers stylish pieces that are designed for performance, with a range of leggings, sports bras, and crop tops.
+
+3. **P.E Nation** - Known for its streetwear-inspired activewear, P.E Nation combines fashion with function, offering vibrant colors and unique designs.
+
+4. **Rockwear** …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r15')" style="cursor:pointer">
+    <td class="td-num">16</td>
+    <td class="td-type"><span class="badge">like lululemon</span></td>
+    <td class="td-q">Best activewear brands like lululemon but with more bold and statement designs</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r15" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Bold Activewear Brands Beyond Lululemon
+
+## Premium Statement Brands
+
+**Outdoor Voices**
+- Minimalist but with unexpected color blocking and cuts
+- "The Gym" and "The Recreation" lines have strong design DNA
+- More accessible pricing than Lululemon
+
+**Girlfriend Collective**
+- Vibrant, playful colorways (neons, pastels, bold contrasts)
+- Eco-conscious with high-waisted, inclusive sizing
+- Distinctly modern aesthetic
+
+**Alala**
+- Unapologetically bold patterns and bright hues
+- High-performance with attitude
+- Celebrity-loved for statement pieces
+
+## Edgy/Artistic Direction
+
+**Aday**
+- Archit…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for activewear brands that offer bold and statement designs similar to Lululemon, consider the following:
+
+1. **Gymshark** - Known for its trendy and vibrant designs, Gymshark offers a variety of bold prints and colors, making it a favorite among fitness enthusiasts.
+
+2. **Alo Yoga** - This brand combines style and performance with eye-catching patterns and styles, perfect for yoga and everyday wear.
+
+3. **Nike** - With its wide range of activewear, Nike frequently releases collections with bold graphics and colors, appealing to those who want to make a statement.
+
+4. **Adida…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r16')" style="cursor:pointer">
+    <td class="td-num">17</td>
+    <td class="td-type"><span class="badge">Alo alternative</span></td>
+    <td class="td-q">Better alternative to Alo Yoga for high-impact sports bras with fashion-forward designs</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r16" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Top Alternatives to Alo Yoga for High-Impact Sports Bras
+
+## Best Overall Match
+**Lululemon – Energy Bra High-Support**
+- Comparable price point ($68-$78)
+- Sleek, minimalist aesthetic with color options
+- Excellent support for running/HIIT
+- Better durability reputation than Alo
+
+## Premium Performance Options
+**Panache Sport**
+- Specifically engineered for high-impact activities
+- More structural support than Alo
+- $65-$75 range
+- Less fashion-focused but technically superior
+
+**Freya Active**
+- UK brand with European design sensibility
+- Excellent for larger cup sizes
+- $60-$70
+- More ref…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for high-impact sports bras with fashion-forward designs as an alternative to Alo Yoga, consider the following brands:
+
+1. **Lululemon** - Their "Energy Bra" and "Wunder Under Bra" offer great support and come in stylish patterns.
+
+2. **Athleta** - The "Ultimate Bra" provides high impact support with trendy designs suitable for various workouts.
+
+3. **Nike** - The "Nike Alpha Bra" is designed for maximum support and comes in chic designs.
+
+4. **Under Armour** - The "Infinity High Sports Bra" combines fashion and function, perfect for high-impact activities.
+
+5. **Sweaty Betty…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r17')" style="cursor:pointer">
+    <td class="td-num">18</td>
+    <td class="td-type"><span class="badge">Varley alternative</span></td>
+    <td class="td-q">Brands similar to Varley but with more coordinated tracksuit sets and bold branding</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r17" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Brands Similar to Varley with Strong Tracksuit Sets
+
+## Best Alternatives:
+
+**Alo Yoga**
+- Cohesive tracksuit collections in matching fabrics
+- Bold logo placement and visible branding
+- Higher price point (~$150-250 per piece)
+- Emphasis on seamless, color-coordinated sets
+
+**Gymshark**
+- Strong graphic branding and logo visibility
+- Entire coordinated collections (matching hoodies, joggers, leggings)
+- More affordable than Varley ($50-120 per piece)
+- Very popular branding aesthetic
+
+**Lululemon Athletica**
+- Coordinated set offerings though less tracksuit-focused
+- Subtle branding (more u…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for brands similar to Varley that offer coordinated tracksuit sets with bold branding, consider the following:
+
+1. **Alo Yoga** - Known for stylish activewear, Alo offers coordinated tracksuits with bold logos and eye-catching designs.
+
+2. **Gymshark** - This brand features trendy activewear with strong branding and often provides matching sets that are both stylish and functional.
+
+3. **P.E Nation** - This brand specializes in sporty-chic apparel and frequently offers coordinated tracksuit options with vibrant colors and bold branding.
+
+4. **Fabletics** - Fabletics offers a …</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+  <div class="branded-divider"><span style="font-size:1.1rem;line-height:1.4;margin-right:4px">🎯</span><div><div class="branded-divider-title">Prompts naming P.E Nation directly</div><div class="branded-divider-sub">These prompts reference P.E Nation by name — not included in the organic score above.</div></div></div><table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r18')" style="cursor:pointer">
+    <td class="td-num">19</td>
+    <td class="td-type"><span class="badge">vs lululemon</span></td>
+    <td class="td-q">P.E Nation vs lululemon - which offers better bold designs and street-style appeal</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r18" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation vs Lululemon: Bold Design &amp; Street Style
+
+**P.E Nation wins decisively here.**
+
+## P.E Nation's Strengths
+- **Bolder aesthetic**: Color-blocking, geometric cuts, and experimental silhouettes (their signature cut-out details, asymmetrical hemlines)
+- **Street-style focused**: Designed explicitly for that gym-to-street vibe with statement pieces
+- **Trend-forward**: Regularly releases collections that feel current and fashion-forward
+- **Unique attitude**: Collections like their "Exist Loud" line embrace personality over minimalism
+
+## Lululemon's Reality
+- **Safe design language**:…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing P.E Nation and Lululemon in terms of bold designs and street-style appeal, P.E Nation generally takes the lead. 
+
+**P.E Nation**:
+- Known for its vibrant colors, graphic prints, and sporty yet stylish silhouettes.
+- Products like the "Racing Stripe" leggings and "The Runway" crop tops showcase their bold aesthetic and urban vibe.
+- The brand targets activewear that seamlessly transitions into street style, making it popular in fashion-forward circles.
+
+**Lululemon**:
+- While Lululemon offers stylish designs, they tend to be more classic and subtle in comparison.
+- Their pieces l…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r19')" style="cursor:pointer">
+    <td class="td-num">20</td>
+    <td class="td-type"><span class="badge">vs Alo Yoga</span></td>
+    <td class="td-q">P.E Nation Double Cross Sports Bra vs Alo Yoga sports bras - which has better support and style</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r19" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation vs Alo Yoga Sports Bras
+
+## Support Winner: **P.E Nation Double Cross**
+
+The P.E Nation Double Cross is specifically engineered for high-impact activities with:
+- Structured underwire support
+- Reinforced side panels
+- Firmer compression overall
+- Better for larger cup sizes
+
+Alo Yoga bras prioritize medium support with a more relaxed fit—better for yoga and low-impact activities than intense workouts.
+
+## Style Winner: **Alo Yoga** (if that matters to you)
+
+Alo's aesthetic is more aspirational/lifestyle-focused with trendy colorways and sleeker silhouettes. P.E Nation is edgier a…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing the P.E Nation Double Cross Sports Bra to Alo Yoga sports bras, it really depends on your specific needs for support and style.
+
+### Support:
+- **P.E Nation Double Cross Sports Bra**: This bra is designed for medium to high-impact activities, providing good support with its thick straps and band. It's ideal for activities like running or HIIT.
+- **Alo Yoga Sports Bras**: Alo Yoga offers a range of sports bras like the **Alo Yoga Airlift Bra** and the **Alo Yoga Warrior Bra**, both providing great support. The Airlift Bra is particularly popular for high-impact workouts, while th…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r20')" style="cursor:pointer">
+    <td class="td-num">21</td>
+    <td class="td-type"><span class="badge">vs Varley</span></td>
+    <td class="td-q">P.E Nation Signature Tracksuit Sets vs Varley - which brand does streetwear-performance better</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r20" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation vs Varley: Streetwear-Performance Showdown
+
+**P.E Nation wins for streetwear credentials.**
+
+## P.E Nation Signature Tracksuit
+- **Stronger aesthetic**: Bold color blocking, oversized silhouettes, tech-forward cuts that actually look intentional on the street
+- **Better style range**: Their tracksuits come in experimental colorways (acid brights, two-tone blocking) that stand out
+- **Streetwear DNA**: Designed with visible seaming, elevated proportions—feels contemporary
+- **Pricing**: ~$250-350 AUD for full sets
+
+**Downside**: Performance tech is secondary; fabrics are more about…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing P.E Nation and Varley in terms of streetwear-performance, both brands offer unique strengths.
+
+**P.E Nation**:
+- **Signature Tracksuit Sets**: These sets typically feature bold colors and patterns, making them a great choice for streetwear. They blend fashion with functionality, often using moisture-wicking fabrics that are perfect for high-performance activities. Look for items like the **P.E Nation Structured Track Jacket** and **Active Force Pants** for a stylish yet functional option.
+
+**Varley**:
+- Varley leans towards a more minimalist aesthetic but maintains performance c…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r21')" style="cursor:pointer">
+    <td class="td-num">22</td>
+    <td class="td-type"><span class="badge">worth investment</span></td>
+    <td class="td-q">Is P.E Nation activewear worth the investment for bold designs and performance quality</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r21" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation: Worth It? Here's the Honest Take
+
+**Strong Points:**
+- **Bold, distinctive designs** — they genuinely stand out. The geometric prints and color blocking are eye-catching without being trendy-of-the-moment
+- **Quality construction** — seams hold up well, fabric doesn't pill easily, and fit is generally consistent
+- **Performance decent** — sweat-wicking works adequately, though not exceptional
+
+**The Real Drawbacks:**
+- **Price premium isn't fully justified** — you're paying 30-50% more than comparable performers like Lululemon or Gymshark for similar technical specs
+- **Limited t…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">P.E Nation is known for its bold designs and high-performance activewear. The brand focuses on stylish, versatile pieces that transition well from workout to casual wear. 
+
+**Key Products to Consider:**
+
+1. **P.E Nation Rewind Leggings** - These leggings offer excellent support and flexibility, making them suitable for various workouts. The bold color block designs help you stand out.
+
+2. **P.E Nation Clash Sports Bra** - This sports bra combines style with functionality, providing good support and comfort during high-impact activities.
+
+3. **P.E Nation Aerial Tank** - A trendy, lightweight ta…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r22')" style="cursor:pointer">
+    <td class="td-num">23</td>
+    <td class="td-type"><span class="badge">quality reviews</span></td>
+    <td class="td-q">What do people say about P.E Nation Heads Up Leggings quality and compression</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r22" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation Heads Up Leggings - What People Say
+
+## Compression &amp; Support
+Reviews are **generally positive** on compression:
+- Users report the high-waist design provides good compression and support without being restrictive
+- The fabric holds you in nicely without digging or rolling down
+- Good for moderate activity, though some say compression is firmer than similar-priced alternatives
+
+## Quality
+**Mixed feedback:**
+- **Pros**: Durable fabric, holds up well to washing, retains shape
+- **Cons**: Some users report pilling after several wears, particularly on the inner thigh
+- Price point ($…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">P.E Nation Heads Up Leggings generally receive positive reviews regarding their quality and compression. Many users appreciate the fabric's durability and the stylish design. The leggings are often noted for having a good amount of compression, providing support during workouts without feeling overly restrictive. 
+
+However, some reviews mention that the sizing may run small, so it's advisable to consider sizing up if you're between sizes. Overall, if you're looking for high-quality, fashionable activewear with decent compression, P.E Nation Heads Up Leggings could be a solid choice.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r23')" style="cursor:pointer">
+    <td class="td-num">24</td>
+    <td class="td-type"><span class="badge">brand reputation</span></td>
+    <td class="td-q">P.E Nation reviews - is this brand actually good for both style and workout performance</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r23" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation: Honest Assessment
+
+**The Good:**
+- **Design:** Genuinely stylish activewear with interesting cuts, color blocking, and a fashion-forward aesthetic. Looks intentional, not generic gym wear.
+- **Fabric quality:** Their pieces typically use quality materials—good stretch, breathability, and durability hold up through regular washing
+- **Versatility:** Pieces work as actual workout gear *and* look acceptable for casual wear (which justifies the price point somewhat)
+
+**The Honest Drawbacks:**
+- **Premium pricing without premium performance:** You're paying $150+ for leggings that per…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">P.E Nation generally receives positive reviews for both style and workout performance. This Australian activewear brand is known for its trendy designs that combine bold colors, patterns, and a streetwear aesthetic, making their pieces popular not just for workouts but also for casual wear.
+
+**Pros:**
+1. **Style:** The brand is often praised for its fashionable designs. Customers appreciate the mix of sporty and chic, allowing them to transition from gym to street effortlessly.
+2. **Performance:** Many users find that P.E Nation's materials are high-quality, providing good support and comfort …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r24')" style="cursor:pointer">
+    <td class="td-num">25</td>
+    <td class="td-type"><span class="badge">buy Australia</span></td>
+    <td class="td-q">Where to buy P.E Nation activewear in Australia with fast shipping</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r24" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation Activewear in Australia
+
+## Best Direct Options
+
+**1. P.E Nation Official Website (penation.com.au)**
+- Fastest shipping direct from source
+- Usually 2-3 business days to most Australian locations
+- Full size range and latest collections
+- Free shipping on orders over $150
+
+**2. ASOS Australia (asos.com)**
+- Wide P.E Nation selection
+- 2-3 business day delivery on standard orders
+- Express options available
+- Frequent sales/discounts
+
+## Department Stores &amp; Retailers
+
+**3. Myer (myer.com.au)**
+- Physical stores + online
+- Click &amp; collect available
+- 2-3 day shipping
+- Good for try…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can purchase P.E Nation activewear in Australia from several retailers that typically offer fast shipping. Here are some options:
+
+1. **P.E Nation Official Website** - The most reliable source for the latest collections and styles. They often provide quick shipping options within Australia.
+
+2. **The Iconic** - A popular online retailer in Australia that stocks a wide range of P.E Nation products. They offer express shipping for faster delivery.
+
+3. **Forever New** - Some Forever New stores carry P.E Nation activewear, and their online shop usually offers fast shipping options.
+
+4. **David…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r25')" style="cursor:pointer">
+    <td class="td-num">26</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Is P.E Nation worth it for the Heads Up Leggings and Double Cross Sports Bra</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r25" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation Activewear Assessment
+
+**Heads Up Leggings:**
+These are solid but pricey for what you get. They offer good fabric quality and a flattering fit, but you can find comparable leggings from **Lululemon Align Pant** or **Girlfriend Collective** at similar price points with better durability records.
+
+**Double Cross Sports Bra:**
+This one's actually better value. The design is unique, support is solid for low-to-medium impact, and the quality justifies the cost better than their leggings.
+
+## When P.E Nation makes sense:
+- You want a distinctive aesthetic (their designs are genuinely di…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">P.E Nation is known for its stylish activewear, and the Heads Up Leggings and Double Cross Sports Bra have received positive reviews for their performance and aesthetic appeal. 
+
+1. **Heads Up Leggings**: These leggings are designed for both workout and casual wear. They typically feature moisture-wicking fabric, a high waistband for support, and stylish color-blocking designs. Users often appreciate their durability and comfort during workouts. They usually retail around $130.
+
+2. **Double Cross Sports Bra**: This sports bra is often praised for its support and unique crossover back design, m…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r26')" style="cursor:pointer">
+    <td class="td-num">27</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Where can I buy P.E Nation Signature Tracksuit Sets online with good return policy</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r26" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation Tracksuit Shopping Guide
+
+## Best Options for Good Return Policies:
+
+**1. SSENSE**
+- Reliable luxury retailer with 30-day returns
+- Frequent P.E Nation stock
+- International shipping available
+- ssense.com
+
+**2. Net-A-Porter**
+- 28-day return window
+- Excellent customer service
+- Premium selection
+- net-a-porter.com
+
+**3. Farfetch**
+- 14-30 day returns (varies by boutique)
+- Wide P.E Nation range
+- Buy now, pay later options
+- farfetch.com
+
+**4. P.E Nation Official Site**
+- Direct from brand (penaation.com)
+- Check their specific return policy (typically 30 days)
+- Best for new re…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can purchase P.E Nation Signature Tracksuit Sets online at several retailers known for their customer-friendly return policies. Here are a few options:
+
+1. **P.E Nation's Official Website** - You can shop directly from their site and they typically offer free returns within a specific period if the items are unworn and in original condition.
+
+2. **ASOS** - They carry P.E Nation products and have a 28-day return policy offering free returns for members and reasonable return options for non-members.
+
+3. **Revolve** - They stock various P.E Nation items and offer a 30-day return policy on unw…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r27')" style="cursor:pointer">
+    <td class="td-num">28</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">P.E Nation activewear review - how does their performance compare to the bold styling</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r27" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># P.E Nation Activewear Review
+
+## Performance Quality
+P.E Nation delivers **solid mid-to-premium performance**, though not exceptional for the price:
+
+- **Fabrics**: Good moisture-wicking and stretch, but competitors like Lululemon and Gymshark offer slightly superior technical innovation
+- **Durability**: Holds up well through regular wear; colors resist fading
+- **Fit**: Generally true-to-size with thoughtful construction details
+- **Comfort**: Reliable for most workouts, though some find seams slightly prominent
+
+## The Bold Styling (Their Real Strength)
+This is where P.E Nation genuinely …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">P.E Nation is known for its bold styling and vibrant designs, often characterized by striking color combinations and graphic prints. The brand effectively combines streetwear with activewear, appealing to those who want to make a statement while working out or engaging in casual activities.
+
+In terms of performance, P.E Nation activewear generally performs well but can vary across different pieces. Here are some highlights:
+
+1. **Leggings**: The "Supernova Leggings" are popular for their high-waisted fit and excellent compression, providing good support during workouts. Users often comment on …</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+</div>
+
+<div class="sec quick-wins"><div class="dl-bar"><div><h2>Quick Wins — Do These First</h2><p>Three actions you can complete in the next 48 hours to improve P.E Nation's AI visibility. No content creation, no technical builds required.</p></div></div>
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Bold Design Descriptors to Product Meta</h4>
+<p><strong>What to do:</strong> Update all product titles and meta descriptions to include phrases like "bold branding," "statement designs," "fashion-forward performance," and "standout colors" for every piece.</p>
+<p><strong>Why it matters:</strong> The brand was invisible in all unbranded purchase prompts specifically asking for "bold branding," "striking designs," and "standout" activewear. AI models need explicit design language to cite P.E Nation as the answer.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create "Australian Activewear Brand" Entity Signals</h4>
+<p><strong>What to do:</strong> Add "Australian-made," "Australian activewear brand," and "Sydney-based" to homepage hero text, About section, and contact page footer.</p>
+<p><strong>Why it matters:</strong> P.E Nation only appeared in 2 out of 3 regional Australian prompts, missing citations when users specifically search for local alternatives to international brands like lululemon.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Position Against lululemon in Product Copy</h4>
+<p><strong>What to do:</strong> Add comparison statements like "fashion-forward alternative to basic activewear brands" and "bold designs that stand out from minimalist competitors" to category pages.</p>
+<p><strong>Why it matters:</strong> lululemon dominated 26 prompts where P.E Nation was invisible, particularly in alternatives queries. AI needs explicit differentiation signals to recommend P.E Nation as a bold alternative.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</div>
+
+<div class="sec">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Bold Design Authority Content Hub</h4>
+<p>Create dedicated pages positioning P.E Nation as the leader in fashion-forward activewear with bold branding and statement designs. Include specific product callouts for high-waisted compression leggings, cross-back sports bras, and coordinated tracksuit sets.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: All unbranded purchase prompts for bold/striking designs</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Gym-to-Street Positioning Assets</h4>
+<p>Create content specifically addressing the problem-solution gap around activewear that transitions from workouts to streetwear, emphasizing tracksuit functionality and performance-meets-style positioning.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: Problem-solution prompts about stylish performance wear</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Australian Brand Differentiation</h4>
+<p>Strengthen local AI visibility with content highlighting P.E Nation's Australian heritage, local design philosophy, and position as a homegrown alternative to international brands.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Regional Australian prompts where brand was invisible</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Anti-Boring Activewear Messaging</h4>
+<p>Develop content directly addressing users "tired of boring activewear" by showcasing personality-driven designs, bold seasonal colors, and statement pieces that make activewear exciting.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Problem-solution prompts about personality in activewear</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build Premium Investment Justification</h4>
+<p>Create citation assets that position P.E Nation as worthy of premium investment, combining bold design credentials with performance specifications for purchase intent queries.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Purchase intent prompts for premium bold activewear</p>
+</div>
+</div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Answer Hub</h2><p>Add these Q&A pairs to your website or a dedicated AEO content page. They train AI models to cite P.E Nation when buyers ask relevant questions.</p></div><button class="dl-btn" onclick="dlPDF('answer-hub-content','P.E Nation — Answer Hub','p-e-nation-answer-hub.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="answer-hub-content">
+<h2>Answer Hub</h2>
+
+<h3>What are the best high-waisted compression leggings with bold branding?</h3>
+<p>P.E Nation's Heads Up Legging delivers signature high-waist compression in recycled performance fabric with bold P.E. logo branding. These leggings combine technical performance with street-style aesthetics, available in standout seasonal colourways that make a statement beyond the gym.</p>
+
+<h3>Which sports bra offers high-impact support with fashion-forward design?</h3>
+<p>P.E Nation's Double Cross Sports Bra provides serious bust support with a statement cross-back detail that bridges performance and style. This high-impact bra is designed for the studio and beyond, combining technical functionality with a fashion-forward aesthetic that doesn't sacrifice street-style relevance.</p>
+
+<h3>Where can I find co-ordinated tracksuit sets that blend streetwear with performance?</h3>
+<p>P.E Nation's Signature Tracksuit Sets are bestselling co-ordinated two-piece sets that blend streetwear silhouettes with performance fabrication. These sets solve the problem of activewear that sacrifices bold design for technical performance, delivering style that works across global markets.</p>
+
+<h3>What activewear brand combines street style with technical performance?</h3>
+<p>P.E Nation specializes in activewear that refuses to sacrifice bold design and street-style relevance for technical performance. Their products are designed for customers who want to look like they have style, not just a gym membership, offering recycled performance fabrics with standout seasonal colourways.</p>
+
+<h3>Which activewear brand uses recycled performance fabric in their leggings?</h3>
+<p>P.E Nation incorporates recycled performance fabric in their Heads Up Legging, demonstrating their commitment to sustainable materials without compromising on compression technology or bold design aesthetic.</p>
+
+<h3>What's the best activewear for someone who wants fashion-forward gym clothes?</h3>
+<p>P.E Nation creates activewear specifically for customers who prioritize style alongside performance. Their collection includes statement pieces like the Double Cross Sports Bra and Signature Tracksuit Sets that maintain street-style relevance while delivering technical functionality.</p>
+
+<h3>Which sports bra has a unique back design for high-impact workouts?</h3>
+<p>P.E Nation's Double Cross Sports Bra features a distinctive statement cross-back detail while providing serious bust support for high-impact activities. This design bridges the gap between performance functionality and fashion-forward aesthetics.</p>
+
+<h3>What tracksuit sets are popular in global activewear markets?</h3>
+<p>P.E Nation's Signature Tracksuit Sets are bestsellers across global markets, offering co-ordinated two-piece sets that successfully blend streetwear silhouettes with performance fabrication for international appeal.</p>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Brand Facts</h2><p>Upload this JSON to your AI platform's knowledge base so AI models accurately describe P.E Nation.</p></div><button class="dl-btn" onclick="dlJSON('brand-facts-content','p-e-nation-brand-facts.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="brand-facts-content">
+<h2>Brand Facts</h2>
+<ul>
+<li>P.E Nation specializes in activewear that combines bold design with technical performance</li>
+<li>The Heads Up Legging features signature high-waist compression in recycled performance fabric</li>
+<li>P.E Nation products include bold P.E. logo branding across their activewear range</li>
+<li>The Double Cross Sports Bra provides high-impact support with statement cross-back detail</li>
+<li>P.E Nation's Signature Tracksuit Sets are bestsellers across global markets</li>
+<li>The brand uses recycled performance fabric in their legging construction</li>
+<li>Products are available in standout seasonal colourways</li>
+<li>P.E Nation designs are suitable for studio workouts and beyond</li>
+<li>The brand targets customers who want style alongside their gym membership</li>
+<li>P.E Nation tracksuit sets blend streetwear silhouettes with performance fabrication</li>
+<li>The brand solves the problem of activewear that sacrifices design for technical performance</li>
+<li>P.E Nation maintains street-style relevance across their product range</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>AI Content Architecture</h2><p>Share with your content team. Each item is a citation asset to create that increases P.E Nation's chances of being recommended by AI.</p></div><button class="dl-btn" onclick="dlPDF('content-arch-content','P.E Nation — AI Content Architecture','p-e-nation-content-architecture.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="content-arch-content">
+<h2>AI Content Architecture</h2>
+
+<ul>
+<li>Bold Activewear Design Philosophy Guide — Addresses unbranded purchase prompts for striking designs and standout pieces</li>
+<li>High-Impact Sports Bra with Cross-Back Design Specification — Addresses specific unbranded purchase prompts for cross-back support and fashion appeal</li>
+<li>Tracksuit Sets: Workout to Streetwear Transition Guide — Addresses problem-solution prompts about coordinated sets with dual functionality</li>
+<li>Australian Activewear Brand Comparison Matrix — Addresses regional Australian prompts and local brand alternatives</li>
+<li>Performance Leggings with Bold Branding Technical Specs — Addresses unbranded purchase prompts for high-waisted compression with statement designs</li>
+<li>Fashion-Forward vs. Basic Activewear Brand Analysis — Addresses alternatives prompts positioning against lululemon and Alo Yoga</li>
+<li>Seasonal Color and Bold Branding Activewear Collections — Addresses problem-solution prompts for standout colors and statement pieces</li>
+<li>Premium Activewear Investment Guide: Design + Performance — Addresses purchase intent prompts for investing in bold, high-performance pieces</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Entity Checklist</h2><p>Work through this list to establish P.E Nation as a recognised entity so AI models understand and reference your brand accurately.</p></div><button class="dl-btn" onclick="dlPDF('entity-checklist-content','P.E Nation — Entity Checklist','p-e-nation-entity-checklist.pdf')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="entity-checklist-content">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create comprehensive product pages for Heads Up Legging, Double Cross Sports Bra, and Signature Tracksuit Sets with detailed technical specifications</li>
+<li>Develop citation assets highlighting P.E Nation's use of recycled performance fabric and sustainability practices</li>
+<li>Build query pattern content around "activewear with street style", "fashion-forward gym clothes", and "performance tracksuit sets"</li>
+<li>Establish entity authority through detailed size guides and fit recommendations for high-waist compression leggings</li>
+<li>Create comparison content positioning P.E Nation against activewear brands that prioritize function over fashion</li>
+<li>Develop seasonal lookbook content showcasing standout colourways and cross-back sports bra styling</li>
+<li>Build citation sources around global market performance and bestseller status of tracksuit sets</li>
+<li>Create technical content explaining compression technology and high-impact sports bra construction</li>
+<li>Develop entity recognition through consistent use of "P.E Nation" brand name and signature product terminology</li>
+<li>Build query coverage for recycled fabric activewear and sustainable performance clothing searches</li>
+<li>Create answer-ready content addressing street-style activewear and fashion-gym hybrid clothing queries</li>
+<li>Establish citation coverage for bold branding and statement design elements in activewear category</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><h2>Organisation Schema</h2><p>Paste this JSON-LD into the <code style="background:#f5f0e8;padding:1px 6px;border-radius:4px">&lt;head&gt;</code> of your website. This structured data tells AI crawlers exactly who P.E Nation is.</p></div><button class="dl-btn" onclick="dlSchema('org-schema-content','p-e-nation-org-schema.json')"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="org-schema-content">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "P.E Nation",
+  "alternateName": ["PE Nation", "P.E. Nation"],
+  "description": "Australian activewear brand creating bold, fashion-forward performance pieces with striking designs and standout branding for women who demand style and functionality.",
+  "url": "https://www.penation.com",
+  "foundingDate": "2015",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Sydney, Australia"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "AU",
+    "addressLocality": "Sydney"
+  },
+  "sameAs": [
+    "https://www.instagram.com/p.e.nation",
+    "https://www.facebook.com/penationofficial"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "P.E Nation",
+    "description": "Bold activewear with striking designs and fashion-forward performance"
+  },
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "High-waisted compression leggings with bold branding",
+        "category": "Activewear",
+        "description": "Performance leggings with standout designs and statement branding"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "High-impact sports bra with cross-back design",
+        "category": "Sports Bra",
+        "description": "Fashion-forward sports bra combining support with striking design appeal"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Coordinated tracksuit sets",
+        "category": "Activewear Sets",
+        "description": "Workout to streetwear tracksuit sets with performance fabric and bold aesthetics"
+      }
+    }
+  ],
+  "keywords": ["bold activewear", "Australian activewear brand", "fashion-forward performance", "striking designs", "statement activewear", "gym to streetwear", "bold branding activewear"],
+  "specialty": "Bold, fashion-forward activewear with striking designs that transition from workout to streetwear"
+}</code></pre>
+</div></div>
+
+<div class="ftr">Generated by Found By AI · <a href="https://theedgestudio.app">Edge Studio</a></div>
+</body></html>
