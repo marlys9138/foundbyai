@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Found By AI — Citizen Wolf</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;
+  --brass-ghost:rgba(200,164,40,0.07);--brass-line:rgba(200,164,40,0.22);
+  --growth-dim:#7a9228;
+  --cream:#ede8d2;--cream-soft:#cac4a8;--muted:#96a070;--faint:#6a7850;
+  --score-color:#c0392b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f5f0e8;color:#1a1e10;font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7}
+a{color:var(--brass)}
+.hdr{background:var(--ink);color:var(--cream);border-bottom:2px solid var(--brass-dim)}
+.hdr-inner{max-width:960px;margin:0 auto;padding:36px 40px 32px}
+.hdr-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.hdr-wordmark{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--brass-hi);letter-spacing:.02em}
+.hdr-divider{display:inline-block;width:1px;height:16px;background:var(--border);margin:0 4px}
+.hdr-parent{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--growth-dim)}
+.hdr-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.hdr h1{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:var(--cream);line-height:1.05;letter-spacing:-.03em}
+.hdr-date{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-top:12px}
+.hero{background:#fff;padding:28px 36px;margin:24px auto;max-width:960px;display:flex;align-items:center;gap:28px;border:1px solid #e8e2d6;border-top:3px solid var(--brass)}
+.score-ring{width:100px;height:100px;background:var(--score-color);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.score-ring .n{font-family:'Fraunces',serif;font-size:2.2rem;color:#fff;font-weight:700;line-height:1}
+.score-ring .d{font-size:.7rem;color:rgba(255,255,255,.65);font-family:'IBM Plex Mono',monospace}
+.band{display:inline-block;background:var(--score-color);color:#fff;padding:3px 12px;font-size:.72rem;font-weight:600;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.hero-title{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:400;margin-bottom:6px;color:#1a1e10;letter-spacing:-.01em}
+.hero-sub{color:#6a7850;font-size:.88rem;line-height:1.6}
+.sec{background:#fff;padding:28px 36px;margin:14px auto;max-width:960px;border:1px solid #e8e2d6;border-top:2px solid var(--brass-dim)}
+.sec-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.sec-eyebrow::before{content:'';display:block;width:18px;height:1px;background:var(--brass);flex-shrink:0}
+.sec-h2{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:300;margin-bottom:8px;color:var(--ink);letter-spacing:-.02em}
+.sec-h2 em{color:var(--brass-hi);font-style:italic}
+.sec-body{color:#4a5038;font-size:.88rem;line-height:1.7;margin-bottom:12px}
+.sec h3{font-size:1rem;margin:20px 0 6px;color:#1a1e10;font-family:'DM Sans',sans-serif;font-weight:600}
+.sec h4{font-size:.95rem;margin:4px 0 8px;font-weight:600}
+.sec p{color:#4a5038;line-height:1.7;margin-bottom:10px}
+.sec ul{margin:8px 0 12px 20px;color:#4a5038;line-height:1.8}
+.eng-card{background:#f5f0e8;padding:20px 24px;text-align:center;flex:1;border:1px solid #e8e2d6}
+.eng-cards{display:flex;gap:10px;margin:16px 0}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:.73rem;letter-spacing:.1em;text-transform:uppercase;color:#6a7850;margin-bottom:6px}
+.eng-score{font-family:'Fraunces',serif;font-size:2.2rem;color:var(--brass);line-height:1}
+.eng-denom{font-size:.9rem;color:#96a070;margin-left:2px}
+.eng-sub{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:#96a070;margin-top:4px}
+.audit-table{width:100%;border-collapse:collapse;font-size:.87rem;margin-top:8px}
+.audit-table th{background:var(--ink);color:var(--cream);padding:10px 14px;text-align:left;font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.audit-table tr.pr:hover td{background:#fffdf8}
+.audit-table td{border-bottom:1px solid #f0ebe3;vertical-align:middle}
+.td-num{color:#96a070;font-size:.8rem;width:28px;padding:10px 8px;font-family:'IBM Plex Mono',monospace}
+.td-type{padding:10px 8px;width:120px}
+.td-q{padding:10px 14px;font-size:.87rem;color:#3a4030}
+.td-tick{text-align:center;padding:10px 8px;width:80px}
+.td-arrow{color:#bbb;width:20px;padding:10px 8px;font-size:.8rem;text-align:right}
+.badge{font-size:.68rem;background:var(--brass-ghost);border:1px solid var(--brass-line);padding:2px 8px;white-space:nowrap;color:var(--brass);font-family:'IBM Plex Mono',monospace;letter-spacing:.08em}
+.badge-dim{font-size:.68rem;background:#f5f5f5;border:1px solid #e8e0d5;padding:2px 8px;white-space:nowrap;color:#96a070;font-family:'IBM Plex Mono',monospace}
+.tick{padding:2px 10px;font-size:.73rem;font-family:'IBM Plex Mono',monospace}
+.tick-yes{background:#2d6a4f;color:#fff}
+.tick-no{background:#e8e0d5;color:#96a070}
+.branded-divider{background:var(--brass-ghost);border:1px solid var(--brass-line);padding:12px 16px;margin:24px 0 8px;display:flex;align-items:flex-start;gap:12px}
+.branded-divider-title{font-size:.82rem;font-weight:600;color:var(--brass);font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.branded-divider-sub{font-size:.78rem;color:#96a070;margin-top:2px}
+.dl-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f0ebe3;flex-wrap:wrap}
+.dl-bar .sec-eyebrow{margin-bottom:8px}
+.dl-bar h2{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:300;margin-bottom:4px;letter-spacing:-.02em;color:var(--ink)}
+.dl-bar p{font-size:.85rem;color:#6a7850;margin:0;line-height:1.5;max-width:600px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--cream);padding:9px 18px;font-size:.72rem;font-weight:500;cursor:pointer;border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.dl-btn:hover{background:#191e0e}
+pre{background:#f5f5f2;padding:16px;overflow-x:auto;font-size:.82rem;margin-top:8px;line-height:1.5}
+.action{border:1px solid #e8e2d6;border-left:3px solid var(--brass);padding:16px 20px;margin:10px 0}
+.priority{font-size:.68rem;font-weight:700;color:var(--brass);letter-spacing:.12em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.meta{font-size:.78rem;color:#96a070;margin-top:6px}
+.resp-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.claude-label{color:var(--brass)}
+.gpt-label{color:#2563eb}
+.resp-body{font-size:.83rem;color:#444;line-height:1.65;white-space:pre-wrap}
+.bench-row{display:grid;grid-template-columns:180px 1fr 56px 160px;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f0e8}
+.bench-row:last-of-type{border-bottom:none}
+.brand-row{padding:12px 0 10px}
+.bench-label{font-size:.88rem;color:#4a5038;font-weight:400}
+.brand-name-label{font-weight:600;color:var(--ink);font-family:'Fraunces',serif;font-size:.95rem}
+.bench-you{font-size:.72rem;color:var(--brass);font-weight:600;margin-left:4px;font-family:'IBM Plex Mono',monospace}
+.bench-bar-wrap{background:#e8e2d6;height:8px;overflow:hidden}
+.bench-bar{background:#c8bba8;height:8px}
+.brand-bar{background:var(--score-color)}
+.bench-score{font-family:'Fraunces',serif;font-size:1.1rem;color:#3a4030;text-align:right}
+.bench-denom{font-size:.75rem;color:#96a070;margin-left:2px}
+.bench-note{font-size:.73rem;color:#96a070;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
+.gap-statement{margin-top:16px;padding:14px 18px;background:var(--brass-ghost);border:1px solid var(--brass-line);font-size:.88rem;color:var(--brass-dim);font-weight:500;line-height:1.6}
+.quick-wins .action{border-color:#c3ddc3;background:#fafdf8;border-left:3px solid #2d6a4f}
+.quick-wins .priority{color:#2d6a4f}
+.expand-hint{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;color:#96a070;background:#f5f0e8;padding:5px 12px;margin-bottom:12px;border:1px solid #e8e2d6;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.ftr{background:var(--ink);padding:32px 40px;margin-top:32px}
+.ftr-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.ftr-brand{display:flex;align-items:center;gap:10px}
+.ftr-wordmark{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.ftr-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-top:3px}
+.ftr-right{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--faint);text-align:right;line-height:1.9}
+.ftr a{color:var(--brass-dim);text-decoration:none}
+</style>
+<script>
+function tgl(id){
+  const r=document.getElementById(id);
+  if(!r)return;
+  const open=r.style.display!=='none'&&r.style.display!=='';
+  r.style.display=open?'none':'table-row';
+  const prev=r.previousElementSibling;
+  if(prev){const a=prev.querySelector('.td-arrow');if(a)a.textContent=open?'▾':'▴';}
+}
+function dlBlob(content,filename,type){
+  const blob=new Blob([content],{type:type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+function dlJSON(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const items=Array.from(el.querySelectorAll('li')).map(li=>li.innerText.trim()).filter(Boolean);
+  dlBlob(JSON.stringify(items,null,2),filename,'application/json');
+}
+function dlSchema(contentId,filename){
+  const el=document.getElementById(contentId);
+  if(!el)return;
+  const pre=el.querySelector('pre,code');
+  dlBlob(pre?pre.innerText:el.innerText,filename,'application/json');
+}
+function dlPDF(contentId,title,filename){
+  const el=document.getElementById(contentId);
+  if(!el||typeof html2pdf==='undefined'){alert('PDF library not loaded yet — try again in a moment.');return;}
+  const wrapper=document.createElement('div');
+  wrapper.style.cssText='font-family:Georgia,serif;color:#2c2c2c;line-height:1.7;font-size:13px;padding:8px';
+  const heading=document.createElement('h1');
+  heading.style.cssText='font-size:20px;margin-bottom:4px;color:#0b0e07;font-family:Georgia,serif';
+  heading.textContent=title;
+  const sub=document.createElement('p');
+  sub.style.cssText='font-size:10px;color:#96a070;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;font-family:monospace;letter-spacing:.08em;text-transform:uppercase';
+  sub.textContent='Found By AI · by Edge Studio · foundbyai.com.au';
+  wrapper.appendChild(heading);
+  wrapper.appendChild(sub);
+  const clone=el.cloneNode(true);
+  clone.querySelectorAll('h2').forEach(h=>{h.style.cssText='font-size:16px;margin:16px 0 8px;color:#0b0e07;font-family:Georgia,serif';});
+  clone.querySelectorAll('h3').forEach(h=>{h.style.cssText='font-size:13px;margin:14px 0 6px;font-weight:600';});
+  clone.querySelectorAll('h4').forEach(h=>{h.style.cssText='font-size:12px;margin:10px 0 4px;font-weight:600';});
+  clone.querySelectorAll('p').forEach(p=>{p.style.cssText='margin-bottom:8px;color:#444;font-size:13px';});
+  clone.querySelectorAll('ul').forEach(u=>{u.style.cssText='margin:6px 0 10px 18px';});
+  clone.querySelectorAll('li').forEach(l=>{l.style.cssText='margin-bottom:5px;color:#444;font-size:13px';});
+  clone.querySelectorAll('.action').forEach(a=>{a.style.cssText='border:1px solid #e0e0e0;padding:12px 14px;margin:8px 0;page-break-inside:avoid;border-left:3px solid #c8a428';});
+  clone.querySelectorAll('.priority').forEach(p=>{p.style.cssText='font-size:10px;font-weight:700;color:#c8a428;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;font-family:monospace';});
+  clone.querySelectorAll('.meta').forEach(m=>{m.style.cssText='font-size:10px;color:#96a070;margin-top:4px';});
+  wrapper.appendChild(clone);
+  html2pdf().set({
+    margin:[12,14,12,14],
+    filename:filename,
+    image:{type:'jpeg',quality:0.97},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(wrapper).save();
+}
+</script>
+</head>
+<body>
+<div class="hdr"><div class="hdr-inner">
+  <div class="hdr-brand">
+    <svg width="10" height="22" viewBox="0 0 40 90" fill="none" style="flex-shrink:0"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#c8a428"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#c8a428"/></svg>
+    <span class="hdr-wordmark">Found By AI</span>
+    <span class="hdr-divider"></span>
+    <span class="hdr-parent">by Edge Studio</span>
+  </div>
+  <div class="hdr-eyebrow">AI Visibility Audit — Confidential</div>
+  <h1>Citizen Wolf</h1>
+  <div class="hdr-date">11 March 2026 · foundbyai.com.au</div>
+</div></div>
+
+<div class="hero">
+  <div class="score-ring"><span class="n">5</span><span class="d">/20</span></div>
+  <div>
+    <div class="band">C — Weak</div>
+    <div class="hero-title">AI Visibility Score</div>
+    <div class="hero-sub">Tested across 30 prompts on Claude and ChatGPT.<br>How often Citizen Wolf appears when buyers ask AI for recommendations.</div>
+  </div>
+</div>
+
+<div class="sec"><div class="sec-eyebrow">Competitor Benchmarking</div><h2 class="sec-h2">Citizen Wolf vs the field</h2><p class="sec-body">Based on the same 19 organic prompts used in your audit.</p><div class="bench-row brand-row"><div class="bench-label brand-name-label">Citizen Wolf <span class="bench-you">(you)</span></div><div class="bench-bar-wrap"><div class="bench-bar brand-bar" style="width:25%"></div></div><div class="bench-score">5<span class="bench-denom">/20</span></div><div class="bench-note">mentioned by AI</div></div><div class="bench-row"><div class="bench-label">Patagonia</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:50%"></div></div><div class="bench-score">10<span class="bench-denom">/20</span></div><div class="bench-note">mentioned by AI</div></div><div class="bench-row"><div class="bench-label">Nudie Jeans</div><div class="bench-bar-wrap"><div class="bench-bar" style="width:15%"></div></div><div class="bench-score">3<span class="bench-denom">/20</span></div><div class="bench-note">mentioned by AI</div></div><div class="gap-statement">Your closest competitor appears in 5 more AI responses than Citizen Wolf. That's the visibility gap Found By AI is designed to close.</div></div>
+
+<div class="sec">
+  <div class="sec-eyebrow">Prompt Audit</div>
+  <h2 class="sec-h2">Every prompt. Every response.</h2>
+  <span class="expand-hint">Click any row to expand AI responses</span>
+  <div class="eng-cards"><div class="eng-card"><div class="eng-label">Claude</div><div class="eng-score">0<span class="eng-denom">/19</span></div><div class="eng-sub">organic mentions</div></div><div class="eng-card"><div class="eng-label">ChatGPT</div><div class="eng-score">0<span class="eng-denom">/19</span></div><div class="eng-sub">organic mentions</div></div></div>
+  <table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r0')" style="cursor:pointer">
+    <td class="td-num">1</td>
+    <td class="td-type"><span class="badge">custom fit</span></td>
+    <td class="td-q">Best made-to-measure t-shirt brand that uses 3D body scanning for perfect fit?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r0" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best 3D-Scanned Custom T-Shirt: **Fit3D/Underworks**
+
+However, I should be honest: **there's no dominant "best" brand** doing this at scale right now. The space is still emerging.
+
+## Most Promising Options:
+
+**1. Fit3D (via partners)**
+- Uses 3D body scanning technology
+- Partners with retailers rather than direct-to-consumer
+- High accuracy but limited direct availability
+
+**2. Custom Ink / Printful (basic customization)**
+- Offer fit options but not true 3D scanning
+- More accessible, less precise
+
+**3. Atelier CinqMars**
+- Montreal-based, uses measurements for custom fits
+- Not 3D scanni…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the best brands that offers made-to-measure t-shirts using 3D body scanning technology is **Uniqlo** with their **Uniqlo Custom** service. Another noteworthy option is **TeeSpring**, which provides a tailored experience through its 3D fit tool. **Son of a Tailor** is also a great choice, specializing in custom-fit t-shirts based on 3D body measurements. These brands ensure a superior fit by leveraging advanced scanning technology.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r1')" style="cursor:pointer">
+    <td class="td-num">2</td>
+    <td class="td-type"><span class="badge">organic tee</span></td>
+    <td class="td-q">Which brand makes the best GOTS certified organic cotton t-shirts in Australia?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r1" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best GOTS Certified Organic Cotton T-Shirts in Australia
+
+**Outland Denim** is probably your best mainstream option. They're Australian-made, GOTS certified, and produce high-quality basics with transparent supply chains.
+
+**Other solid Australian brands:**
+
+- **Reformation** (US-based but widely available in Australia) - excellent quality, GOTS certified, though pricier
+- **Patagonia** - reliable GOTS certification, good durability, available at major Australian retailers
+- **Organic Basics** (Denmark-based) - minimalist designs, GOTS certified, sold in Australia
+- **Earth Positive** (UK) -…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">In Australia, one of the best brands for GOTS certified organic cotton t-shirts is **Nico**. They offer a range of stylish and sustainable t-shirts made from organic cotton. Another notable brand is **The Standard Store**, which also provides GOTS certified options. If you’re looking for basics, **Assembly Label** has a selection of organic cotton tees that meet GOTS certification as well. These brands emphasize sustainability and quality in their products.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r2')" style="cursor:pointer">
+    <td class="td-num">3</td>
+    <td class="td-type"><span class="badge">zero waste</span></td>
+    <td class="td-q">Best zero waste clothing brand that does custom cutting to eliminate fabric waste?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r2" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not aware of a major clothing brand that specializes in both zero-waste custom cutting as a core business model. However, here are your best options:
+
+**Closest to what you're describing:**
+
+1. **Reformation** - Uses deadstock fabrics and has made significant waste reduction commitments, though they don't offer custom cutting services specifically for waste reduction.
+
+2. **Patagonia** - Offers some made-to-order options and emphasizes fabric efficiency, but not custom cutting to zero waste.
+
+**Better alternatives for true zero-waste custom:**
+
+- **Local tailors/seamstresses** - Many indep…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the best zero waste clothing brands that offers custom cutting to minimize fabric waste is **Frank And Oak**. They focus on sustainable materials and have a made-to-order system that reduces excess inventory.
+
+Another notable mention is **SIR the Label**, which also incorporates custom sizing and made-to-order processes to ensure that fabric waste is minimized.
+
+You might also want to look into **Reformation**, as they are committed to sustainable practices and offer custom sizing options, emphasizing the reduction of waste in their production process.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r3')" style="cursor:pointer">
+    <td class="td-num">4</td>
+    <td class="td-type"><span class="badge">take-back program</span></td>
+    <td class="td-q">Which clothing brands offer garment recycling programs where you get store credit for returns?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r3" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Clothing Brands with Garment Recycling &amp; Store Credit
+
+## Best Options:
+
+**Patagonia**
+- Take Back program: Mail in worn Patagonia gear for recycling
+- Get store credit (typically 5-15% of original price)
+- Free shipping both ways
+- Also repairs items to extend life
+
+**Lululemon**
+- "Like New" resale program
+- Trade in gently used items for store credit
+- In-store or mail-in options
+- Credit value varies by condition
+
+**Reformation**
+- Mail-in textile recycling program
+- $20 store credit per box (encourages larger hauls)
+- Partners with textile recycler
+
+**The North Face**
+- Accepts worn gea…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Several clothing brands offer garment recycling programs that provide store credit for returns. Here are some specific brands:
+
+1. **H&amp;M**: Their Garment Collecting program allows you to return old clothes for recycling and receive a store voucher.
+
+2. **Levi's**: Through their WellThread program, Levi's accepts old jeans for recycling, and you may receive store credit.
+
+3. **Madewell**: They have a program where you can return old jeans (any brand) for recycling, and you receive a $20 credit towards a new pair.
+
+4. **Patagonia**: They offer a Worn Wear program that allows you to trade in used…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r4')" style="cursor:pointer">
+    <td class="td-num">5</td>
+    <td class="td-type"><span class="badge">ethical manufacturing</span></td>
+    <td class="td-q">Best ethically manufactured t-shirt brand made locally in Sydney Australia?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r4" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Ethical Sydney-Made T-Shirt Brands
+
+**Kowtow** is your strongest option:
+- Made in Sydney (manufacturing facility in Marrickville)
+- Certified B Corp with transparent supply chain
+- Uses organic and sustainable fabrics
+- Fair wages and working conditions
+- Minimal waste production
+- Price point: $80-120 AUD per shirt
+
+**Other solid local alternatives:**
+
+**Nau Collective**
+- Sydney-based
+- Focuses on slow fashion and quality basics
+- Smaller production runs
+- Transparent about their manufacturing
+- Around $70-100 per shirt
+
+**Common Need**
+- Australian-owned, designed in Sydney
+- Uses s…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the best ethically manufactured t-shirt brands made locally in Sydney, Australia is **Native State**. They focus on sustainability and ethical production practices, using organic materials and promoting local craftsmanship. Another great option is **The T-Shirt Company**, which emphasizes local manufacturing and ethical standards. Both brands offer high-quality, ethically made t-shirts that support Australian workers.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r5')" style="cursor:pointer">
+    <td class="td-num">6</td>
+    <td class="td-type"><span class="badge">extended colors</span></td>
+    <td class="td-q">Which organic cotton t-shirt brand has the biggest color range available?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r5" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Organic Cotton T-Shirt Color Range
+
+**Colorful Brands:**
+
+**Patagonia** has an exceptionally wide seasonal color palette—they typically offer 15-20+ colors at any given time across their organic cotton basics line. Their colors rotate seasonally, so availability varies.
+
+**Everlane** offers around 12-15 colors in their Organic Cotton Crew T-Shirt, with relatively consistent availability and straightforward product pages showing all options.
+
+**Alternative Apparel** frequently stocks 15+ colors in their organic cotton tees, though selection can be inconsistent depending on the specific style.…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the brands known for offering a wide range of colors in organic cotton t-shirts is **Bella+Canvas**. They provide a variety of styles and an extensive color selection for their organic cotton t-shirts. Another excellent option is **Gildan**, specifically their **Gildan Softstyle** line, which also comes in numerous colors while using organic cotton. 
+
+If you’re looking for eco-friendly choices, check out **Patagonia**, which also offers a range of colors in their organic cotton t-shirts.
+
+For the most extensive variety, Bella+Canvas is often your best bet.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r6')" style="cursor:pointer">
+    <td class="td-num">7</td>
+    <td class="td-type"><span class="badge">poor fit</span></td>
+    <td class="td-q">Nothing off the rack fits me properly - which brand makes custom-fit t-shirts using my exact measurements?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r6" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">A few solid options for custom t-shirts:
+
+**Best overall: Proper Cloth**
+- Originally known for shirts, they've expanded to t-shirts
+- You provide detailed measurements, they cut to order
+- Higher price point ($60-80+ per shirt) but excellent fit
+- Quality fabrics and good customization options
+
+**More affordable: Bonobos**
+- Offers custom fit through their website
+- You input measurements; they adjust their standard patterns
+- Around $40-60 per shirt
+- Good quality basics
+
+**Budget-friendly: CustomInk**
+- Lower minimum order (single shirts possible)
+- Basic customization of fit
+- $20-40 range…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for custom-fit t-shirts based on your exact measurements, consider the following brands:
+
+1. **Indochino** - Primarily known for suits, they also offer custom shirts, including t-shirts, where you can input your measurements.
+
+2. **Tailor Store** - This brand specializes in custom clothing and allows you to input your measurements specifically for t-shirts.
+
+3. **Proper Cloth** - Known for custom dress shirts, they also offer t-shirts that can be tailored to your specific measurements.
+
+4. **TeeSpring (now known as Spring)** - While primarily a print-on-demand service, you ca…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r7')" style="cursor:pointer">
+    <td class="td-num">8</td>
+    <td class="td-type"><span class="badge">fast fashion</span></td>
+    <td class="td-q">I'm sick of buying cheap t-shirts that fall apart - what sustainable brand makes tees designed to last for years?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r7" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">**Patagonia** is the top choice here. Their organic cotton t-shirts run $50-65, use fair-trade certified production, and are genuinely built tough. They back this up with actual warranty support and repair services.
+
+Other solid options:
+
+**Everlane** ($32-45) - transparent pricing, ethical factories, basic tees that hold up well. Good middle ground between price and durability.
+
+**Organic Basics** ($40-60) - Scandinavian minimalism, GOTS-certified organic cotton, excellent construction. Their Essential Tee is reliably long-lasting.
+
+**Pact** ($28-38) - Fair trade certified, organic cotton. Bu…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For durable, sustainable t-shirts, consider the following brands:
+
+1. **Everlane** - Their "Organic Cotton Crew" t-shirts are made from high-quality, soft, and durable organic cotton. They focus on transparency in their supply chain.
+
+2. **Patagonia** - The "Capilene Cool Daily" t-shirt is designed for longevity and performance, made from recycled materials and Fair Trade Certified.
+
+3. **Eileen Fisher** - Their tees are made from organic cotton and often feature timeless designs that are made to last, along with a commitment to sustainability.
+
+4. **Tentree** - The tees are made from sustaina…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r8')" style="cursor:pointer">
+    <td class="td-num">9</td>
+    <td class="td-type"><span class="badge">clothing waste</span></td>
+    <td class="td-q">I feel guilty about fashion waste - which brand has a circular system where I can return old clothes for recycling?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r8" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Brands with Strong Circular Fashion Programs
+
+**Patagonia** is your best bet here. Their Worn Wear program lets you return worn Patagonia gear for repair or recycling. They've been genuinely committed to this for years—not just marketing.
+
+**H&amp;M** has a garment collection program in most stores where you can drop off old clothes (any brand) for recycling. It's accessible, though critics note the program's actual environmental impact is debated.
+
+**Reformation** accepts their own worn items for recycling and has transparency about their sustainability efforts.
+
+**Everlane** accepts returns of…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Several brands have implemented circular systems that allow you to return old clothes for recycling. Here are a few notable ones:
+
+1. **Patagonia** - They have a program called Worn Wear, where you can send back used Patagonia clothing for resale or recycling.
+
+2. **H&amp;M** - Their Garment Collecting initiative allows customers to drop off unwanted clothes from any brand at H&amp;M stores for recycling.
+
+3. **Eileen Fisher** - They run the Renew program, which takes back used Eileen Fisher clothing for refurbishment or recycling.
+
+4. **Levi's** - Through their Buy Back program, you can return used L…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r9')" style="cursor:pointer">
+    <td class="td-num">10</td>
+    <td class="td-type"><span class="badge">perfect measurements</span></td>
+    <td class="td-q">I have an unusual body shape and standard sizes never fit - what brand uses 3D algorithms for made-to-measure clothing?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r9" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># 3D Made-to-Measure Clothing Brands
+
+**Fit3D** is the most notable company using 3D body scanning technology for custom clothing, though they primarily work B2B with retailers rather than direct-to-consumer.
+
+For direct consumer options using algorithmic fitting:
+
+**Stitch Fix** - Uses algorithms to analyze your preferences, fit data, and body type, though it's not fully 3D-generated custom pieces.
+
+**Indochino** - Uses body measurements (including optional 3D fitting through select locations) to create made-to-measure suits and dress shirts. You can upload photos for fit analysis.
+
+**Proper …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One brand that uses 3D algorithms for made-to-measure clothing is **MTailor**. They offer a smartphone app that allows you to take your own measurements, which are then used to create custom-fit clothing. Another option is **Unmade**, which provides a platform for personalized knitwear using 3D technology. Additionally, **Naked &amp; Famous Denim** offers custom denim options that utilize body measurements to tailor the fit to your unique shape.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r10')" style="cursor:pointer">
+    <td class="td-num">11</td>
+    <td class="td-type"><span class="badge">ready buy</span></td>
+    <td class="td-q">I want to buy a high-quality organic cotton t-shirt made ethically in Australia - what brand should I choose?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r10" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Options for Ethically Made Australian Organic Cotton T-Shirts
+
+**Top recommendation: Organic Basics** (though Danish-owned, they have strong ethical credentials and use organic cotton)
+
+**For Australian-made specifically:**
+
+1. **Boody** - Brisbane-based, makes organic bamboo and cotton basics. Their t-shirts are comfortable and they're certified B Corp. Good ethical standards though slightly pricier ($40-60 AUD).
+
+2. **Ascolour** - Melbourne-based basics brand. They offer organic cotton options and manufacture some products in Australia (though not all). More affordable ($25-45 AUD) bu…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You should consider the brand **Bamboo Body**. They offer a range of high-quality organic cotton t-shirts made ethically in Australia. Another great option is **Etiko**, which specializes in ethically made apparel, including organic cotton t-shirts. Both brands prioritize sustainability and ethical manufacturing practices.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r11')" style="cursor:pointer">
+    <td class="td-num">12</td>
+    <td class="td-type"><span class="badge">custom fit</span></td>
+    <td class="td-q">I'm ready to invest in a perfectly fitted t-shirt using my exact measurements - recommend the best brand?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r11" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Custom T-Shirt Brands
+
+**Top tier for perfect fit:**
+
+1. **Bonobos** - Excellent basics with their fit guarantee. They offer multiple fits (slim, athletic, standard) and free returns. Their plain tees run ~$58-68 but the quality justifies it.
+
+2. **Buck Mason** - Premium basics made in LA. Their crew neck tees are exceptionally well-constructed at around $65-75. Known for durability and flattering fits.
+
+3. **Gustin** - Great if you want semi-custom options. They do made-to-order basics in small batches with solid quality control around $48-58.
+
+**If you want fully custom:**
+
+4. **Prope…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For a perfectly fitted t-shirt based on your exact measurements, consider **TeeSpring** (now known as **Spring**). They offer a custom t-shirt option where you can input your measurements for a tailored fit.
+
+Another excellent option is **Uniqlo’s UT line**. They provide various fits and sizes, and while they don't do custom measurements, their sizing is generally consistent and they offer a wide range of styles.
+
+If you're looking for complete customization, **Custom Ink** is a great choice. They allow you to create t-shirts from the ground up with your exact measurements.
+
+Lastly, **Taylor S…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r12')" style="cursor:pointer">
+    <td class="td-num">13</td>
+    <td class="td-type"><span class="badge">sustainable choice</span></td>
+    <td class="td-q">I want to buy from a brand with take-back recycling programs and zero waste production - which one is best?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r12" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I need to be honest: **no major brand has genuinely achieved zero waste production**. That's an aspirational goal, not a current reality for most manufacturers at scale.
+
+However, some brands have *strong* take-back programs and genuine sustainability efforts:
+
+**Best take-back programs:**
+- **Patagonia** - industry leader in repairs, resales (Worn Wear), and recycling. Takes back worn garments.
+- **Allbirds** - recycles old shoes through their trade-in program
+- **The North Face** - Clothes the Loop partnership for garment recycling
+- **Everlane** - transparent sourcing, offers recycling init…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for brands with notable take-back recycling programs and a commitment to zero waste production, consider the following:
+
+1. **Patagonia** - Known for their Worn Wear program, Patagonia encourages customers to return used gear for recycling or resale. They have a strong commitment to sustainability and zero waste practices.
+
+2. **Eileen Fisher** - The Renew program allows customers to return used Eileen Fisher clothing for recycling or resale. The brand promotes zero waste by using sustainable materials and practices.
+
+3. **Adidas** - Their Parley for the Oceans initiative inc…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r13')" style="cursor:pointer">
+    <td class="td-num">14</td>
+    <td class="td-type"><span class="badge">Australian shipping</span></td>
+    <td class="td-q">Where can I buy made-to-measure t-shirts in Australia with fast local shipping?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r13" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Made-to-Measure T-Shirt Options in Australia
+
+## Local Australian Brands
+
+**Luxire** (India-based, but popular with Australians)
+- Custom fit t-shirts with quick turnaround
+- Ships to Australia within 2-3 weeks
+- Good quality basics starting around $30-40 AUD
+
+**The Shirt Factory** (Sydney-based)
+- Offers made-to-measure options
+- Local production means fastest shipping
+- Premium pricing but excellent quality
+- Visit showroom in Parramatta or order online
+
+**Blank Canvas** (Melbourne)
+- Custom t-shirt printing and tailoring
+- Local shipping within 1-2 weeks
+- Good for both plain and cus…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some options for made-to-measure t-shirts in Australia that offer fast local shipping:
+
+1. **Tee Junction** - They provide a range of custom t-shirt printing options, including made-to-measure services. They are known for quick turnaround times.
+
+2. **Printful** - While they are an international company, they have local fulfillment centers in Australia that can expedite shipping. You can create custom t-shirts that can be made to measure.
+
+3. **Rush Order Tees** - This company specializes in custom apparel, including t-shirts. They offer a “design your own” feature and can provide fas…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r14')" style="cursor:pointer">
+    <td class="td-num">15</td>
+    <td class="td-type"><span class="badge">Sydney made</span></td>
+    <td class="td-q">What Australian clothing brands manufacture their organic cotton t-shirts locally in Sydney?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r14" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Australian Organic Cotton T-Shirt Brands with Local Sydney Manufacturing
+
+I need to be honest: **I don't have current, verified information about which Australian organic cotton t-shirt brands are actively manufacturing in Sydney right now.** This is a specific detail that changes frequently as companies shift production locations.
+
+## What I'd recommend instead:
+
+1. **Contact brands directly** - These Australian brands claim organic cotton credentials, but verify current manufacturing with them:
+   - Organic Basics (though primarily EU-based)
+   - Auskin (though primarily focused on sheepsk…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are a few Australian clothing brands that manufacture their organic cotton t-shirts locally in Sydney:
+
+1. **Nakedvice** - Known for their sustainable practices, Nakedvice offers a range of organic cotton clothing produced in Australia, including t-shirts.
+
+2. **Allkind** - Allkind focuses on organic materials and sustainable manufacturing processes, with many of their products, including t-shirts, being made in Sydney.
+
+3. **The Physical Network** - This brand features locally made organic cotton essentials, including t-shirts, emphasizing ethical production.
+
+4. **Mottainai** - This bra…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r15')" style="cursor:pointer">
+    <td class="td-num">16</td>
+    <td class="td-type"><span class="badge">local sustainable</span></td>
+    <td class="td-q">Best Australian sustainable clothing brand that offers garment take-back recycling programs?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r15" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Worn &amp; Wanted
+
+**Worn &amp; Wanted** is your best bet for an Australian sustainable brand with a robust take-back program.
+
+They operate a "Reworn" recycling scheme where customers can return worn garments (theirs or from other brands) for recycling. The company:
+- Processes returned clothing into new fabric or donates wearable items
+- Offers in-store drop-off at their Melbourne locations
+- Provides prepaid postage options for remote customers
+- Makes most garments from organic cotton and deadstock fabrics
+
+## Close alternatives:
+
+**Reformation** (US-based but ships to Australia) has a strong ta…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">One of the best Australian sustainable clothing brands that offers a garment take-back recycling program is **Patagonia**. While originally an American brand, they have a strong presence in Australia and are known for their commitment to sustainability and environmental responsibility. They offer a "Worn Wear" program where customers can return used Patagonia clothing for recycling or resale.
+
+Another excellent option is **Nudie Jeans**, which is a Swedish brand with a strong commitment to sustainability and has an Australian presence. They offer free repairs, a take-back program, and recycle …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r16')" style="cursor:pointer">
+    <td class="td-num">17</td>
+    <td class="td-type"><span class="badge">like Patagonia</span></td>
+    <td class="td-q">Brands like Patagonia but with custom-fit t-shirts made to my exact measurements?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r16" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Custom-Fit T-Shirt Brands (Patagonia-Style Values)
+
+Here are your best options:
+
+## Direct-to-Consumer Custom Fit
+**Bonobos** - Their "Fit Shops" offer made-to-measure basics, including t-shirts. They're sustainability-focused and use responsible materials. Price: $75-95 per shirt.
+
+**Proper Cloth** - Primarily known for dress shirts, but they do custom t-shirts with full measurement customization. High quality, good environmental practices. ~$65-85.
+
+## Made-to-Measure Basics
+**Taylor Stitch** - California-based, strong sustainability commitment. They offer custom-fit basics and tees throug…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">If you're looking for brands that offer custom-fit t-shirts similar to Patagonia, consider the following options:
+
+1. **TeeSpring (now Spring)** - While they primarily focus on custom designs, you can create shirts that fit your specifications. They offer a variety of materials and styles.
+
+2. **Hanes Custom** - Hanes offers custom t-shirts that can fit to your measurements. You can also choose the type of fabric and color.
+
+3. **Customized Girl** - This platform allows you to design your own t-shirts, where you can specify the fit through the selection of sizes and styles.
+
+4. **Zazzle** - Za…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r17')" style="cursor:pointer">
+    <td class="td-num">18</td>
+    <td class="td-type"><span class="badge">Nudie alternative</span></td>
+    <td class="td-q">Best alternative to Nudie Jeans for ethically made organic cotton t-shirts in Australia?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r17" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Best Organic Cotton T-Shirt Alternatives to Nudie Jeans (Australia)
+
+## Top Recommendations
+
+**Patagonia**
+- Organic cotton basics with strong sustainability credentials
+- Available at major Australian retailers (Rebel, Kathmandu)
+- Excellent durability and repair program
+- Premium pricing but justifiable
+
+**Organic Basics**
+- Minimalist, high-quality organic cotton tees
+- Scandinavian brand with strong ethical standards
+- Ships to Australia; good online availability
+- Mid-range pricing
+
+**Ten Thousand Villages**
+- Fair trade certified basics
+- Specifically supports artisan communities
+- Ava…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">For ethically made organic cotton t-shirts in Australia, you might consider the following brands as alternatives to Nudie Jeans:
+
+1. **Eco Tee** - They offer a range of organic cotton t-shirts that are sustainably sourced and ethically produced.
+
+2. **Mr. Simple** - This brand focuses on sustainable practices and offers a variety of organic cotton tees.
+
+3. **Ripe Maternity** - Known for providing sustainably made and ethically sourced clothing, they have a good selection of organic cotton options.
+
+4. **The Olive Branch** - Specializes in organic cotton tees that are ethically produced and en…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r18')" style="cursor:pointer">
+    <td class="td-num">19</td>
+    <td class="td-type"><span class="badge">Nobody Denim</span></td>
+    <td class="td-q">Brands similar to Nobody Denim but with zero waste production and take-back programs?</td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-tick"><span class="tick tick-no">–</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r18" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Zero-Waste Denim Alternatives to Nobody Denim
+
+Here are brands matching that ethical profile:
+
+## Best Direct Alternatives
+
+**Reformation**
+- Strong take-back program (ReNew)
+- Transparent production practices
+- Premium denim with circular design focus
+- Similar aesthetic to Nobody Denim
+
+**Everlane**
+- "Choose What You Pay" transparency model
+- Denim recycling initiative
+- Factory-direct pricing
+- Good mid-range quality
+
+**Patagonia Worn Wear**
+- Legendary take-back and repair program
+- Used/resold denim reduces waste
+- Lifetime warranty encourages keeping jeans
+- Premium pricing but except…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Here are some brands similar to Nobody Denim, focusing on zero waste production and offering take-back programs:
+
+1. **Reformation** - Known for stylish, sustainable clothing, Reformation incorporates eco-friendly practices and has a take-back program through its “RefRecycling” program for recycling old clothes.
+
+2. **Everlane** - While not strictly zero waste, Everlane is committed to transparency and ethical production. They offer a "Renew" program, where customers can send back their old clothes for recycling.
+
+3. **Nudie Jeans** - This brand focuses on organic cotton denim and has a "Repai…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+  <div class="branded-divider"><div><div class="branded-divider-title">Prompts naming Citizen Wolf directly</div><div class="branded-divider-sub">These prompts reference Citizen Wolf by name — not included in the organic score above.</div></div></div><table class="audit-table"><thead><tr><th style="width:28px">#</th><th style="width:120px">Type</th><th>Prompt</th><th style="width:80px;text-align:center">Claude</th><th style="width:80px;text-align:center">ChatGPT</th><th style="width:24px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r19')" style="cursor:pointer">
+    <td class="td-num">20</td>
+    <td class="td-type"><span class="badge">vs Patagonia</span></td>
+    <td class="td-q">Citizen Wolf vs Patagonia - which is better for sustainable organic cotton t-shirts?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r19" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body"># Patagonia wins here, clearly.
+
+**Patagonia's advantages:**
+- **Certified organic cotton** across their entire line (GOTS certified)
+- **Transparent supply chain** — they publish detailed sustainability reports and factory lists
+- **Fair labor practices** — rigorous auditing, higher wages than industry standard
+- **Longevity** — built to last years, reducing waste despite higher upfront cost
+- **Real innovation** — invested heavily in sustainable dyeing, water reduction
+
+**Citizen Wolf's approach:**
+- Uses organic cotton but less transparent about sourcing details
+- Smaller scale operation (w…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Both Citizen Wolf and Patagonia are known for their commitment to sustainability and offer organic cotton t-shirts, but they have different focuses and strengths.
+
+**Citizen Wolf:**
+- **Product**: Custom fit t-shirts made from organic cotton.
+- **Sustainability**: They utilize sustainable practices, including a zero-waste approach and ethical production. They also offer a made-to-order service to minimize waste.
+- **Fit**: Offers a personalized fit, which can be appealing for those looking for tailored clothing.
+
+**Patagonia:**
+- **Product**: A wide range of organic cotton t-shirts in various …</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r20')" style="cursor:pointer">
+    <td class="td-num">21</td>
+    <td class="td-type"><span class="badge">vs Nudie</span></td>
+    <td class="td-q">Is Citizen Wolf better than Nudie Jeans for ethical clothing made in Australia?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r20" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I need to be straightforward: **neither brand is primarily made in Australia**, which is important for your question.
+
+**Nudie Jeans:**
+- Swedish brand, primarily manufactured in Tunisia and India
+- Strong transparency credentials (publishes factory lists)
+- Good labor standards and organic cotton focus
+- Actually a better choice for ethical production than many competitors
+
+**Citizen Wolf:**
+- Australian brand, but manufactures in Vietnam and India
+- Less transparent about supply chains than Nudie
+- Harder to verify labor conditions
+- Marketing emphasizes "Australian" but that mainly applies …</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf and Nudie Jeans both offer ethical clothing, but they have different focuses.
+
+**Citizen Wolf**:
+- **Brand Focus**: They specialize in custom-fit apparel made in Australia, emphasizing sustainability and ethical manufacturing practices.
+- **Key Products**: Their range includes custom t-shirts, dresses, and knitwear. Citizen Wolf uses organic and recycled materials and operates with a zero-waste philosophy.
+- **Ethical Practices**: Their production is done in Sydney, allowing for transparency in labor practices and reducing carbon footprint.
+
+**Nudie Jeans**:
+- **Brand Focus**: Whi…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r21')" style="cursor:pointer">
+    <td class="td-num">22</td>
+    <td class="td-type"><span class="badge">vs Nobody</span></td>
+    <td class="td-q">Citizen Wolf Magic Fit T-Shirt vs Nobody Denim tees - which offers better custom fit?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r21" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not familiar with either "Citizen Wolf" or "Nobody Denim" as established brands with widely reviewed custom fit t-shirt offerings. These don't appear in major retail databases or consumer review sites I'm aware of.
+
+Before recommending one, I'd need clarification:
+
+- **Where did you encounter these brands?** (Direct-to-consumer sites, boutiques, marketplaces?)
+- **Are these new or niche labels?**
+- **What specific fit issues matter to you?** (Length, shoulder width, sleeve taper, chest room, etc.)
+
+**For better custom fit in general, consider established players:**
+- **Bonobos** - excellen…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">When comparing the Citizen Wolf Magic Fit T-Shirt to Nobody Denim tees, the Citizen Wolf t-shirt generally offers a better custom fit. 
+
+Citizen Wolf uses a unique "Magic Fit" technology that allows customers to select specific measurements for a tailored fit, ensuring the shirt conforms closely to individual body shapes. They utilize a made-to-order model, which can further enhance the customization experience.
+
+On the other hand, Nobody Denim tees typically offer standard sizing with some stretch, which may provide a decent fit but lacks the personalized adjustability that Citizen Wolf provi…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r22')" style="cursor:pointer">
+    <td class="td-num">23</td>
+    <td class="td-type"><span class="badge">worth investment</span></td>
+    <td class="td-q">Is Citizen Wolf worth the price for their made-to-measure Magic Fit T-Shirts?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r22" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I don't have specific current pricing or detailed reviews for Citizen Wolf's Magic Fit T-shirts to give you a confident assessment.
+
+That said, here's how to evaluate made-to-measure basics:
+
+**What matters:**
+- **Fit accuracy** - Does their sizing system actually work? Check recent reviews specifically mentioning fit
+- **Fabric quality** - What weight cotton? Is it pre-shrunk? Does it hold up after washing?
+- **Price vs. alternatives** - Compare to Bonobos (made-to-measure basics), J.Crew (Mercantile line), or Banana Republic for mass customization
+- **Turnaround time** - How long to receive?…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf’s Magic Fit T-Shirts are priced at a premium, often ranging between $49 and $69. The value of these t-shirts really depends on your priorities. 
+
+Pros:
+1. **Made-to-Measure Fit**: Each shirt is customized to your body measurements, promising a better fit than standard sizes.
+2. **Sustainable Materials**: They use eco-friendly fabrics such as organic cotton and recycled materials.
+3. **Quality Construction**: The shirts are designed to be durable and long-lasting.
+
+Cons:
+1. **Higher Price Point**: Compared to regular t-shirts, these are significantly more expensive.
+2. **Order Proc…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r23')" style="cursor:pointer">
+    <td class="td-num">24</td>
+    <td class="td-type"><span class="badge">quality check</span></td>
+    <td class="td-q">Are Citizen Wolf Organic Everyday Tees actually good quality that will last for years?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r23" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not finding reliable information about a brand called "Citizen Wolf Organic Everyday Tees." This could mean:
+
+1. **It's a very new or small brand** with limited online presence
+2. **The name might be slightly different** than what you've written
+3. **It may be a regional or niche brand** not widely reviewed
+
+**What I'd recommend instead:**
+
+For genuinely durable organic cotton tees that last years, consider:
+
+- **Patagonia Organic Cotton T-Shirts** - excellent quality, good longevity, transparent sourcing
+- **Everlane Organic Basics** - simpler design, good durability, fair pricing
+- **Org…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf Organic Everyday Tees are generally well-regarded for their quality. They are made from 100% organic cotton and feature a sustainable, eco-friendly production process. Many customers report that these tees are soft, comfortable, and maintain their shape after multiple washes, suggesting they can last for years. However, as with any clothing, care instructions should be followed to ensure longevity. Overall, if you prioritize sustainability and quality, Citizen Wolf tees are a solid option.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r24')" style="cursor:pointer">
+    <td class="td-num">25</td>
+    <td class="td-type"><span class="badge">customer reviews</span></td>
+    <td class="td-q">What do customers say about Citizen Wolf's ReWear Take-Back Credit program - does it actually work?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r24" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I don't have reliable information about a "Citizen Wolf ReWear Take-Back Credit program" or verified customer reviews about it. I want to be straight with you rather than guess.
+
+A few possibilities:
+- This could be a newer program I'm not updated on
+- The brand name or program name might be slightly different than what I'm recalling
+- It might be a smaller or regional initiative with limited online documentation
+
+**What I'd recommend:**
+
+1. **Check their official website** directly for program details and terms
+2. **Look for recent reviews** on Reddit (r/Fashion, r/Sustainability), Trustpilot…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf's ReWear Take-Back Credit program generally receives positive feedback from customers. Many appreciate the sustainability aspect of the program, as it allows them to return their old Citizen Wolf garments for store credit toward new purchases. Customers report that the process is straightforward and that the credits applied to their accounts are fair and useful. 
+
+Some users have highlighted that the initiative encourages them to rethink their clothing consumption habits and supports a more circular economy. However, experiences may vary, and some customers have mentioned potentia…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r25')" style="cursor:pointer">
+    <td class="td-num">26</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Citizen Wolf reviews - are their Magic Fit T-Shirts actually worth buying?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r25" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I don't have specific information about "Citizen Wolf" or their Magic Fit T-Shirts in my training data, so I can't give you a reliable review of that particular brand.
+
+Here's what I'd recommend instead:
+
+**Check these sources directly:**
+- **Amazon/Retail sites** - Sort reviews by most helpful; look at 3-4 star reviews (often most honest)
+- **Reddit** - Search r/malefashionadvice or relevant subreddits for mentions
+- **YouTube** - Search "[Brand] review" for unboxing/wear tests
+- **Trustpilot** - See verified buyer feedback
+
+**Key things to verify before buying:**
+- Fabric composition (cotton…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf's Magic Fit T-Shirts have garnered positive reviews from a variety of customers and fashion critics. Here are some specific points to consider when evaluating whether they are worth buying:
+
+1. **Customization**: The standout feature of Citizen Wolf's Magic Fit T-Shirts is their custom fit. Each shirt is made to order based on your measurements, which many customers find offers a superior fit compared to off-the-rack options.
+
+2. **Quality Materials**: The shirts are made from high-quality, sustainable materials, such as organic cotton and TENCEL. Customers often praise the softne…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r26')" style="cursor:pointer">
+    <td class="td-num">27</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Where can I buy Citizen Wolf Organic Everyday Tees in Australia?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r26" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not able to find any information about a brand called "Citizen Wolf Organic Everyday Tees" in Australia or elsewhere.
+
+This could be because:
+- The brand name might be slightly different
+- It may be a very new or niche brand with limited online presence
+- It might be a local/independent label with restricted distribution
+
+**To help you find what you're looking for, could you clarify:**
+- Is it "Citizen Wolf" or possibly a different name?
+- Where did you hear about this brand?
+- Are you looking for organic cotton t-shirts in general, or this specific brand?
+
+**If you're after organic everyd…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">You can buy Citizen Wolf Organic Everyday Tees directly from their official website at citizenwolf.com.au. Additionally, they may also be available at select retailers that focus on sustainable fashion, such as **The Iconic** and **Earth.co**. Make sure to check for availability and any possible promotions.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r27')" style="cursor:pointer">
+    <td class="td-num">28</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Is Citizen Wolf a good brand for sustainable made-to-measure clothing?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r27" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not familiar with Citizen Wolf as an established sustainable clothing brand. It's possible this is a smaller or newer company, or the name might be slightly different.
+
+Before committing to any made-to-measure service, I'd recommend:
+
+**Verify their sustainability claims:**
+- Look for third-party certifications (B Corp, Fair Trade Certified, etc.)
+- Check their transparency about manufacturing locations and labor practices
+- Review independent reviews on platforms like Trustpilot
+
+**Compare with established alternatives:**
+- **Indochino** - transparent about factories, offers customization…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Yes, Citizen Wolf is generally regarded as a good brand for sustainable made-to-measure clothing. They focus on environmentally friendly practices, using sustainable fabrics and a zero-waste approach in their production process. Their main offering is the "MATE," a made-to-measure t-shirt that allows for personalization in style and fit. Additionally, they emphasize transparency in their supply chain and are committed to ethical production standards. If you are looking for a sustainable option in custom clothing, Citizen Wolf is a solid choice.</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r28')" style="cursor:pointer">
+    <td class="td-num">29</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">Is Citizen Wolf Magic Fit T-Shirt worth the premium price compared to regular t-shirts?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r28" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not familiar with a "Citizen Wolf Magic Fit T-Shirt" as a current product. This could be:
+
+1. **A niche or regional brand** I don't have data on
+2. **A discontinued product**
+3. **Possibly misnamed** — you might be thinking of a different brand
+
+To give you honest advice, I'd need to know:
+
+- **What's the actual price?** (Premium is relative)
+- **What are the claimed features?** (Moisture-wicking, durability, fit claims?)
+- **What material?** (Cotton, synthetic blend, etc.)
+- **Who makes it?**
+
+**General guidance for premium t-shirts:**
+
+Premium basics are worth it if they offer:
+- Superio…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">The Citizen Wolf Magic Fit T-Shirt has a premium price point due to its unique features, including a focus on sustainable materials and a customized fit that adapts to your body shape over time. If you're looking for a well-fitting, eco-friendly option, many customers report high satisfaction with the product's quality and fit.
+
+However, if you’re used to standard t-shirts, brands like Hanes or Fruit of the Loom offer basic t-shirts at a much lower price point. While you wouldn't get the tailored fit or sustainability aspect, they do provide decent quality for everyday wear.
+
+Ultimately, if yo…</div>
+        </div>
+      </div>
+    </td>
+  </tr>
+<tr class="pr" onclick="tgl('r29')" style="cursor:pointer">
+    <td class="td-num">30</td>
+    <td class="td-type"><span class="badge badge-dim">not scored</span></td>
+    <td class="td-q">How does Citizen Wolf ReWear Take-Back Credit program work and is it worth using?</td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-tick"><span class="tick tick-yes">✓</span></td>
+    <td class="td-arrow">▾</td>
+  </tr>
+  <tr id="r29" style="display:none;background:#faf9f6">
+    <td colspan="6" style="padding:0;border-bottom:2px solid #f0ebe3">
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="padding:16px 20px;border-right:1px solid #f0ebe3">
+          <div class="resp-label claude-label">CLAUDE</div>
+          <div class="resp-body">I'm not familiar with a "Citizen Wolf ReWear Take-Back Credit program." This could be because:
+
+1. **It may not exist** - I can't find reliable information about this specific program
+2. **It might be very new** - my training data has a cutoff date
+3. **The name might be slightly different** - you could be thinking of a different brand or program name
+
+**What I'd recommend:**
+
+- **Check the official Citizen Wolf website directly** - look for their sustainability or take-back sections
+- **Contact their customer service** - they can explain current programs and any credits offered
+- **Verify leg…</div>
+        </div>
+        <div style="padding:16px 20px">
+          <div class="resp-label gpt-label">CHATGPT</div>
+          <div class="resp-body">Citizen Wolf's ReWear Take-Back Credit program allows customers to send back their used or unwanted Citizen Wolf clothing items in exchange for store credit. Here's how it generally works:
+
+1. **Send Back Your Clothes**: You can send back any items from Citizen Wolf.
+2. **Earn Credit**: For each item returned, you earn a credit that can be used towards future purchases. The credit amount may vary based on the condition and type of the item.
+3. **Sustainability Focus**: Citizen Wolf emphasizes sustainability by recycling or reusing returned items, making it a responsible choice for environmenta…</div>
+        </div>
+      </div>
+    </td>
+  </tr></tbody></table>
+</div>
+
+<div class="sec quick-wins"><div class="dl-bar"><div><div class="sec-eyebrow">Quick Wins</div><h2 class="sec-h2">Do these first.</h2><p>Three actions you can complete in the next 48 hours. No content creation, no technical builds required.</p></div></div>
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add "Made-to-Measure 3D Body Scanning" to Homepage Hero</h4>
+<p><strong>What to do:</strong> Update homepage hero text to explicitly state "3D body scanning technology for perfect-fit t-shirts" and "Made-to-measure using your exact measurements" in the first 50 words visible to AI models.</p>
+<p><strong>Why it matters:</strong> Brand was invisible for all custom-fit and 3D scanning query patterns while these appear to be core differentiators. AI models need explicit language matches for technical capabilities.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Update Title Tags for Australian Manufacturing</h4>
+<p><strong>What to do:</strong> Change homepage title tag to "Citizen Wolf | Made-to-Measure Organic Cotton T-Shirts | Made in Sydney Australia" and product page titles to include "Australian Made" and "Sydney Manufactured".</p>
+<p><strong>Why it matters:</strong> Brand failed to appear for all regional Australian manufacturing query patterns despite local production being a key differentiator against international competitors like Patagonia.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add GOTS Certification Badge to Product Pages</h4>
+<p><strong>What to do:</strong> Add visible "GOTS Certified Organic Cotton" badge and text to all t-shirt product pages, ensuring the acronym "GOTS" appears in page content and meta descriptions.</p>
+<p><strong>Why it matters:</strong> Brand was invisible for "GOTS certified organic cotton" query patterns, missing purchase intent from sustainability-focused consumers who specifically search for this certification.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+</div>
+
+<div class="sec">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Zero Waste Production Landing Page</h4>
+<p>Build dedicated page explaining custom cutting technology that eliminates fabric waste, with technical details about zero waste pattern optimization and circular production systems. Include take-back recycling program details and store credit process.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: Zero waste and recycling program query patterns</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop 3D Body Scanning Technology Page</h4>
+<p>Create comprehensive content explaining the 3D scanning process, algorithm technology for unusual body shapes, and how measurements translate to perfect fit. Include comparison to standard sizing limitations.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: Custom-fit and 3D scanning query patterns</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Australian Manufacturing Story Page</h4>
+<p>Develop content showcasing Sydney production facility, local supply chain, fast shipping benefits, and ethical manufacturing practices. Include worker conditions and fair wage commitments.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: Regional Australian manufacturing queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Sustainability Comparison Matrix</h4>
+<p>Build comparison page positioning against Patagonia, Nudie Jeans, and Nobody Denim on sustainability metrics, custom fit capabilities, and Australian manufacturing advantages.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: Alternative brand comparison queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Optimize Color Range Product Pages</h4>
+<p>Create comprehensive color selection pages highlighting full range availability, custom color options, and how 3D scanning enables broader color choices through made-to-measure production.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Color range availability queries</p>
+</div>
+</div>
+
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 01</div><h2 class="sec-h2">Answer Hub</h2><p>Add these Q&A pairs to your website. They train AI models to cite Citizen Wolf when buyers ask relevant questions.</p></div><button class="dl-btn" onclick="dlPDF('answer-hub-content','Citizen Wolf — Answer Hub','citizen-wolf-answer-hub.pdf')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="answer-hub-content">
+<h2>Answer Hub</h2>
+
+<h3>What company makes custom-fit t-shirts with zero waste cutting?</h3>
+<p>Citizen Wolf creates the Magic Fit T-Shirt using a proprietary 3D body algorithm that produces made-to-measure custom-fit tees with zero waste cutting. Customers input their measurements to receive a perfectly fitted garment that eliminates the waste typically associated with standard sizing.</p>
+
+<h3>Where can I find GOTS certified organic cotton t-shirts made ethically in Australia?</h3>
+<p>Citizen Wolf produces the Organic Everyday Tee, which is GOTS certified 100% organic cotton manufactured ethically in Sydney. These tees are designed for longevity rather than seasonal wear and come in an extended colourway range.</p>
+
+<h3>Which brand offers a take-back program for recycling old t-shirts?</h3>
+<p>Citizen Wolf operates the ReWear Take-Back Credit program, a circular garment return system where customers can post back worn tees for recycling and receive store credit in return. This program closes the loop on fashion waste by ensuring responsible end-of-life garment disposal.</p>
+
+<h3>What's the best solution for ill-fitting off-the-rack clothing that creates fashion waste?</h3>
+<p>Citizen Wolf addresses both fit and waste issues through their Magic Fit T-Shirt technology and circular business model. Their 3D body algorithm ensures perfect fit while their zero waste cutting eliminates production waste, and the ReWear Take-Back Credit program manages end-of-life garment recycling.</p>
+
+<h3>Which sustainable fashion brand combines custom fit with ethical manufacturing?</h3>
+<p>Citizen Wolf operates as a social enterprise combining custom-fit technology with ethical manufacturing practices. They produce made-to-measure garments using proprietary algorithms while maintaining ethical production standards in Sydney and offering circular take-back programs.</p>
+
+<h3>Where can I buy t-shirts designed to last years instead of seasons?</h3>
+<p>Citizen Wolf's Organic Everyday Tee is specifically designed for longevity rather than seasonal wear. Made from GOTS certified 100% organic cotton and ethically manufactured in Sydney, these tees prioritize durability and timeless design over fast fashion trends.</p>
+
+<h3>What marketplace offers both custom-fit and ready-to-wear sustainable t-shirts?</h3>
+<p>Citizen Wolf operates as a social enterprise marketplace offering both the Magic Fit T-Shirt for custom-fit requirements and the Organic Everyday Tee for ready-to-wear sustainable options. Both products address fit and sustainability concerns while supporting ethical manufacturing practices.</p>
+
+<h3>How can I buy t-shirts with a complete circular fashion solution?</h3>
+<p>Citizen Wolf provides a complete circular fashion solution through their product range and ReWear Take-Back Credit program. Customers can purchase ethically made tees and participate in the circular economy by returning worn garments for recycling while receiving store credit for future purchases.</p>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 02</div><h2 class="sec-h2">Brand Facts</h2><p>Upload this JSON to your AI platform's knowledge base so AI models accurately describe Citizen Wolf.</p></div><button class="dl-btn" onclick="dlJSON('brand-facts-content','citizen-wolf-brand-facts.json')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="brand-facts-content">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>Citizen Wolf is a social enterprise and marketplace specializing in sustainable t-shirt solutions</li>
+<li>The Magic Fit T-Shirt uses a proprietary 3D body algorithm for made-to-measure custom fitting</li>
+<li>Citizen Wolf's Magic Fit T-Shirt features zero waste cutting technology</li>
+<li>The Organic Everyday Tee is GOTS certified 100% organic cotton</li>
+<li>Citizen Wolf manufactures ethically in Sydney, Australia</li>
+<li>The Organic Everyday Tee is available in an extended colourway range</li>
+<li>Citizen Wolf products are designed to be worn for years, not seasons</li>
+<li>The ReWear Take-Back Credit program allows customers to return worn tees for recycling</li>
+<li>Customers receive store credit through the ReWear Take-Back Credit program</li>
+<li>Citizen Wolf operates a circular garment return program that closes the loop on fashion waste</li>
+<li>The brand addresses ill-fitting off-the-rack clothing through custom-fit technology</li>
+<li>Citizen Wolf tackles fast fashion waste through both production methods and end-of-life programs</li>
+<li>The company combines perfect-fit garments with ethical manufacturing and responsible end-of-life solutions</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 03</div><h2 class="sec-h2">AI Content Architecture</h2><p>Share with your content team. Each item is a citation asset that increases Citizen Wolf's chances of being recommended by AI.</p></div><button class="dl-btn" onclick="dlPDF('content-arch-content','Citizen Wolf — AI Content Architecture','citizen-wolf-content-architecture.pdf')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="content-arch-content">
+<h2>AI Content Architecture</h2>
+
+<ul>
+<li>3D Body Scanning Technology Guide — Custom-fit measurement and unusual body shape query patterns</li>
+<li>Zero Waste Production Process Explainer — Zero waste clothing and circular system query patterns</li>
+<li>GOTS Organic Cotton Certification Deep-dive — GOTS certified organic cotton query patterns</li>
+<li>Australian Made Manufacturing Story — Regional Australian production and Sydney manufacturing queries</li>
+<li>Garment Take-back Recycling Program — Recycling program and store credit query patterns</li>
+<li>Perfect Fit Guarantee Process — Made-to-measure and custom cutting query patterns</li>
+<li>Durability & Quality Construction Guide — Sustainable long-lasting t-shirt query patterns</li>
+<li>Sustainability vs Competitors Comparison — Alternative brand comparison query patterns</li>
+<li>Custom Color Range Showcase — Color availability and customization query patterns</li>
+<li>Fast Local Australian Shipping — Regional shipping and local availability queries</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 04</div><h2 class="sec-h2">Entity Checklist</h2><p>Work through this list to establish Citizen Wolf as a recognised entity so AI models understand and reference your brand accurately.</p></div><button class="dl-btn" onclick="dlPDF('entity-checklist-content','Citizen Wolf — Entity Checklist','citizen-wolf-entity-checklist.pdf')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PDF</button></div><div id="entity-checklist-content">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create detailed product specification pages for Magic Fit T-Shirt and Organic Everyday Tee with technical details about the 3D body algorithm and GOTS certification</li>
+<li>Develop comprehensive content about the proprietary 3D body algorithm technology and zero waste cutting process to establish technical authority</li>
+<li>Publish detailed information about GOTS certification standards and ethical manufacturing practices in Sydney</li>
+<li>Create educational content about the ReWear Take-Back Credit program process and circular fashion principles</li>
+<li>Develop citation assets comparing custom-fit technology versus standard sizing in fashion</li>
+<li>Establish entity authority through content about sustainable fashion alternatives and waste reduction</li>
+<li>Create detailed comparison content between fast fashion and designed-for-longevity approaches</li>
+<li>Develop technical documentation about made-to-measure processes and measurement input systems</li>
+<li>Build comprehensive coverage of social enterprise business models in sustainable fashion</li>
+<li>Create educational content about organic cotton benefits and GOTS certification requirements</li>
+<li>Develop detailed process documentation for the circular garment return system</li>
+<li>Establish query pattern coverage for "perfect fit clothing", "zero waste fashion", and "circular fashion programs"</li>
+<li>Create comprehensive brand story content highlighting the intersection of technology, sustainability, and ethics</li>
+<li>Build citation assets about Australian ethical manufacturing and local production benefits</li>
+</ul>
+</div></div>
+
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 05</div><h2 class="sec-h2">Organisation Schema</h2><p>Paste this JSON-LD into the &lt;head&gt; of your website. Tells AI crawlers exactly who Citizen Wolf is.</p></div><button class="dl-btn" onclick="dlSchema('org-schema-content','citizen-wolf-org-schema.json')"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download JSON</button></div><div id="org-schema-content">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Citizen Wolf",
+  "alternateName": "Citizen Wolf Australia",
+  "description": "Made-to-measure organic cotton t-shirts using 3D body scanning technology. Zero waste production with garment recycling programs. Ethically manufactured in Sydney, Australia.",
+  "url": "https://citizenwolf.com",
+  "logo": "https://citizenwolf.com/logo.png",
+  "foundingLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Sydney",
+      "addressRegion": "NSW",
+      "@country": "AU"
+    }
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Australia"
+  },
+  "hasCredential": [
+    {
+      "@type": "EducationalOccupationalCredential",
+      "credentialCategory": "GOTS Certification",
+      "recognizedBy": {
+        "@type": "Organization",
+        "name": "Global Organic Textile Standard"
+      }
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "@id": "made-to-measure-tshirts",
+        "name": "Made-to-Measure Organic Cotton T-Shirts",
+        "description": "Custom-fit t-shirts using 3D body scanning technology",
+        "material": "GOTS Certified Organic Cotton",
+        "manufacturer": {
+          "@type": "Organization",
+          "name": "Citizen Wolf",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Sydney",
+            "addressRegion": "NSW",
+            "addressCountry": "AU"
+          }
+        }
+      }
+    }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Sustainable Made-to-Measure Clothing",
+    "itemListElement": [
+      {
+        "@type": "Product",
+        "name": "3D Scanned Custom Fit T-Shirts",
+        "category": "Sustainable Fashion"
+      }
+    ]
+  },
+  "sustainability": [
+    "Zero waste production",
+    "Garment take-back recycling program",
+    "GOTS certified organic cotton",
+    "Local Australian manufacturing"
+  ],
+  "specialFeatures": [
+    "3D body scanning technology",
+    "Made-to-measure fitting",
+    "Custom cutting to eliminate waste",
+    "Garment recycling with store credit"
+  ]
+}</code></pre>
+</div></div>
+
+<div class="ftr"><div class="ftr-inner">
+  <div class="ftr-brand">
+    <svg width="10" height="22" viewBox="0 0 40 90" fill="none" style="opacity:.5;flex-shrink:0"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#c8a428"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#c8a428"/></svg>
+    <div><div class="ftr-wordmark">Found By AI</div><div class="ftr-sub">by Edge Studio · AEO Agency · Australia</div></div>
+  </div>
+  <div class="ftr-right"><a href="https://theedgestudio.app">theedgestudio.app</a><br><a href="https://foundbyai.com.au">foundbyai.com.au</a></div>
+</div></div>
+</body></html>
