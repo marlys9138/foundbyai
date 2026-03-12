@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Found By AI — Lyka</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;--border:#232914;--brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--bgh:rgba(200,164,40,.07);--bgl:rgba(200,164,40,.22);--grow:#7a9228;--cream:#ede8d2;--cs:#cac4a8;--mt:#96a070;--ft:#6a7850;--sc:#c8a428;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:#f5f0e8;color:#1a1e10;font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.7}
+a{color:var(--brass)}
+.sn{position:sticky;top:0;z-index:100;background:rgba(11,14,7,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:48px;display:flex;align-items:center;padding:0 32px;gap:14px}
+.sn-logo{display:flex;align-items:center;gap:8px}
+.sn-wm{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--brass-hi)}
+.sn-div{width:1px;height:14px;background:var(--border)}
+.sn-brand{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--cs);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sn-score{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;background:var(--sc);color:#fff;padding:3px 10px;flex-shrink:0}
+.hdr{background:var(--ink);border-bottom:2px solid var(--brass-dim)}
+.hdr-in{max-width:960px;margin:0 auto;padding:40px 40px 36px}
+.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.hdr-wm{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--brass-hi)}
+.hdr-sep{width:1px;height:15px;background:var(--border)}
+.hdr-par{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--grow)}
+.hdr-ey{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--mt);margin-bottom:10px}
+.hdr-h1{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;color:var(--cream);letter-spacing:-.03em;line-height:1.05}
+.hdr-meta{display:flex;align-items:center;gap:16px;margin-top:14px;flex-wrap:wrap}
+.hdr-mi{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ft)}
+.hdr-ms{color:var(--border)}
+.hero-card{max-width:960px;margin:24px auto;display:grid;grid-template-columns:auto 1fr auto;background:#fff;border:1px solid #e8e2d6;border-top:3px solid var(--sc);overflow:hidden}
+.hero-ring{padding:32px 36px;display:flex;align-items:center;justify-content:center;border-right:1px solid #e8e2d6}
+.hero-mid{padding:28px 28px;display:flex;flex-direction:column;justify-content:center}
+.hero-band{display:inline-block;background:var(--sc);color:#fff;padding:3px 12px;font-family:'IBM Plex Mono',monospace;font-size:.67rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.hero-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:300;color:var(--ink);letter-spacing:-.02em;margin-bottom:6px}
+.hero-sub{font-size:.83rem;color:var(--ft);line-height:1.6}
+.hero-engines{padding:28px 28px;border-left:1px solid #e8e2d6;display:flex;flex-direction:column;justify-content:center;gap:18px;min-width:130px}
+.eng-item{text-align:center}
+.eng-lbl{font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:4px}
+.eng-val{font-family:'Fraunces',serif;font-size:1.9rem;color:var(--brass);line-height:1}
+.eng-den{font-size:.78rem;color:var(--mt);margin-left:1px}
+.eng-sub{font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;color:var(--mt);margin-top:2px;letter-spacing:.08em}
+.sec{background:#fff;padding:28px 36px;margin:14px auto;max-width:960px;border:1px solid #e8e2d6;border-top:2px solid var(--brass-dim)}
+.sec-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sec-eyebrow::before{content:'';width:16px;height:1px;background:var(--brass);flex-shrink:0}
+.sec-h2{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:300;letter-spacing:-.02em;color:var(--ink);margin-bottom:8px}
+.sec-h2 em{color:var(--brass-hi);font-style:italic}
+.sec-body{font-size:.85rem;color:var(--ft);line-height:1.7;margin-bottom:14px}
+.sec h3{font-size:.95rem;font-weight:600;margin:18px 0 6px;color:#1a1e10}
+.sec h4{font-size:.9rem;font-weight:600;margin:4px 0 6px}
+.sec p{color:#4a5038;line-height:1.7;margin-bottom:10px;font-size:.88rem}
+.sec ul{margin:6px 0 10px 18px;color:#4a5038;line-height:1.8;font-size:.88rem}
+.bar-row{display:grid;grid-template-columns:160px 1fr 70px;align-items:center;gap:14px;padding:8px 0;border-bottom:1px solid #f5f0e8}
+.bar-row:last-child{border-bottom:none}
+.bar-row.you{padding:10px 0}
+.bn{font-size:.85rem;color:#4a5038;display:flex;align-items:center;gap:6px}
+.bar-row.you .bn{font-family:'Fraunces',serif;font-size:.95rem;font-weight:600;color:var(--ink)}
+.ytag{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);margin-left:2px}
+.bt{background:#ece7df;height:8px;overflow:hidden;border-radius:2px;flex:1}
+.bf{height:8px;border-radius:2px}
+.bv{font-family:'Fraunces',serif;font-size:1rem;color:#3a4030;text-align:right;white-space:nowrap}
+.bd{font-size:.68rem;color:var(--mt);margin-left:1px}
+.gap-stmt{margin-top:16px;padding:12px 16px;background:var(--bgh);border:1px solid var(--bgl);font-size:.85rem;color:var(--brass-dim);font-weight:500;line-height:1.6}
+.gap-sec{border-top:2px solid #cc6c0a}
+.gap-ey{color:#cc6c0a !important}
+.gap-ey::before{background:#cc6c0a !important}
+.gap-sec .sec-h2 em{color:#cc6c0a}
+.gap-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.gap-col{background:#fdf8f5;border:1px solid rgba(204,108,10,.15);padding:14px 16px}
+.gc-label{font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.16em;text-transform:uppercase;color:#cc6c0a;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid rgba(204,108,10,.12)}
+.gp-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(204,108,10,.07)}
+.gp-item:last-child{border-bottom:none}
+.gp-type{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;background:rgba(204,108,10,.1);color:#cc6c0a;padding:2px 6px;flex-shrink:0;margin-top:2px;white-space:nowrap}
+.gp-q{font-size:.82rem;color:#4a3020;line-height:1.45}
+.cm-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(204,108,10,.07);gap:10px}
+.cm-row:last-child{border-bottom:none}
+.cm-n{color:#3a2010;font-weight:500;font-size:.85rem}
+.cm-c{color:#cc6c0a;font-family:'IBM Plex Mono',monospace;font-size:.7rem;flex-shrink:0}
+.partial-strip{margin-top:14px;padding:10px 14px;background:var(--bgh);border:1px solid var(--bgl);display:flex;align-items:flex-start;gap:10px;font-size:.82rem}
+.ps-label{font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);flex-shrink:0;padding-top:2px}
+.ps-text{color:#4a5038;line-height:1.5}
+.qw-sec{border-top:2px solid #2d6a4f}
+.qw-sec .sec-eyebrow{color:#2d6a4f}
+.qw-sec .sec-eyebrow::before{background:#2d6a4f}
+.qw-sec .sec-h2 em{color:#2d6a4f}
+.hint{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mt);background:#f5f0e8;border:1px solid #e8e2d6;padding:4px 10px;margin-bottom:14px}
+.eng-cards{display:flex;gap:10px;margin-bottom:16px}
+.ec{background:#f5f0e8;border:1px solid #e8e2d6;padding:16px 20px;flex:1;text-align:center}
+.ec-l{font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ft);margin-bottom:4px}
+.ec-v{font-family:'Fraunces',serif;font-size:1.9rem;color:var(--brass);line-height:1}
+.ec-d{font-size:.75rem;color:var(--mt)}
+.ec-s{font-family:'IBM Plex Mono',monospace;font-size:.6rem;text-transform:uppercase;color:var(--mt);margin-top:3px;letter-spacing:.08em}
+.at{width:100%;border-collapse:collapse;font-size:.83rem}
+.at th{background:var(--ink);color:var(--cream);padding:9px 12px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.67rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.pr{cursor:pointer}
+.pr:hover td{background:#fffdf8}
+.row-fail td{background:#fff9f5}
+.row-fail:hover td{background:#fff4ee !important}
+.at td{border-bottom:1px solid #f0ebe3;vertical-align:middle}
+.tc-n{color:var(--mt);font-size:.75rem;width:24px;padding:9px 6px;font-family:'IBM Plex Mono',monospace}
+.tc-t{padding:9px 6px;width:95px}
+.tc-q{padding:9px 12px;color:#2a3020;line-height:1.4}
+.tc-e{text-align:center;padding:9px 5px;width:84px}
+.tc-a{color:#ccc;width:16px;padding:9px 5px;font-size:.75rem;text-align:right}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;white-space:nowrap}
+.chip.found{background:#2d6a4f;color:#fff}
+.chip.gap{background:#f5ebe0;color:#cc6c0a;border:1px solid rgba(204,108,10,.25)}
+.tbadge{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;background:var(--bgh);border:1px solid var(--bgl);color:var(--brass);white-space:nowrap}
+.tbadge.dim{background:#f5f5f5;border-color:#e5e0d8;color:var(--mt)}
+.resp-row{display:none;background:#fdfcfa}
+.resp-cell{padding:0 !important;border-bottom:2px solid #ece7df !important}
+.resp-grid{display:grid;grid-template-columns:1fr 1fr}
+.resp-grid>div{padding:14px 16px}
+.resp-grid>div:first-child{border-right:1px solid #ece7df}
+.rl{font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.claude-rl{color:var(--brass)}
+.gpt-rl{color:#2563eb}
+.rb{font-size:.8rem;color:#444;line-height:1.62;white-space:pre-wrap}
+.bdiv{background:var(--bgh);border:1px solid var(--bgl);padding:10px 14px;margin:20px 0 8px;display:flex;align-items:flex-start;gap:10px}
+.bdiv-t{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--brass);font-weight:600}
+.bdiv-s{font-size:.75rem;color:var(--mt);margin-top:2px}
+.action{border:1px solid #e8e2d6;border-left:3px solid var(--brass);padding:14px 18px;margin:10px 0}
+.qw-sec .action{border-left-color:#2d6a4f;background:#fafdf8}
+.priority{font-family:'IBM Plex Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.qw-sec .priority{color:#2d6a4f}
+.meta{font-size:.75rem;color:var(--mt);margin-top:4px}
+.dl-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #f0ebe3;flex-wrap:wrap}
+.dl-bar h2{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:300;letter-spacing:-.02em;color:var(--ink)}
+.dl-bar p{font-size:.82rem;color:var(--ft);line-height:1.5;max-width:560px;margin-top:4px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--cream);padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;white-space:nowrap;flex-shrink:0;margin-top:4px}
+.dl-btn:hover{background:var(--raised)}
+pre{background:#f5f5f2;padding:14px;overflow-x:auto;font-size:.78rem;margin-top:8px;line-height:1.5}
+.ftr{background:var(--ink);padding:28px 40px;margin-top:28px}
+.ftr-in{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.ftr-wm{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--brass-hi)}
+.ftr-s{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ft);margin-top:3px}
+.ftr-r{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--ft);text-align:right;line-height:1.9}
+.ftr a{color:var(--brass-dim);text-decoration:none}
+@media(max-width:700px){
+  .hero-card{grid-template-columns:1fr}
+  .hero-engines{border-left:none;border-top:1px solid #e8e2d6;flex-direction:row;justify-content:space-around}
+  .gap-cols{grid-template-columns:1fr}
+  .resp-grid{grid-template-columns:1fr}
+  .resp-grid>div:first-child{border-right:none;border-bottom:1px solid #ece7df}
+  .bar-row{grid-template-columns:120px 1fr 56px}
+  .hdr-in{padding:28px 20px 24px}
+  .sec{padding:20px 20px}
+  .sn{padding:0 16px}
+}
+</style>
+<script>
+function tgl(id){
+  const r=document.getElementById(id);
+  if(!r)return;
+  const open=r.style.display!=='none'&&r.style.display!=='';
+  r.style.display=open?'none':'table-row';
+  const prev=r.previousElementSibling;
+  if(prev){const a=prev.querySelector('.tc-a');if(a)a.textContent=open?'▾':'▴';}
+}
+function dlBlob(c,f,t){const b=new Blob([c],{type:t});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=f;a.click();URL.revokeObjectURL(u);}
+function dlJSON(id,f){const el=document.getElementById(id);if(!el)return;const items=Array.from(el.querySelectorAll('li')).map(l=>l.innerText.trim()).filter(Boolean);dlBlob(JSON.stringify(items,null,2),f,'application/json');}
+function dlSchema(id,f){const el=document.getElementById(id);if(!el)return;const pre=el.querySelector('pre,code');dlBlob(pre?pre.innerText:el.innerText,f,'application/json');}
+function dlPDF(id,title,f){
+  const el=document.getElementById(id);
+  if(!el||typeof html2pdf==='undefined'){alert('PDF library not loaded — try again in a moment.');return;}
+  const w=document.createElement('div');
+  w.style.cssText='font-family:Georgia,serif;color:#2c2c2c;line-height:1.7;font-size:13px;padding:8px';
+  const h=document.createElement('h1');h.style.cssText='font-size:20px;margin-bottom:4px;color:#0b0e07;font-family:Georgia,serif';h.textContent=title;
+  const s=document.createElement('p');s.style.cssText='font-size:10px;color:#96a070;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;font-family:monospace;letter-spacing:.08em;text-transform:uppercase';s.textContent='Found By AI · by Edge Studio · foundbyai.com.au';
+  w.appendChild(h);w.appendChild(s);
+  const c=el.cloneNode(true);
+  c.querySelectorAll('h2').forEach(n=>{n.style.cssText='font-size:16px;margin:16px 0 8px;color:#0b0e07;font-family:Georgia,serif';});
+  c.querySelectorAll('h3,h4').forEach(n=>{n.style.cssText='font-size:13px;margin:12px 0 5px;font-weight:600';});
+  c.querySelectorAll('p').forEach(n=>{n.style.cssText='margin-bottom:8px;color:#444;font-size:13px';});
+  c.querySelectorAll('ul').forEach(n=>{n.style.cssText='margin:6px 0 10px 18px';});
+  c.querySelectorAll('li').forEach(n=>{n.style.cssText='margin-bottom:4px;color:#444;font-size:13px';});
+  c.querySelectorAll('.action').forEach(n=>{n.style.cssText='border:1px solid #e0e0e0;padding:12px 14px;margin:8px 0;page-break-inside:avoid;border-left:3px solid #c8a428';});
+  c.querySelectorAll('.priority').forEach(n=>{n.style.cssText='font-size:10px;font-weight:700;color:#c8a428;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;font-family:monospace';});
+  c.querySelectorAll('.meta').forEach(n=>{n.style.cssText='font-size:10px;color:#aaa;margin-top:4px';});
+  w.appendChild(c);
+  html2pdf().set({margin:[12,14,12,14],filename:f,image:{type:'jpeg',quality:0.97},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all','css','legacy']}}).from(w).save();
+}
+</script>
+</head>
+<body>
+<div class="sn">
+  <div class="sn-logo"><svg width="9" height="20" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#c8a428"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#c8a428"/></svg><span class="sn-wm">Found By AI</span></div>
+  <span class="sn-div"></span>
+  <span class="sn-brand">Lyka</span>
+  <span class="sn-score">44/100</span>
+</div>
+<div class="hdr"><div class="hdr-in">
+  <div class="hdr-top"><svg width="9" height="20" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#c8a428"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#c8a428"/></svg><span class="hdr-wm">Found By AI</span><span class="hdr-sep"></span><span class="hdr-par">by Edge Studio</span></div>
+  <div class="hdr-ey">AI Visibility Audit — Confidential</div>
+  <h1 class="hdr-h1">Lyka</h1>
+  <div class="hdr-meta"><span class="hdr-mi">12 March 2026</span><span class="hdr-ms">·</span><span class="hdr-mi">30 prompts · 17 organic</span><span class="hdr-ms">·</span><span class="hdr-mi">Claude + ChatGPT</span><span class="hdr-ms">·</span><span class="hdr-mi">foundbyai.com.au</span></div>
+</div></div>
+<div class="hero-card">
+  <div class="hero-ring">
+    <svg width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="52" fill="none" stroke="#e8e2d6" stroke-width="8"/>
+      <circle cx="70" cy="70" r="52" fill="none" stroke="#c8a428" stroke-width="8" stroke-dasharray="326.73" stroke-dashoffset="182.97" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+      <text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="28" fill="#0b0e07" font-weight="700">44</text>
+      <text x="70" y="84" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="#96a070">/100</text>
+    </svg>
+  </div>
+  <div class="hero-mid">
+    <div class="hero-band">B — Partial</div>
+    <div class="hero-title">AI Visibility Score</div>
+    <p class="hero-sub">Tested across 30 custom prompts on Claude and ChatGPT — 17 organic prompts scored.</p>
+  </div>
+  <div class="hero-engines">
+    <div class="eng-item"><div class="eng-lbl">Claude</div><div class="eng-val">4<span class="eng-den">/17</span></div><div class="eng-sub">organic</div></div>
+    <div class="eng-item"><div class="eng-lbl">ChatGPT</div><div class="eng-val">2<span class="eng-den">/17</span></div><div class="eng-sub">organic</div></div>
+  </div>
+</div>
+<div class="sec"><div class="sec-eyebrow">Competitor Benchmarking</div><h2 class="sec-h2">Lyka vs the field.</h2><p class="sec-body">Same 17 organic prompts. Same AI engines. Same day.</p><div class="bar-row you"><div class="bn">Lyka<span class="ytag">you</span></div><div class="bt"><div class="bf" style="width:44%;background:#c8a428"></div></div><div class="bv">44<span class="bd">/100</span></div></div><div class="bar-row"><div class="bn">Big Dog Pet Foods</div><div class="bt"><div class="bf" style="width:24%;background:#c8bba8"></div></div><div class="bv">24<span class="bd">/100</span></div></div><div class="bar-row"><div class="bn">Scratch Pet Food</div><div class="bt"><div class="bf" style="width:12%;background:#c8bba8"></div></div><div class="bv">12<span class="bd">/100</span></div></div><div class="gap-stmt">Lyka is already outperforming its closest competitors in AI visibility — now is the time to extend that lead before they catch up.</div></div>
+<div class="sec gap-sec">
+  <div class="sec-eyebrow gap-ey">Gap Analysis</div>
+  <h2 class="sec-h2">13 prompts where Lyka is <em>invisible</em>.</h2>
+  <p class="sec-body">Not cited by Claude or ChatGPT on these queries. Highest-priority gaps to close.</p>
+  <div class="gap-cols">
+    <div class="gap-col"><div class="gc-label">Invisible on both engines</div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Best fresh chicken dog food for puppies that's complete and balanced</span></div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Which wild-caught kangaroo dog food is best for dogs with pancreatitis</span></div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Best grass-fed lamb dog food for active working dogs</span></div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Which beef and parmesan meal topper should I buy for my picky eater</span></div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Best busy beef treats for dog training and enrichment</span></div><div class="gp-item"><span class="gp-type">unbranded_purchase</span><span class="gp-q">Which chicky chews are safest for small dogs</span></div><div class="gp-item"><span class="gp-type">problem_solution</span><span class="gp-q">My dog has terrible digestion from kibble - which fresh cooked dog food brand fixes this</span></div><div class="gp-item"><span class="gp-type">problem_solution</span><span class="gp-q">My dog is diabetic and overweight - what ultra-low fat high protein dog food works best</span></div><div class="gp-item"><span class="gp-type">problem_solution</span><span class="gp-q">My dog needs a novel protein source due to allergies - which brand offers lamb with superfoods</span></div><div class="gp-item"><span class="gp-type">purchase_intent</span><span class="gp-q">Want to buy complete and balanced fresh dog food for all life stages - best option</span></div><div class="gp-item"><span class="gp-type">alternatives</span><span class="gp-q">Best fresh dog food brands like Scratch Pet Food but better quality</span></div><div class="gp-item"><span class="gp-type">alternatives</span><span class="gp-q">Better alternative to Big Dog Pet Foods for fresh cooked meals</span></div><div class="gp-item"><span class="gp-type">alternatives</span><span class="gp-q">Brands similar to Frontier Pets but with more protein options</span></div></div>
+    <div class="gap-col"><div class="gc-label">Competitors cited instead</div><div class="cm-row"><span class="cm-n">Big Dog Pet Foods</span><span class="cm-c">4 mentions in your gap prompts</span></div><div class="cm-row"><span class="cm-n">Scratch Pet Food</span><span class="cm-c">3 mentions in your gap prompts</span></div><div class="cm-row"><span class="cm-n">Frontier Pets</span><span class="cm-c">3 mentions in your gap prompts</span></div></div>
+  </div>
+  <div class="partial-strip"><span class="ps-label">Partial visibility</span><span class="ps-text">2 prompts where Lyka appeared on one engine only — quick wins.</span></div>
+</div>
+<div class="sec qw-sec"><div class="sec-eyebrow">Quick Wins</div><h2 class="sec-h2"><em>Do these first.</em></h2><p class="sec-body">Three actions you can complete in the next 48 hours. No content creation. No technical builds.</p><div class="action">
+<span class="priority">WIN 1</span>
+<h4>Update Homepage Meta Description with Problem-Solution Language</h4>
+<p><strong>What to do:</strong> Rewrite your homepage meta description to include "fresh cooked dog food fixes digestion problems from kibble" and "vet-formulated fresh dog food for all life stages" - the exact language from failed prompts.</p>
+<p><strong>Why it matters:</strong> You're invisible in problem-solution prompts about digestion issues and vet-formulated food requests where competitors are being cited. This language signals to AI models your relevance for these queries.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Structured Data for Product Protein Sources</h4>
+<p><strong>What to do:</strong> Add JSON-LD structured data to your product pages listing specific proteins: "fresh chicken", "wild-caught kangaroo", "grass-fed lamb", "beef and parmesan" - matching the exact terms from failed unbranded purchase prompts.</p>
+<p><strong>Why it matters:</strong> AI models couldn't identify you for specific protein-based purchase queries where Scratch Pet Food and Big Dog Pet Foods appear consistently. Structured data makes these attributes machine-readable.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Claim and Optimize Google Business Profile with Health Conditions</h4>
+<p><strong>What to do:</strong> In your Google Business Profile description, include "dog food for pancreatitis", "diabetic dog food", "allergy-friendly novel proteins" and "Australian fresh dog food brand" to capture the specific health condition and location-based prompts where you failed.</p>
+<p><strong>Why it matters:</strong> You're missing from health-specific problem-solution prompts and Australian brand alternatives where competitors dominate. This immediately signals relevance to AI models crawling local business data.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div></div>
+<div class="sec"><div class="sec-eyebrow">Prompt Audit</div><h2 class="sec-h2">Every prompt. Every response.</h2><div class="hint">▼ Click any row to expand AI responses</div><div class="eng-cards"><div class="ec"><div class="ec-l">Claude</div><div class="ec-v">4<span class="ec-d">/17</span></div><div class="ec-s">organic mentions</div></div><div class="ec"><div class="ec-l">ChatGPT</div><div class="ec-v">2<span class="ec-d">/17</span></div><div class="ec-s">organic mentions</div></div></div><table class="at"><thead><tr><th style="width:24px">#</th><th style="width:95px">Type</th><th>Prompt</th><th style="width:84px;text-align:center">Claude</th><th style="width:84px;text-align:center">ChatGPT</th><th style="width:16px"></th></tr></thead><tbody><tr class="pr row-fail" onclick="tgl('r0')">
+    <td class="tc-n">1</td><td class="tc-t"><span class="tbadge">fresh chicken</span></td><td class="tc-q">Best fresh chicken dog food for puppies that's complete and balanced</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r0" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Stella &amp; Chewy's Puppy Chicken Formula is an excellent complete and balanced fresh option with real chicken and probiotics. Alternatively, The Farmer's Dog Fresh Chicken recipe is vet-formulated and tailored for puppies with balanced nutrition for growth.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">The best fresh chicken dog food for puppies that's complete and balanced is the 'The Farmer's Dog Chicken Recipe.' It's formulated for growth and development, made with human-grade ingredients and tailored to meet puppies' nutritional needs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r1')">
+    <td class="tc-n">2</td><td class="tc-t"><span class="tbadge">kangaroo diet</span></td><td class="tc-q">Which wild-caught kangaroo dog food is best for dogs with pancreatitis</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r1" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Kangaroo is ideal for pancreatitis due to its lower fat content; try Frontier Pets Kangaroo or Big Dog Pet Foods Kangaroo blend, both formulated with digestive health in mind. Consult your vet to confirm the recipe meets your dog's specific fat restrictions.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For wild-caught kangaroo dog food suitable for dogs with pancreatitis, 'Kangaroo and Sweet Potato' by Vets All Natural is an excellent choice. It's high in protein and low in fat, making it easy on the digestive system.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r2')">
+    <td class="tc-n">3</td><td class="tc-t"><span class="tbadge">lamb protein</span></td><td class="tc-q">Best grass-fed lamb dog food for active working dogs</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r2" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Nature's Logic Grass-Fed Lamb or Primal Raw Grass-Fed Lamb are excellent high-protein options for active working dogs. Both are nutrient-dense and support sustained energy without artificial supplements.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For grass-fed lamb dog food ideal for active working dogs, 'Ollie Grass-Fed Lamb' provides high-quality protein and is designed for energy and performance. It contains wholesome ingredients to support their active lifestyle.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r3')">
+    <td class="tc-n">4</td><td class="tc-t"><span class="tbadge">beef topper</span></td><td class="tc-q">Which beef and parmesan meal topper should I buy for my picky eater</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r3" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Stella &amp; Chewy's Beef &amp; Parmesan Topper is a premium option that most picky eaters find irresistible. For a fresher alternative, try The Farmer's Dog Beef &amp; Sweet Potato topper mixed into regular meals.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For a beef and parmesan meal topper for picky eaters, try 'Stella &amp; Chewy's Freeze-Dried Raw Meal Mixers Beef and Parmesan.' It's flavorful and easily mixes with kibble to entice even the fussiest of dogs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r4')">
+    <td class="tc-n">5</td><td class="tc-t"><span class="tbadge">training treats</span></td><td class="tc-q">Best busy beef treats for dog training and enrichment</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r4" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Ziwi Peak Air-Dried Beef Chews are nutrient-dense and perfect for training rewards and mental enrichment. They're single-ingredient, highly palatable, and support healthy chewing behavior.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">The best busy beef treats for dog training and enrichment are 'Zuke's Mini Naturals Beef Recipe.' They are small, flavorful, and made with wholesome ingredients, making them perfect for training.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r5')">
+    <td class="tc-n">6</td><td class="tc-t"><span class="tbadge">chicken chews</span></td><td class="tc-q">Which chicky chews are safest for small dogs</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r5" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Primal Freeze-Dried Chicken Chews are safe and digestible for small dogs with minimal choking risk. Stella &amp; Chewy's Chicken Freeze-Dried Chews are also excellent and come in appropriately-sized pieces.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For the safest chicky chews for small dogs, look into 'Pet 'n Shape Chik 'n Doodle Dog Treats.' They are made with all-natural chicken and are easy to chew, making them a safe choice.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r6')">
+    <td class="tc-n">7</td><td class="tc-t"><span class="tbadge">digestive issues</span></td><td class="tc-q">My dog has terrible digestion from kibble - which fresh cooked dog food brand fixes this</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r6" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">The Farmer's Dog Fresh Cooked recipes are specifically formulated for digestive health with easily digestible ingredients and probiotics. Nom Nom is another excellent option with vet-formulated recipes that consistently improve digestion issues in kibble-sensitive dogs.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">If your dog has digestion issues from kibble, consider 'Fresh Pet.' Their range of fresh-cooked dog food is easily digestible and made with fresh, high-quality ingredients.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r7')">
+    <td class="tc-n">8</td><td class="tc-t"><span class="tbadge">diabetic dog</span></td><td class="tc-q">My dog is diabetic and overweight - what ultra-low fat high protein dog food works best</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r7" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Purina DM (Diabetic Management) is vet-formulated for weight and blood sugar control with high protein and low fat. For fresh options, try Nom Nom's low-fat, high-protein recipes developed with veterinary nutritionists.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For diabetic and overweight dogs, 'Health Extension Lite Dog Food' offers an ultra-low fat, high protein option with a focus on maintaining a healthy weight.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r8')">
+    <td class="tc-n">9</td><td class="tc-t"><span class="tbadge">kibble alternative</span></td><td class="tc-q">Need to replace highly processed kibble with fresh food - which Australian brand should I choose</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r8" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka is an Australian leader in fresh dog food with vet-formulated recipes designed for local conditions and shipped fresh nationwide. Alternatively, Big Dog Pet Foods is another quality Australian brand offering fresh cooked meals.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For fresh food alternatives to highly processed kibble in Australia, 'Bella &amp; Barks' offers quality fresh dog meals made with natural ingredients and minimal processing.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r9')">
+    <td class="tc-n">10</td><td class="tc-t"><span class="tbadge">novel protein</span></td><td class="tc-q">My dog needs a novel protein source due to allergies - which brand offers lamb with superfoods</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r9" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Stella &amp; Chewy's Lamb &amp; Superfood blends combine novel protein with beneficial extras like probiotics and omega fatty acids. Alternatively, Primal Lamb &amp; Pumpkin offers simple, clean ingredients with functional superfoods.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For a novel protein source due to allergies, try 'Pawsitively Posh' which offers a lamb recipe with added superfoods to support health and wellness.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r10')">
+    <td class="tc-n">11</td><td class="tc-t"><span class="tbadge">ready buy</span></td><td class="tc-q">Ready to switch from kibble to fresh dog food - recommend the best Australian brand</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r10" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Fresh Dog Food is Australia's leading fresh option with vet-formulated recipes and nationwide delivery. Big Dog Pet Foods is a strong alternative if you prefer a different Australian brand with similar fresh food benefits.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">The best Australian brand for fresh dog food is 'Lyka.' They specialize in providing freshly prepared meals that are tailored to meet your dog's dietary needs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r11')">
+    <td class="tc-n">12</td><td class="tc-t"><span class="tbadge">vet recommended</span></td><td class="tc-q">My vet said get vet-formulated fresh dog food - which brand should I order</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r11" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">The Farmer's Dog is vet-formulated fresh food available in Australia through direct ordering with customizable recipes. Alternatively, Lyka offers vet-formulated fresh recipes designed specifically for Australian dogs with nationwide delivery.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For vet-formulated fresh dog food, consider 'Vet's Kitchen.' Their recipes are designed by veterinarians to provide complete nutrition for your dog.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r12')">
+    <td class="tc-n">13</td><td class="tc-t"><span class="tbadge">complete meal</span></td><td class="tc-q">Want to buy complete and balanced fresh dog food for all life stages - best option</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r12" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">The Farmer's Dog Fresh Food covers all life stages with adaptable portions and balanced nutrition for puppies through seniors. Nom Nom is another excellent complete and balanced option with recipes suitable across life stages.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">A great option for complete and balanced fresh dog food suitable for all life stages is 'Ollie.' Their meals are crafted to meet the needs of puppies, adults, and seniors alike.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r13')">
+    <td class="tc-n">14</td><td class="tc-t"><span class="tbadge">aussie brands</span></td><td class="tc-q">Best Australian-made fresh dog food brands that ship nationwide</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r13" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka and Big Dog Pet Foods are Australia's top nationwide fresh dog food brands with reliable shipping to all states. Frontier Pets is another quality option shipping nationwide, all three offering complete and balanced formulations.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Some of the best Australian-made fresh dog food brands that ship nationwide include 'Lyka,' 'Scratch Pet Food,' and 'Big Dog Pet Foods'.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r14')">
+    <td class="tc-n">15</td><td class="tc-t"><span class="tbadge">like scratch</span></td><td class="tc-q">Best fresh dog food brands like Scratch Pet Food but better quality</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r14" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">The Farmer's Dog offers superior ingredient quality and vet formulation compared to Scratch, with better customization options available. Stella &amp; Chewy's Fresh is another excellent alternative with higher quality standards than typical Scratch products.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Brands like 'Ollie' and 'Pet Plate' are similar to Scratch Pet Food but are known for their higher quality ingredients and more customized meal options.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r15')">
+    <td class="tc-n">16</td><td class="tc-t"><span class="tbadge">bigdog alternative</span></td><td class="tc-q">Better alternative to Big Dog Pet Foods for fresh cooked meals</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r15" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">The Farmer's Dog provides vet-formulated fresh cooked meals with better ingredient transparency than Big Dog. Nom Nom is another excellent alternative to Big Dog with superior nutritional balance and more protein options.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">A better alternative to 'Big Dog Pet Foods' for fresh cooked meals would be 'Ollie,' which uses human-grade ingredients and is customizable based on your dog's needs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr row-fail" onclick="tgl('r16')">
+    <td class="tc-n">17</td><td class="tc-t"><span class="tbadge">similar brands</span></td><td class="tc-q">Brands similar to Frontier Pets but with more protein options</td>
+    <td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-e"><span class="chip gap">– Gap</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r16" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Primal Raw and Stella &amp; Chewy's both offer more extensive protein variety than Frontier Pets, including duck, beef, and lamb options. The Farmer's Dog also provides better customization for different protein preferences.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Brands similar to 'Frontier Pets' but with more protein options include 'Nutrish' and 'Zignature,' both of which offer various high-protein recipes.</div></div>
+      </div>
+    </td>
+  </tr></tbody></table><div class="bdiv"><div><div class="bdiv-t">Prompts naming Lyka directly</div><div class="bdiv-s">Not scored in organic total.</div></div></div><table class="at"><thead><tr><th style="width:24px">#</th><th style="width:95px">Type</th><th>Prompt</th><th style="width:84px;text-align:center">Claude</th><th style="width:84px;text-align:center">ChatGPT</th><th style="width:16px"></th></tr></thead><tbody><tr class="pr" onclick="tgl('r17')">
+    <td class="tc-n">18</td><td class="tc-t"><span class="tbadge">vs scratch</span></td><td class="tc-q">Lyka vs Scratch Pet Food - which fresh dog food is better quality</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r17" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka generally offers superior ingredient quality and vet formulation compared to Scratch Pet Food. Lyka's recipes are more comprehensively tested and designed specifically for Australian delivery and storage conditions.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Between Lyka and Scratch Pet Food, Lyka is generally considered to be of better quality, with higher standards for ingredient sourcing and nutritional balance.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r18')">
+    <td class="tc-n">19</td><td class="tc-t"><span class="tbadge">vs bigdog</span></td><td class="tc-q">Lyka Fresh Chicken Bowl vs Big Dog Pet Foods - which is better for puppies</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r18" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Fresh Chicken Bowl is specifically formulated for puppies with balanced calcium and phosphorus for proper development. Big Dog Pet Foods offers good quality but Lyka's puppy-specific formulation makes it the better choice for growing dogs.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">For puppies, 'Lyka Fresh Chicken Bowl' is a better choice compared to 'Big Dog Pet Foods.' Lyka is specifically formulated for puppies with high-quality ingredients.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r19')">
+    <td class="tc-n">20</td><td class="tc-t"><span class="tbadge">vs frontier</span></td><td class="tc-q">Should I choose Lyka or Frontier Pets for my dog with pancreatitis</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r19" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka's Kangaroo Bowl is lower in fat, making it suitable for pancreatitis, with vet input on formulation. Frontier Pets also offers pancreatitis-friendly options, but consult your vet to confirm either brand meets your dog's specific fat requirements.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">If your dog has pancreatitis, choose 'Lyka' over 'Frontier Pets,' as it offers specially formulated recipes that are lower in fat and tailored for sensitive stomachs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r20')">
+    <td class="tc-n">21</td><td class="tc-t"><span class="tbadge">worth it</span></td><td class="tc-q">Is Lyka dog food actually worth the premium price</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r20" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka's premium pricing reflects vet formulation, quality ingredients, and temperature-controlled Australian delivery, making it justified for dogs with specific health needs. For average healthy dogs, it may be premium but offers measurable benefits in coat quality and digestion.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Yes, Lyka dog food is generally worth the premium price because of its high-quality ingredients and nutritional value, which can lead to better health for your dog.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r21')">
+    <td class="tc-n">22</td><td class="tc-t"><span class="tbadge">quality reviews</span></td><td class="tc-q">What do vets say about Lyka fresh dog food quality and ingredients</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r21" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Most vets recognize Lyka as a quality fresh food option with proper formulation and ingredient sourcing. Vets generally approve of the brand for dogs transitioning from kibble, though they recommend consultation for specific health conditions.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Vets have praised Lyka fresh dog food for its transparency in ingredient sourcing, balanced nutrition, and overall health benefits, making it a choice they often recommend.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r22')">
+    <td class="tc-n">23</td><td class="tc-t"><span class="tbadge">customer reviews</span></td><td class="tc-q">Real customer reviews of Lyka Fresh Kangaroo Bowl for overweight dogs</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r22" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Customer reviews consistently report weight loss and improved digestion in overweight dogs on Lyka Kangaroo Bowl within 4-6 weeks. Owners note improved energy levels and coat quality, with the lower-fat kangaroo particularly praised for weight management.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Real customer reviews of Lyka Fresh Kangaroo Bowl for overweight dogs are mostly positive, highlighting noticeable weight loss and improved energy levels in dogs.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r23')">
+    <td class="tc-n">24</td><td class="tc-t"><span class="tbadge">where buy</span></td><td class="tc-q">Where can I buy Lyka dog food in Melbourne Australia</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r23" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Fresh Dog Food is available for delivery in Melbourne through Lyka.com.au with direct home delivery on a subscription basis. You can order online and choose your delivery schedule without visiting physical stores.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">You can buy Lyka dog food in Melbourne at various pet stores, and it is also available for online purchase directly from their website.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r24')">
+    <td class="tc-n">25</td><td class="tc-t"><span class="tbadge">delivery time</span></td><td class="tc-q">How fast does Lyka deliver fresh dog food across Australia</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r24" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka typically delivers within 3-5 business days across mainland Australia through their subscription service with temperature-controlled packaging. Delivery speed depends on your location, with metropolitan areas receiving faster service than remote regions.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Lyka generally delivers fresh dog food across Australia within 1-3 business days, depending on your location.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r25')">
+    <td class="tc-n">26</td><td class="tc-t"><span class="tbadge dim">direct</span></td><td class="tc-q">Honest review of Lyka Fresh Lamb Bowl for active dogs</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r25" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Customer reviews consistently praise Lyka Fresh Lamb Bowl for maintaining muscle mass and energy in active dogs, with improved coat quality reported. The high-quality protein and balanced nutrition make it excellent for working dogs requiring sustained performance.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">The 'Lyka Fresh Lamb Bowl' is well-reviewed for active dogs, with many customers noting improved energy and coat condition post-consumption.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r26')">
+    <td class="tc-n">27</td><td class="tc-t"><span class="tbadge dim">direct</span></td><td class="tc-q">Is Lyka dog food worth switching from kibble</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r26" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Switching from kibble to Lyka is worthwhile if your dog has digestive issues, allergies, or weight concerns, with most owners reporting visible improvements within weeks. For healthy dogs, the benefits are incremental, so evaluate based on your dog's specific needs and budget.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Lyka dog food is worth switching from kibble, particularly if you're looking for fresh, quality ingredients that can improve your dog's overall health.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r27')">
+    <td class="tc-n">28</td><td class="tc-t"><span class="tbadge dim">direct</span></td><td class="tc-q">Where to buy Lyka Fresh Chicken Bowl online in Australia</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r27" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Fresh Chicken Bowl is available exclusively through Lyka.com.au with direct online ordering and subscription delivery across Australia. You cannot purchase through other retailers; order directly from their website for best availability.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">You can purchase Lyka Fresh Chicken Bowl online through their official website or authorized pet retailers in Australia.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r28')">
+    <td class="tc-n">29</td><td class="tc-t"><span class="tbadge dim">direct</span></td><td class="tc-q">Are Lyka Beef and Parmesan Meal Toppers good for picky eaters</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r28" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Beef and Parmesan Meal Toppers are highly palatable and effective for picky eaters, with most owners reporting immediate interest. The real beef and parmesan combination is more appealing than many competitor toppers for finicky dogs.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Yes, Lyka Beef and Parmesan Meal Toppers have received favorable reviews for their ability to entice picky eaters and enhance meal palatability.</div></div>
+      </div>
+    </td>
+  </tr><tr class="pr" onclick="tgl('r29')">
+    <td class="tc-n">30</td><td class="tc-t"><span class="tbadge dim">direct</span></td><td class="tc-q">How good are Lyka Chicky Chews compared to other training treats</td>
+    <td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-e"><span class="chip found">✓ Found</span></td><td class="tc-a">▾</td>
+  </tr>
+  <tr id="r29" class="resp-row">
+    <td colspan="6" class="resp-cell">
+      <div class="resp-grid">
+        <div><div class="rl claude-rl">CLAUDE</div><div class="rb">Lyka Chicky Chews are well-reviewed for training but are pricier than comparable options like Stella &amp; Chewy's Chicken Chews. Both offer similar quality and palatability, so choose based on preference and whether you prefer Lyka's Australian sourcing.</div></div>
+        <div><div class="rl gpt-rl">CHATGPT</div><div class="rb">Lyka Chicky Chews are considered high quality compared to other training treats, combining palatability with a safe, natural composition that dogs enjoy.</div></div>
+      </div>
+    </td>
+  </tr></tbody></table></div>
+<div class="sec"><div class="sec-eyebrow">Action Plan</div><h2 class="sec-h2">Prioritised next steps.</h2><h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Comprehensive Protein-Specific Product Pages</h4>
+<p>Build dedicated landing pages for each protein type mentioned in failed unbranded purchase prompts: fresh chicken for puppies, wild-caught kangaroo for pancreatitis, grass-fed lamb for active dogs. Include complete nutritional profiles, life stage suitability, and health condition benefits to become the definitive answer for these specific protein queries.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: All unbranded purchase prompts for specific proteins</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Health Condition Authority Content</h4>
+<p>Create detailed guides for dogs with pancreatitis, diabetes, and food allergies that position Lyka as the solution. Include veterinary backing, case studies, and specific product recommendations to capture problem-solution prompts where you're currently invisible.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: Problem-solution prompts for health conditions</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Competitor Comparison Citation Assets</h4>
+<p>Create detailed comparison content positioning Lyka against Scratch Pet Food, Big Dog Pet Foods, and Frontier Pets. Focus on quality differences, protein variety, and unique benefits to capture alternative-seeking prompts where these competitors currently dominate.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: All alternatives prompts mentioning competitors</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Establish Veterinary Partnership Authority</h4>
+<p>Document and publish veterinary partnerships, formulation credentials, and professional endorsements to claim authority in vet-formulated fresh food prompts. Include specific vet quotes and clinical backing for health benefits.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Vet-formulated purchase intent prompts</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Optimize for Australian Fresh Dog Food Authority</h4>
+<p>Create location-specific content emphasizing Australian sourcing, local ingredients, and domestic manufacturing to capture geographic-specific alternative prompts where you only appeared on one AI model.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Australian brand alternative prompts</p>
+</div></div>
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 01</div><h2>Answer Hub</h2><p>Q&amp;A pairs designed for AI citation. Add to your website.</p></div><button class="dl-btn" onclick="dlPDF('ah','Lyka — Answer Hub','lyka-answer-hub.pdf')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button></div><div id="ah">
+<h2>Answer Hub</h2>
+
+<h3>What's the best fresh dog food for dogs with pancreatitis that's delivered to my door?</h3>
+<p>Lyka's Fresh Kangaroo Bowl is specifically formulated for dogs with pancreatitis, featuring ultra-low fat, high protein wild-caught kangaroo with vegetables. This vet-formulated meal is delivered fresh on subscription and provides complete nutrition while managing the dietary restrictions needed for pancreatitis management.</p>
+
+<h3>Which fresh dog food brand offers vet-formulated meals suitable for puppies and adult dogs?</h3>
+<p>Lyka's Fresh Chicken Bowl is vet-formulated and complete and balanced for all life stages including puppies. Made with gently cooked free-range chicken, vegetables, fruit and rice, it eliminates the need for separate puppy and adult formulations while providing human-grade nutrition.</p>
+
+<h3>What fresh dog food is best for active dogs that need higher fat content?</h3>
+<p>Lyka's Fresh Lamb Bowl features grass-fed lamb with seasonal vegetables and superfoods, specifically formulated with higher fat content ideal for active dogs or those requiring novel protein sources. The subscription delivery ensures consistent nutrition for high-energy dogs.</p>
+
+<h3>Where can I find human-grade dog food that replaces ultra-processed kibble?</h3>
+<p>Lyka provides fresh, human-grade, vet-formulated dog food delivered on subscription as a direct replacement for highly-processed kibble. Their range includes Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl, all designed to improve dogs' health, digestion and longevity.</p>
+
+<h3>What meal toppers can enhance my dog's fresh food for training and enrichment?</h3>
+<p>Lyka offers Beef & Parmesan Meal Topper, Chicky Chews and Busy Beefy treats specifically designed for enrichment and training. These complement their fresh bowl meals and provide additional nutrition and engagement opportunities.</p>
+
+<h3>Which dog food is suitable for overweight dogs or those with diabetes?</h3>
+<p>Lyka's Fresh Kangaroo Bowl is formulated for dogs with obesity or diabetes, featuring wild-caught kangaroo that's ultra-low fat and high protein. This vet-formulated option addresses specific dietary management needs while providing complete nutrition.</p>
+
+<h3>How can I feed my dog fresh food without the effort of home cooking?</h3>
+<p>Lyka solves this by delivering pre-prepared, vet-formulated fresh meals including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl directly to your door on subscription. This eliminates home cooking effort while providing human-grade nutrition without the guilt of feeding ultra-processed kibble.</p>
+
+<h3>What fresh dog food uses free-range and grass-fed proteins?</h3>
+<p>Lyka sources premium proteins including free-range chicken in their Fresh Chicken Bowl and grass-fed lamb in their Fresh Lamb Bowl. Their Fresh Kangaroo Bowl features wild-caught kangaroo, ensuring high-quality protein sources across their vet-formulated range.</p>
+</div></div>
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 02</div><h2>Brand Facts</h2><p>Structured data for AI platforms. Ready to deploy.</p></div><button class="dl-btn" onclick="dlJSON('bf','lyka-brand-facts.json')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>JSON</button></div><div id="bf">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>Lyka offers three main fresh dog food bowls: Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl</li>
+<li>Lyka's Fresh Chicken Bowl is made with gently cooked free-range chicken, vegetables, fruit and rice</li>
+<li>Lyka's Fresh Chicken Bowl is complete and balanced for all life stages including puppies</li>
+<li>Lyka's Fresh Kangaroo Bowl features wild-caught kangaroo and is ultra-low fat, high protein</li>
+<li>Lyka's Fresh Kangaroo Bowl is suited for dogs with pancreatitis, obesity or diabetes</li>
+<li>Lyka's Fresh Lamb Bowl contains grass-fed lamb with seasonal vegetables and superfoods</li>
+<li>Lyka's Fresh Lamb Bowl has higher fat content, ideal for active dogs or those needing novel protein</li>
+<li>Lyka provides meal toppers and treats including Beef & Parmesan Meal Topper, Chicky Chews and Busy Beefy treats</li>
+<li>All Lyka meals are vet-formulated and human-grade</li>
+<li>Lyka operates on a subscription delivery model</li>
+<li>Lyka addresses the problem of highly-processed kibble failing to support dogs' health, digestion and longevity</li>
+<li>Lyka eliminates the effort of home cooking while avoiding the guilt of feeding ultra-processed food</li>
+</ul>
+</div></div>
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 03</div><h2>AI Content Architecture</h2><p>Prioritised citation assets to create, mapped to your specific gaps.</p></div><button class="dl-btn" onclick="dlPDF('ca','Lyka — Content Architecture','lyka-content-architecture.pdf')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button></div><div id="ca">
+<h2>AI Content Architecture</h2>
+
+<ul>
+<li>Complete Fresh Chicken Puppy Nutrition Guide — Best fresh chicken dog food for puppies unbranded purchase prompts</li>
+<li>Kangaroo Protein for Pancreatitis Dogs Resource — Wild-caught kangaroo for pancreatitis unbranded purchase prompts</li>
+<li>Grass-Fed Lamb for Working Dogs Authority Page — Best lamb dog food for active dogs unbranded purchase prompts</li>
+<li>Beef & Parmesan Meal Topper Product Guide — Beef and parmesan topper purchase prompts</li>
+<li>Digestive Health Recovery Protocol — Digestion problems from kibble solution prompts</li>
+<li>Diabetic Dog Nutrition Management System — Diabetic and overweight dog solution prompts</li>
+<li>Novel Protein Allergy Solution Framework — Novel protein allergy solution prompts</li>
+<li>Complete Life Stage Feeding Guide — All life stages purchase intent prompts</li>
+<li>Lyka vs Scratch Pet Food Quality Comparison — Scratch alternatives prompts</li>
+<li>Lyka vs Big Dog Pet Foods Feature Analysis — Big Dog alternatives prompts</li>
+<li>Lyka vs Frontier Pets Protein Variety Comparison — Frontier alternatives prompts</li>
+<li>Australian Fresh Food Manufacturing Authority — Australian brand alternative prompts</li>
+<li>Veterinary Formulation Certification Hub — Vet-formulated purchase intent prompts</li>
+</ul>
+</div></div>
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 04</div><h2>Entity Checklist</h2><p>Entity signals your brand is missing.</p></div><button class="dl-btn" onclick="dlPDF('ec','Lyka — Entity Checklist','lyka-entity-checklist.pdf')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PDF</button></div><div id="ec">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create detailed product specification pages for Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl with nutritional data and feeding guidelines</li>
+<li>Develop comprehensive FAQ content addressing specific health conditions like pancreatitis, obesity, and diabetes in relation to Lyka's formulations</li>
+<li>Publish veterinary endorsement content highlighting the vet-formulated nature of Lyka meals</li>
+<li>Create ingredient sourcing transparency content detailing free-range chicken, wild-caught kangaroo, and grass-fed lamb procurement</li>
+<li>Develop life stage feeding guides specifically showcasing Fresh Chicken Bowl's suitability for puppies through senior dogs</li>
+<li>Publish comparison content between Lyka's fresh meals and traditional kibble, focusing on health and digestion benefits</li>
+<li>Create subscription service explanation content detailing delivery logistics and customisation options</li>
+<li>Develop treat and meal topper usage guides for Beef & Parmesan Meal Topper, Chicky Chews and Busy Beefy products</li>
+<li>Publish customer success stories focusing on health improvements after switching from processed kibble to Lyka</li>
+<li>Create breed-specific feeding recommendations linking active breeds to Fresh Lamb Bowl and sensitive breeds to Fresh Kangaroo Bowl</li>
+<li>Develop seasonal content around Fresh Lamb Bowl's seasonal vegetables and superfoods components</li>
+<li>Publish nutritional analysis content comparing Lyka's meals to home-cooked alternatives, emphasising convenience and consistency</li>
+</ul>
+</div></div>
+<div class="sec"><div class="dl-bar"><div><div class="sec-eyebrow">Asset 05</div><h2>Organisation Schema</h2><p>Paste into your homepage &lt;head&gt;. Tells AI crawlers exactly who Lyka is.</p></div><button class="dl-btn" onclick="dlSchema('os','lyka-org-schema.json')"><svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>JSON</button></div><div id="os">
+<h2>Organisation Schema</h2>
+
+<pre><code>
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Lyka",
+  "alternateName": ["Lyka Pet Food", "Lyka Fresh Dog Food"],
+  "url": "https://lyka.com.au",
+  "logo": "https://lyka.com.au/logo.png",
+  "description": "Australian vet-formulated fresh cooked dog food brand offering complete and balanced meals with fresh chicken, wild-caught kangaroo, grass-fed lamb, and beef proteins for all life stages including dogs with pancreatitis, diabetes, and food allergies.",
+  "foundingDate": "2018",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Australia"
+  },
+  "sameAs": [
+    "https://facebook.com/lyka",
+    "https://instagram.com/lyka"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+61-xxx-xxx-xxx",
+    "contactType": "customer service",
+    "areaServed": "AU"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "AU"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Fresh Dog Food Products",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Fresh Chicken Dog Food",
+          "description": "Complete and balanced fresh chicken dog food for puppies and all life stages",
+          "category": "Pet Food"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Wild-Caught Kangaroo Dog Food",
+          "description": "Novel protein kangaroo dog food for dogs with pancreatitis and allergies",
+          "category": "Pet Food"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Grass-Fed Lamb Dog Food",
+          "description": "High-protein lamb dog food for active working dogs",
+          "category": "Pet Food"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Beef and Parmesan Meal Topper",
+          "description": "Nutritious meal topper for picky eating dogs",
+          "category": "Pet Food"
+        }
+      }
+    ]
+  },
+  "knowsAbout": [
+    "Fresh dog food",
+    "Vet-formulated dog food",
+    "Dog nutrition for pancreatitis",
+    "Diabetic dog food",
+    "Novel protein dog food",
+    "Australian pet food manufacturing",
+    "Complete and balanced dog meals",
+    "Fresh cooked pet food"
+  ],
+  "expertise": [
+    "Veterinary nutrition",
+    "Fresh pet food preparation",
+    "Dog health conditions",
+    "Australian pet food standards",
+    "Protein variety for dogs"
+  ]
+}
+</code></pre>
+</div></div>
+<div class="ftr"><div class="ftr-in"><div><div class="ftr-wm">Found By AI</div><div class="ftr-s">by Edge Studio · AEO Agency · Australia</div></div><div class="ftr-r"><a href="https://foundbyai.com.au">foundbyai.com.au</a><br><a href="https://theedgestudio.app">theedgestudio.app</a></div></div></div>
+</body></html>
