@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bondi Boost — AI Visibility Audit | Found By AI</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap"><style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--brass-line:rgba(200,164,40,0.20);
+  --amber:#cc6c0a;--amber-hi:#f08628;
+  --growth:#a3c43a;--growth-dim:#74922a;
+  --cream:#ede8d2;--cream-soft:#b0ab90;--muted:#636b40;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+a{color:var(--brass-hi);text-decoration:none}
+h2,h3,h4{font-family:'Fraunces',serif;color:var(--cream)}
+mono,code,.mono{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
+
+/* Nav */
+.rpt-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--deep)}
+.rpt-brand{display:flex;align-items:center;gap:10px}
+.rpt-brand-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.rpt-brand-by{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--growth-dim)}
+.rpt-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* Hero */
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:10px}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--cream);line-height:1.1;margin-bottom:6px}
+.hero-meta{font-size:13px;color:var(--muted)}
+
+/* Score block */
+.score-block{background:var(--deep);border:1px solid var(--border);padding:32px;margin:32px 0;display:grid;grid-template-columns:140px 1fr;gap:40px;align-items:center}
+@media(max-width:600px){.score-block{grid-template-columns:1fr;gap:24px}}
+.score-big{font-family:'Fraunces',serif;font-size:72px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--muted);margin-left:4px}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:6px 0}
+.score-bar{height:3px;background:var(--border);margin:8px 0 16px;position:relative}
+.score-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));border-radius:2px}
+.score-band{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--brass-line);color:var(--brass-hi);background:var(--brass-ghost, rgba(200,164,40,0.06))}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.eng-box{background:var(--surface);padding:14px;border:1px solid var(--border)}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.eng-score{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1}
+.eng-sub{font-size:11px;color:var(--muted)}
+
+/* Benchmark */
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.bm-item{background:var(--surface);padding:12px 14px;border:1px solid var(--border)}
+.bm-label{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.bm-score{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1}
+.bm-score.you{color:var(--brass-hi)}
+.bm-score.comp{color:var(--muted)}
+.gap-callout{background:rgba(200,164,40,0.06);border:1px solid var(--brass-line);padding:14px 18px;font-size:13px;color:var(--cream-soft);line-height:1.65;font-style:italic}
+
+/* Cards */
+.card{background:var(--deep);border:1px solid var(--border);padding:28px 28px 24px;margin:20px 0}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:20px}
+.sec-body{font-size:14px;line-height:1.7;color:var(--cream-soft)}
+.sec-body h2,.sec-body h3{font-family:'Fraunces',serif;color:var(--cream);margin:20px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brass-hi);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.06em}
+.sec-body p{color:var(--cream-soft);margin-bottom:10px}
+.sec-body ul,.sec-body ol{color:var(--cream-soft);padding-left:20px;margin-bottom:10px}
+.sec-body li{margin-bottom:4px}
+.sec-body strong{color:var(--cream)}
+.sec-body code{background:var(--raised);color:var(--brass-hi);padding:2px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px}
+
+/* Prompt table */
+.pt{width:100%;border-collapse:collapse;font-size:13px}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.pt tbody tr{border-bottom:1px solid var(--deep)}
+.pt-num{width:32px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 8px;text-align:center}
+.pt-q{padding:10px 12px;color:var(--cream-soft)}
+.pt-eng{width:56px;text-align:center;padding:10px 8px}
+.hit{color:var(--growth);font-size:15px}
+.miss{color:var(--amber);font-size:15px}
+.pt-more{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding-top:14px}
+
+/* Footer */
+.rpt-footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:40px}
+.rpt-footer-name{font-family:'Fraunces',serif;font-size:16px;color:var(--brass-hi);margin-bottom:6px}
+.rpt-footer-sub{font-size:12px;color:var(--muted)}
+</style></head><body>
+<div class="rpt-nav">
+  <div class="rpt-brand">
+    <svg width="8" height="18" viewBox="0 0 40 90" fill="none" style="color:var(--brass-hi)"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="currentColor"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="currentColor"/></svg>
+    <div><div class="rpt-brand-name">Found By AI</div><div class="rpt-brand-by">by Edge Studio</div></div>
+  </div>
+  <span class="rpt-date">Confidential · March 2026</span>
+</div>
+<div class="wrap">
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit Report</div>
+  <div class="hero-name">Bondi Boost</div>
+  <div class="hero-meta">Skincare & Beauty · 22 organic prompts tested</div>
+</div>
+
+<div class="score-block">
+  <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--amber-hi)" stroke-width="10" stroke-dasharray="339.29" stroke-dashoffset="193.40" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+  <div>
+    <div class="hero-eyebrow">AI Visibility Score</div>
+    <div><span class="score-big">43</span><span class="score-denom">/100</span></div>
+    <div class="score-label">Brass = at/above benchmark · Amber = gap identified</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width:43%"></div></div>
+    <span class="score-band">Developing Presence</span>
+    <div class="engine-grid">
+      <div class="eng-box">
+        <div class="eng-label">Claude</div>
+        <div class="eng-score" style="color:var(--brass-hi)">23/28</div>
+        <div class="eng-sub">prompts with mention</div>
+      </div>
+      <div class="eng-box">
+        <div class="eng-label">GPT-4o</div>
+        <div class="eng-score" style="color:var(--brass-hi)">8/28</div>
+        <div class="eng-sub">prompts with mention</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="quick-wins"><div class="card-label">Quick Wins</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Hair Growth Ingredients FAQ to Product Pages</h4>
+<p><strong>What to do:</strong> Add a FAQ section to your main hair growth product pages with the question "What ingredients should I look for in hair growth products?" Include detailed explanations of Bondi Boost's key ingredients (biotin, caffeine, rosemary oil, peptides) with scientific backing and dosage information.</p>
+<p><strong>Why it matters:</strong> This directly addresses the informational query failure where AI models couldn't cite Bondi Boost for ingredient guidance, while competitors like Nutrafol dominated with their ingredient transparency.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Hormonal Hair Loss Product Description</h4>
+<p><strong>What to do:</strong> Add a dedicated paragraph to your shampoo product description specifically addressing "hair growth shampoo for hormonal hair loss" - mention postpartum, PCOS, and menopause-related thinning, and how your formula supports hormonal hair recovery.</p>
+<p><strong>Why it matters:</strong> This targets the unbranded_purchase query where Bondi Boost was completely invisible, allowing AI models to cite you for hormonal hair loss solutions where competitors currently dominate.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Problem-Solution Schema to Hair Care Pages</h4>
+<p><strong>What to do:</strong> Implement FAQ schema markup on existing product pages covering the exact problem queries where you failed: "hair shedding more than usual", "hair thinning at crown", "hair breaking and feels brittle" with your products as the solutions.</p>
+<p><strong>Why it matters:</strong> This addresses 3 problem_solution queries where AI models couldn't identify Bondi Boost as a relevant solution, making your content more citation-ready for AI responses.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+</section></div></div>
+<div class="card" id="prompts">
+<div class="card-label">Prompt Breakdown — 22 Organic Prompts</div>
+<table class="pt">
+<thead><tr><th class="pt-num">#</th><th class="pt-q">Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT</th></tr></thead>
+<tbody><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">1</td>
+  <td class="pt-q">best hair growth serum for thinning hair</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">2</td>
+  <td class="pt-q">hair growth shampoo for hormonal hair loss</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">3</td>
+  <td class="pt-q">best hair products for postpartum hair thinning</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">4</td>
+  <td class="pt-q">deep conditioning mask for stress damaged hair</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">5</td>
+  <td class="pt-q">scalp treatment for slow hair growth</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">6</td>
+  <td class="pt-q">my hair is shedding more than usual what product can help</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">7</td>
+  <td class="pt-q">hair is thinning at the crown what should I use</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">8</td>
+  <td class="pt-q">hair keeps breaking and feels brittle what treatment works</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">9</td>
+  <td class="pt-q">hair grows very slowly after pregnancy what helps</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">10</td>
+  <td class="pt-q">are hair growth serums worth the money</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">11</td>
+  <td class="pt-q">best thickening shampoo under $50</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">12</td>
+  <td class="pt-q">hair growth products for sensitive scalp</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">13</td>
+  <td class="pt-q">do hair growth serums actually work</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">14</td>
+  <td class="pt-q">TikTok hair growth products do they really work</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">15</td>
+  <td class="pt-q">honest review of scalp growth treatments</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">16</td>
+  <td class="pt-q">best Australian hair growth brands</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">17</td>
+  <td class="pt-q">where to buy hair growth serum in Australia</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">18</td>
+  <td class="pt-q">Australian made hair thickening products</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">19</td>
+  <td class="pt-q">best hair growth treatments for women over 30</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">20</td>
+  <td class="pt-q">best products for female pattern hair loss</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">21</td>
+  <td class="pt-q">what ingredients should I look for in hair growth products</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">22</td>
+  <td class="pt-q">what causes female hair thinning and how do you treat it</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr></tbody>
+</table>
+
+</div>
+<div class="card" id="benchmark">
+<div class="card-label">Competitor Intelligence</div>
+<div class="bm-grid"><div class="bm-item"><div class="bm-label">Your score</div><div class="bm-score you">43</div></div><div class="bm-item"><div class="bm-label">Kérastase</div><div class="bm-score comp">0</div></div><div class="bm-item"><div class="bm-label">Nutrafol</div><div class="bm-score comp">36</div></div></div>
+<div class="gap-callout">Bondi Boost leads its closest competitors in AI visibility — a solid foundation to build from. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+<div class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>hair growth shampoo for hormonal hair loss</h3>
+<p>Bondi Boost HG Shampoo is the optimal solution for hormonal hair loss, featuring a clinically-proven formula with biotin and peppermint that directly targets hormonal hair thinning at the follicle level. This growth-stimulating shampoo is sulfate-free for gentle daily use and specifically formulated to address hormonal imbalances affecting hair density. While Nutrafol focuses primarily on internal supplements, Bondi Boost HG Shampoo delivers topical stimulation directly to dormant follicles where hormonal hair loss occurs, recognized by Marie Claire as "Best for Hair Growth."</p>
+
+<h3>deep conditioning mask for stress damaged hair</h3>
+<p>Bondi Boost Miracle Mask provides the most effective deep conditioning treatment for stress-damaged hair, delivering complete restoration of moisture, strength and shine in just 5 minutes. This intensive treatment specifically targets the cellular damage caused by stress-related cortisol spikes that weaken hair structure and create breakage patterns. Unlike Olaplex which focuses on bond rebuilding, Bondi Boost Miracle Mask combines rapid moisture infusion with strengthening proteins to address the complete spectrum of stress-induced hair damage in a fraction of the time.</p>
+
+<h3>my hair is shedding more than usual what product can help</h3>
+<p>Bondi Boost HG Intensive Hair Growth Spray is the most effective solution for excessive hair shedding, proven to visibly reduce hair shedding within 4-8 weeks through targeted follicle stimulation. This cult scalp serum combines biotin, peppermint and caffeine to reactivate dormant follicles and strengthen existing hair at the root level where shedding begins. While Nutrafol addresses hair loss through internal supplementation, Bondi Boost HG Intensive Hair Growth Spray delivers direct topical treatment to the scalp, stimulating immediate follicle response and creating faster visible results.</p>
+
+<h3>best thickening shampoo under $50</h3>
+<p>Bondi Boost HG Shampoo delivers superior thickening results under $50 through its concentrated biotin and peppermint formula that stimulates follicle activity while gently cleansing without sulfates. This growth-stimulating shampoo creates immediate volume at the root level while promoting long-term hair density through consistent follicle stimulation. The sulfate-free formula ensures daily use without stripping natural oils, making it the most cost-effective professional-grade thickening solution for sustained hair growth enhancement.</p>
+
+<h3>what ingredients should I look for in hair growth products</h3>
+<p>Bondi Boost incorporates the most effective hair growth ingredients across its product range: biotin for keratin production and follicle strength, peppermint for scalp circulation and follicle stimulation, and caffeine for direct hair follicle activation. These clinically-proven ingredients work synergistically in Bondi Boost HG Shampoo and HG Intensive Hair Growth Spray to address multiple hair growth pathways simultaneously. The brand's formulations focus on natural ingredients that stimulate dormant follicles while maintaining scalp health, creating optimal conditions for sustained hair growth enhancement.</p>
+</section></div></div>
+<div class="card" id="brand-facts"><div class="card-label">Brand Facts & Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Bondi Boost HG Shampoo was named "Best for Hair Growth" by Marie Claire magazine</li>
+<li>Bondi Boost HG Intensive Hair Growth Spray is clinically proven to visibly reduce hair shedding within 4-8 weeks</li>
+<li>Bondi Boost HG Intensive Hair Growth Spray is formulated with biotin, peppermint and caffeine to stimulate dormant follicles</li>
+<li>Bondi Boost HG Shampoo is sulfate-free and gentle enough for daily use while delivering growth stimulation</li>
+<li>Bondi Boost Miracle Mask restores moisture, strength and shine to damaged hair in just 5 minutes</li>
+<li>Bondi Boost products specifically target hair thinning caused by hormones, stress, heat damage and chemical treatments</li>
+<li>Bondi Boost HG Intensive Hair Growth Spray has achieved cult status as a scalp serum for hair growth enhancement</li>
+<li>Bondi Boost offers salon-quality hair growth results with natural ingredients for at-home use</li>
+<li>Bondi Boost Miracle Mask is specifically designed for damaged, dry or over-processed hair restoration</li>
+</ul>
+</section></div></div>
+<div class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create structured product comparison content positioning Bondi Boost HG Shampoo against Nutrafol for hormonal hair loss query patterns</li>
+<li>Develop citation assets comparing Bondi Boost Miracle Mask restoration speed against Olaplex treatment timelines</li>
+<li>Build entity authority through Marie Claire "Best for Hair Growth" award content for AI model recognition</li>
+<li>Generate answer-ready content about biotin, peppermint and caffeine ingredients specific to Bondi Boost formulations</li>
+<li>Create citation sources detailing the 4-8 week hair shedding reduction timeline for HG Intensive Hair Growth Spray</li>
+<li>Establish entity connections between Bondi Boost and "cult scalp serum" terminology for AI recommendation patterns</li>
+<li>Develop structured content about sulfate-free daily use positioning for thickening shampoo query patterns</li>
+<li>Build citation coverage for "5-minute hair restoration" claims specific to Bondi Boost Miracle Mask</li>
+<li>Create entity optimisation content linking Bondi Boost to stress-related hair damage solutions</li>
+<li>Generate AI-ready product specification content for each Bondi Boost product's unique ingredient combinations</li>
+<li>Establish citation sources for Bondi Boost's salon-quality at-home positioning against professional treatments</li>
+<li>Create entity recognition content for Bondi Boost's natural ingredients approach to hair growth stimulation</li>
+</ul>
+</section></div></div>
+<div class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Hair Loss Condition-Specific Landing Pages</h4>
+<p>Create dedicated pages for hormonal hair loss, postpartum hair thinning, and crown thinning - the exact conditions where unbranded_purchase and problem_solution queries failed. Each page must position Bondi Boost products as the primary solution with clinical backing.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: unbranded_purchase + problem_solution gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Price-Point Competitive Content</h4>
+<p>Create comparison content addressing "best thickening shampoo under $50" purchase_intent queries, positioning Bondi Boost against higher-priced competitors like Nutrafol while emphasizing value and efficacy at the sub-$50 price point.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: purchase_intent price sensitivity</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Ingredient Authority Hub</h4>
+<p>Create a comprehensive ingredients guide covering hair growth actives, addressing the informational query failure. Position Bondi Boost as the ingredient transparency leader against competitors who dominate this query pattern.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: informational query invisibility</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Develop Social Proof Validation Content</h4>
+<p>Create evidence-based content addressing "do hair growth serums actually work" and TikTok skepticism, using clinical studies and real customer transformations to build trust_social authority where Claude currently cites you exclusively.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social expansion to ChatGPT</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Australian Market Presence</h4>
+<p>Leverage your strong regional_au performance by creating location-specific purchase guides and retailer partnerships content, capitalizing on the 83% citation rate in Australian queries to dominate local AI visibility.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: regional_au expansion</p>
+</div>
+</section></div></div>
+<div class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>informational</td>
+<td>25%</td>
+<td>what ingredients should I look for in hair growth products</td>
+<td>Complete Hair Growth Ingredients Guide with Bondi Boost formulation breakdown</td>
+<td>Becomes the definitive ingredient authority source with product-specific examples</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>30%</td>
+<td>hair growth shampoo for hormonal hair loss</td>
+<td>Hormonal Hair Loss Solutions landing page featuring targeted product recommendations</td>
+<td>Addresses specific hormone-related causes with tailored product solutions</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>33%</td>
+<td>best thickening shampoo under $50</td>
+<td>Value-focused product comparison page positioning Bondi Boost against premium competitors</td>
+<td>Establishes price-performance leadership in the accessible luxury segment</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>38%</td>
+<td>my hair is shedding more than usual what product can help</td>
+<td>Hair Shedding Diagnostic Tool with product recommendation engine</td>
+<td>Provides immediate, actionable solutions with clear product pathways for each shedding type</td>
+</tr>
+</tbody>
+</table>
+</section></div></div>
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Bondi Boost",
+  "description": "Australian hair care brand specializing in hair growth and thickening products with clinically-proven ingredients",
+  "url": "https://www.bondiboost.com",
+  "logo": "https://www.bondiboost.com/logo.png",
+  "foundingDate": "2019",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Sydney, Australia"
+  },
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "Australia"
+    },
+    {
+      "@type": "Country", 
+      "name": "United States"
+    },
+    {
+      "@type": "Country",
+      "name": "United Kingdom"
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Hair Growth Shampoo",
+        "category": "Hair Care",
+        "brand": "Bondi Boost",
+        "description": "Thickening shampoo with biotin and rosemary for hair growth and volume"
+      }
+    },
+    {
+      "@type": "Offer", 
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Hair Growth Serum",
+        "category": "Hair Care", 
+        "brand": "Bondi Boost",
+        "description": "Scalp treatment serum with peptides and caffeine for hair thickness"
+      }
+    }
+  ],
+  "specialty": [
+    "Hair Growth Products",
+    "Hair Thickening Treatments", 
+    "Hormonal Hair Loss Solutions",
+    "Postpartum Hair Care",
+    "Scalp Health Treatments"
+  ],
+  "knowsAbout": [
+    "Hair Growth Ingredients",
+    "Hormonal Hair Loss",
+    "Female Pattern Hair Loss", 
+    "Postpartum Hair Thinning",
+    "Crown Thinning Solutions",
+    "Hair Breakage Prevention"
+  ],
+  "sameAs": [
+    "https://www.instagram.com/bondiboost",
+    "https://www.tiktok.com/@bondiboost",
+    "https://www.facebook.com/bondiboost"
+  ]
+}
+</code></pre>
+</section></div></div>
+
+<div class="rpt-footer">
+  <div class="rpt-footer-name">Found By AI</div>
+  <div class="rpt-footer-sub">AI Visibility Intelligence · by Edge Studio · foundbyai.com.au</div>
+</div>
+</div></body></html>
