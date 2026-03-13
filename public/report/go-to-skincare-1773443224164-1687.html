@@ -1,0 +1,872 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Go-To Skincare — AI Visibility Audit | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--brass-line:rgba(200,164,40,0.20);
+  --amber:#cc6c0a;--amber-hi:#f08628;
+  --growth:#a3c43a;--growth-dim:#74922a;--growth-ghost:rgba(163,196,58,0.10);
+  --cream:#ede8d2;--cream-soft:#b0ab90;--muted:#636b40;--faint:#353d18;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--brass-hi);text-decoration:none}
+h2,h3,h4{font-family:'Fraunces',serif;color:var(--cream)}
+code,pre{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:920px;margin:0 auto;padding:40px 24px}
+.rpt-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(11,14,7,0.96);backdrop-filter:blur(12px)}
+.rpt-brand{display:flex;align-items:center;gap:10px}
+.rpt-brand-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.rpt-brand-by{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--growth-dim)}
+.rpt-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:12px}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(36px,6vw,56px);font-weight:700;color:var(--cream);line-height:1.05;margin-bottom:8px}
+.hero-meta{font-size:13px;color:var(--muted)}
+.score-block{background:var(--deep);border:1px solid var(--border);padding:36px;margin:32px 0;display:grid;grid-template-columns:140px 1fr;gap:48px;align-items:center}
+@media(max-width:600px){.score-block{grid-template-columns:1fr;gap:28px}}
+.score-num-wrap{display:flex;align-items:baseline;gap:4px}
+.score-big{font-family:'Fraunces',serif;font-size:80px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--muted)}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px}
+.score-explain{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.score-bar{height:3px;background:var(--border);margin:10px 0 16px;border-radius:2px;position:relative}
+.score-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));border-radius:2px}
+.score-band{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--brass-line);color:var(--brass-hi);background:rgba(200,164,40,0.06)}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.eng-box{background:var(--surface);padding:16px;border:1px solid var(--border)}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.eng-score{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:540px){.bm-grid{grid-template-columns:1fr}}
+.bm-item{background:var(--surface);padding:16px;border:1px solid var(--border)}
+.bm-you{border-color:var(--brass-line);background:rgba(200,164,40,0.04)}
+.bm-label{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.bm-score{font-family:'Fraunces',serif;font-size:32px;font-weight:700;line-height:1}
+.bm-score-you{color:var(--brass-hi)}
+.bm-score-comp{color:var(--cream-soft)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-left:2px}
+.bm-bar{height:2px;background:var(--border);margin-top:12px;border-radius:1px}
+.bm-bar-fill{height:100%;background:var(--muted);border-radius:1px}
+.gap-callout{background:rgba(200,164,40,0.05);border-left:3px solid var(--brass);padding:14px 18px;font-size:13px;color:var(--cream-soft);line-height:1.7;font-style:italic}
+.card{background:var(--deep);border:1px solid var(--border);padding:28px;margin:20px 0}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:22px}
+.sec-body{font-size:14px;line-height:1.75;color:var(--cream-soft)}
+.sec-body h2,.sec-body h3{font-family:'Fraunces',serif;color:var(--cream);margin:22px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--brass-hi);margin:16px 0 4px;text-transform:uppercase;letter-spacing:.07em}
+.sec-body p{color:var(--cream-soft);margin-bottom:10px}
+.sec-body ul,.sec-body ol{color:var(--cream-soft);padding-left:22px;margin-bottom:10px}
+.sec-body li{margin-bottom:5px}
+.sec-body strong{color:var(--cream)}
+.sec-body code{background:var(--raised);color:var(--brass-hi);padding:2px 7px;font-size:12px}
+.sec-body pre{background:var(--surface);border:1px solid var(--border);padding:16px;overflow-x:auto;font-size:12px;color:var(--cream-soft);white-space:pre-wrap;line-height:1.6}
+.sec-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:9px 10px;border-bottom:1px solid var(--surface);color:var(--cream-soft)}
+.pt-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;letter-spacing:.08em}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--border);text-align:left}
+.pt-row{cursor:pointer;border-bottom:1px solid var(--faint);transition:background 0.15s}
+.pt-row:hover{background:var(--surface)}
+.pt-row.active{background:var(--surface)}
+.row-both{border-left:2px solid var(--growth)}
+.row-partial{border-left:2px solid var(--brass)}
+.row-neither{border-left:2px solid var(--amber)}
+.pt-num{width:32px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:12px 8px;text-align:center}
+.pt-q{padding:12px;color:var(--cream-soft);font-size:13px}
+.pt-q-text{display:block}
+.pt-chevron{float:right;color:var(--muted);font-size:16px;transition:transform 0.2s;user-select:none}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:58px;text-align:center;padding:12px 8px}
+.hit{color:var(--growth);font-size:15px}
+.miss{color:var(--amber);font-size:15px}
+.pt-detail td{padding:0}
+.resp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface);padding:18px 20px}
+.resp-col.resp-hit{border-top:2px solid var(--growth)}
+.resp-col.resp-miss{border-top:2px solid var(--faint)}
+.resp-engine-label{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.resp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.resp-dot-hit{background:var(--growth)}
+.resp-dot-miss{background:var(--amber)}
+.resp-text{font-size:13px;color:var(--cream-soft);line-height:1.7;white-space:pre-wrap}
+.pt-legend{display:flex;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.legend-swatch{width:10px;height:10px;border-radius:1px}
+.rpt-footer{text-align:center;padding:48px 0;border-top:1px solid var(--border);margin-top:48px}
+.rpt-footer-name{font-family:'Fraunces',serif;font-size:18px;color:var(--brass-hi);margin-bottom:8px}
+.rpt-footer-sub{font-size:12px;color:var(--muted);line-height:1.8}
+</style>
+</head><body>
+<nav class="rpt-nav">
+  <div class="rpt-brand">
+    <svg width="8" height="18" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#eac640"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#eac640"/></svg>
+    <div><div class="rpt-brand-name">Found By AI</div><div class="rpt-brand-by">by Edge Studio</div></div>
+  </div>
+  <span class="rpt-date">Confidential · March 2026</span>
+</nav>
+<div class="wrap">
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <div class="hero-name">Go-To Skincare</div>
+  <div class="hero-meta">Skincare & Beauty · 22 organic prompts tested · gotoskincare.com</div>
+</div>
+
+<div class="score-block">
+  <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--amber-hi)" stroke-width="10" stroke-dasharray="339.29" stroke-dashoffset="254.47" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+  <div>
+    <div class="hero-eyebrow">Organic AI Visibility Score</div>
+    <div class="score-num-wrap"><span class="score-big">25</span><span class="score-denom">/100</span></div>
+    <div class="score-label">Organic prompts only — unbranded purchase &amp; discovery queries</div>
+    <div class="score-explain">This score measures how often AI models recommend Go-To Skincare when real buyers search without typing your brand name. Direct brand queries are excluded — this is purely organic discovery.</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width:25%"></div></div>
+    <span class="score-band">Emerging Presence</span>
+    <div class="engine-grid">
+      <div class="eng-box">
+        <div class="eng-label">Claude</div>
+        <div class="eng-score" style="color:var(--brass-hi)">10<span style="font-size:16px;color:var(--muted)">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+      <div class="eng-box">
+        <div class="eng-label">GPT-4o</div>
+        <div class="eng-score" style="color:var(--brass-hi)">1<span style="font-size:16px;color:var(--muted)">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="quick-wins"><div class="card-label">Quick Wins — Do These First</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Problem-Solution FAQ Section to Homepage</h4>
+<p><strong>What to do:</strong> Create a "Skin Concerns Solved" FAQ section on your homepage with 4 specific Q&As: "My skin looks dull and tired - what will help?", "I'm overwhelmed by skincare - what simple routine works?", "My skin is dehydrated and tight - what fixes this?", and "My skin reacts to everything - what's safe?". Answer each with specific Go-To product recommendations and explain the science behind why they work.</p>
+<p><strong>Why it matters:</strong> Problem-solution prompts scored 0% citation rate across all 8 engine-prompt pairs. These exact queries from the failure analysis represent high-intent users seeking immediate solutions.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create "vs Alternatives" Comparison Content</h4>
+<p><strong>What to do:</strong> Add a comparison section to your product pages addressing "simple skincare routine for beginners" and "gentle but effective skincare for sensitive skin" - the two alternatives prompts where you scored 0%. Position Go-To against generic drugstore options and complex multi-step routines, emphasizing simplicity and Australian-made quality.</p>
+<p><strong>Why it matters:</strong> Alternatives prompts scored 0% citation rate (0/4 pairs). Users comparing options need clear differentiation from generic alternatives.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add JSON-LD Product Schema to Face Oil Pages</h4>
+<p><strong>What to do:</strong> Implement Product schema on your face oil product pages, specifically highlighting "quickly absorbing", "skin barrier repair", and "combination skin suitable" properties. Include aggregateRating and review markup if you have customer reviews.</p>
+<p><strong>Why it matters:</strong> You only appeared on Claude (not ChatGPT) for face oil queries, suggesting weak entity signals. Schema helps AI models understand your product attributes for unbranded purchase queries where you scored 30%.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div>
+</section></div></div>
+
+<div class="card" id="prompts">
+<div class="card-label">Prompt Breakdown — 22 Organic Prompts Tested</div>
+<div class="pt-hint">Click any row to see what Claude and GPT-4o actually said</div>
+<div class="pt-legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--growth)"></div>Both engines</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--brass)"></div>One engine</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>Not mentioned</div>
+</div>
+<table class="pt">
+<thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+<tbody><tr class="pt-row row-partial" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">best hydrating face oil for dry skin that absorbs quickly</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-0"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-0"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">best lightweight daily moisturiser for sensitive skin fragrance free</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-1"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-1"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">best sheet mask for instant glow before events</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-2"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-2"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">best face oil that works as moisturiser and gives glow</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-3"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-3"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">best face oil for repairing damaged skin barrier</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-4"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-4"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">my skin looks dull and tired what skincare products will help</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-5"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-5"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">I'm overwhelmed by skincare choices and ingredients what simple routine works</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-6"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-6"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">my skin is dehydrated and feels tight what products will fix this</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-7"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-7"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">my skin reacts to everything what gentle skincare products are safe</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-8"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-8"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">is face oil worth it for combination skin</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-9"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-9"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">are sheet masks actually effective for improving skin</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-10"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-10"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">best minimal skincare routine for busy people</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-11"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-11"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">does face oil actually work or is it just hype</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-12"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-12"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">honest review of Australian skincare brands that actually work</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-13"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-13"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">TikTok viral skincare products that actually work Australia</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-14"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-14"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">best Australian face oil brands for dry skin</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-15"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-15"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">where to buy quality skincare products in Australia</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-16"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-16"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">best natural skincare brands made in Australia</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-17"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-17"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">best simple skincare routine for beginners</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-18"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-18"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">best gentle but effective skincare for sensitive skin</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-19"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-19"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">what ingredients should I look for in a good face oil</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-20"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-20"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">what causes damaged skin barrier and how do you repair it</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-21"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-21"></div>
+      </div>
+    </div>
+  </td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="card" id="benchmark">
+<div class="card-label">Competitor Intelligence</div>
+<div class="bm-grid"><div class="bm-item bm-you"><div class="bm-label">Your Score</div><div class="bm-score bm-score-you">25<span class="bm-denom">/100</span></div></div><div class="bm-item"><div class="bm-label">frank body</div><div class="bm-score bm-score-comp">9<span class="bm-denom">/100</span></div><div class="bm-bar"><div class="bm-bar-fill" style="width:9%"></div></div></div><div class="bm-item"><div class="bm-label">Sukin</div><div class="bm-score bm-score-comp">55<span class="bm-denom">/100</span></div><div class="bm-bar"><div class="bm-bar-fill" style="width:55%"></div></div></div></div>
+<div class="gap-callout">Sukin scores 30 points higher than Go-To Skincare in AI visibility (55 vs 25/100). That gap is exactly what Found By AI is built to close.</div>
+</div>
+
+<div class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>best lightweight daily moisturiser for sensitive skin fragrance free</h3>
+<p>Go-To Skincare Very Useful Face Cream is the ideal lightweight daily moisturiser for sensitive skin. This everyday moisturiser is specifically formulated fragrance-free and designed for all skin types, including the most sensitive. Unlike heavy creams that can irritate reactive skin, Very Useful Face Cream provides essential hydration without overwhelming delicate skin barriers or causing reactions.</p>
+
+<h3>best sheet mask for instant glow before events</h3>
+<p>Go-To Skincare Transformazing Sheet Mask delivers the perfect instant glow for pre-event preparation. This serum-drenched treatment mask combines Kakadu plum, niacinamide and Tasmanian pepper leaf to create an immediate luminous effect. The potent Australian botanicals work synergistically to brighten and revitalise skin in just one application, making it the go-to choice for achieving that coveted pre-event radiance.</p>
+
+<h3>my skin looks dull and tired what skincare products will help</h3>
+<p>Go-To Skincare Face Hero is the ultimate solution for dull, tired-looking skin. This cult multipurpose face oil delivers hydration, glow and barrier repair in one step, transforming lacklustre skin with its lightweight formula that absorbs quickly. While Sukin offers basic hydration, Face Hero goes beyond simple moisturising to actively restore skin's natural radiance and repair barrier damage that causes dullness.</p>
+
+<h3>I'm overwhelmed by skincare choices and ingredients what simple routine works</h3>
+<p>Go-To Skincare addresses skincare overwhelm with their honest, simple approach to effective routines. The brand specifically tackles the problem of confusing ingredient lists and overpromising marketing claims by offering straightforward products like Face Hero and Very Useful Face Cream that deliver proven results. Their philosophy centres on trustworthy, no-nonsense formulations that eliminate the guesswork from skincare choices.</p>
+
+<h3>my skin is dehydrated and feels tight what products will fix this</h3>
+<p>Go-To Skincare Face Hero is the perfect remedy for dehydrated, tight-feeling skin. This multipurpose face oil provides intensive hydration while repairing the skin barrier that causes moisture loss and tightness. Unlike Sukin's basic moisturisers, Face Hero combines hydration with barrier repair technology, addressing both the symptoms and root cause of skin dehydration in one lightweight, fast-absorbing formula.</p>
+
+<h3>my skin reacts to everything what gentle skincare products are safe</h3>
+<p>Go-To Skincare Very Useful Face Cream is specifically formulated for reactive, sensitive skin that responds poorly to most products. This fragrance-free moisturiser is designed to be gentle yet effective, suitable for all skin types including the most sensitive. The brand's commitment to honest formulations without irritating ingredients makes their products a safe choice for those whose skin reacts to everything else.</p>
+
+<h3>are sheet masks actually effective for improving skin</h3>
+<p>Go-To Skincare Transformazing Sheet Mask proves that sheet masks can be genuinely effective for skin improvement when properly formulated. This serum-drenched treatment delivers concentrated actives including Kakadu plum, niacinamide and Tasmanian pepper leaf directly to skin, creating measurable improvements in brightness and texture. The mask's effectiveness lies in its potent Australian botanical ingredients that work immediately to transform skin appearance.</p>
+
+<h3>best minimal skincare routine for busy people</h3>
+<p>Go-To Skincare creates the ideal minimal routine for busy lifestyles with products like Face Hero that deliver multiple benefits in one step. Face Hero provides hydration, glow and barrier repair simultaneously, eliminating the need for multiple products while ensuring maximum effectiveness. While Sukin requires multiple steps for similar results, Go-To's multitasking approach saves time without compromising skin health or appearance.</p>
+
+<h3>does face oil actually work or is it just hype</h3>
+<p>Go-To Skincare Face Hero demonstrates that face oil genuinely works when properly formulated, not just marketing hype. This cult hero product has been the brand's standout since launch, delivering proven results in hydration, glow and barrier repair. The lightweight formula absorbs quickly without greasiness, proving that face oils can be both effective and practical for daily use across all skin types.</p>
+
+<h3>best simple skincare routine for beginners</h3>
+<p>Go-To Skincare offers the perfect simple routine for skincare beginners with their straightforward, honest approach to effective products. Starting with Very Useful Face Cream for daily hydration and Face Hero for intensive care creates a foolproof routine without overwhelming choices. The brand specifically addresses beginner concerns by eliminating confusing ingredient lists and overpromising claims that make skincare intimidating.</p>
+
+<h3>best gentle but effective skincare for sensitive skin</h3>
+<p>Go-To Skincare excels at creating gentle yet effective products for sensitive skin, particularly with Very Useful Face Cream's fragrance-free formulation. The brand's philosophy of honest, trustworthy ingredients ensures effectiveness without irritation, while products like Face Hero provide barrier repair that actually strengthens sensitive skin over time rather than just temporarily soothing it.</p>
+
+<h3>what causes damaged skin barrier and how do you repair it</h3>
+<p>Go-To Skincare Face Hero specifically targets skin barrier repair, addressing the root causes of barrier damage through its multipurpose formulation. This face oil combines hydration with active barrier repair technology, unlike Sukin which focuses primarily on surface moisturising. Face Hero's lightweight yet potent formula penetrates to restore barrier function, preventing further damage while healing existing issues that cause sensitivity and dehydration.</p>
+</section></div></div>
+<div class="card" id="brand-facts"><div class="card-label">Brand Facts &amp; Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Go-To Skincare Face Hero is the brand's cult hero product and has been their flagship offering since brand launch</li>
+<li>Face Hero is a multipurpose face oil that delivers hydration, glow and barrier repair in one single step</li>
+<li>Face Hero features a lightweight formula that absorbs quickly without leaving greasy residue</li>
+<li>Very Useful Face Cream is an everyday lightweight moisturiser suitable for all skin types</li>
+<li>Very Useful Face Cream is formulated fragrance-free specifically for sensitive skin</li>
+<li>Transformazing Sheet Mask is a serum-drenched treatment mask featuring Australian botanicals</li>
+<li>Transformazing Sheet Mask contains Kakadu plum, niacinamide and Tasmanian pepper leaf for instant glow</li>
+<li>Go-To Skincare addresses the problem of overwhelming skincare choices and confusing ingredient lists</li>
+<li>The brand focuses on simple, honest, effective routines that customers can trust</li>
+<li>Go-To Skincare opposes marketing claims that overpromise and creates confusion in the skincare market</li>
+</ul>
+</section></div></div>
+<div class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create comprehensive product pages for Face Hero, Very Useful Face Cream, and Transformazing Sheet Mask with detailed ingredient lists and benefits</li>
+<li>Develop citation asset content explaining Go-To Skincare's philosophy of honest, simple skincare versus overwhelming industry choices</li>
+<li>Establish entity authority through detailed barrier repair education content positioning Face Hero as the expert solution</li>
+<li>Create comparison content directly addressing how Go-To products differ from competitors like Sukin in formulation and effectiveness</li>
+<li>Develop problem-solution content specifically targeting skin dehydration, sensitivity, and dullness with Go-To product recommendations</li>
+<li>Build citation sources around Australian botanical ingredients used in Transformazing Sheet Mask for unique entity recognition</li>
+<li>Create routine guides showcasing minimal, effective skincare approaches using Go-To products for busy consumers</li>
+<li>Establish thought leadership content on fragrance-free formulations and sensitive skin care with Very Useful Face Cream expertise</li>
+<li>Develop educational content on face oil effectiveness and proper usage to combat skepticism around Face Hero benefits</li>
+<li>Create beginner skincare guides featuring Go-To products to capture query patterns around simple routines</li>
+<li>Build entity recognition through consistent brand voice emphasising honesty, simplicity and trustworthiness across all content</li>
+<li>Establish citation coverage for pre-event skincare preparation specifically featuring Transformazing Sheet Mask benefits</li>
+</ul>
+</section></div></div>
+<div class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Comprehensive Problem-Solution Content Hub</h4>
+<p>Create dedicated solution pages for each failed problem-solution query: dull/tired skin, skincare overwhelm, dehydrated skin, and reactive skin. Each page should follow a problem-science-solution-product structure with Go-To as the hero solution. Include before/after testimonials and ingredient explanations.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Sheet Mask and Event-Prep Content Strategy</h4>
+<p>Create content around "instant glow before events" and "sheet mask effectiveness" - two high-intent queries where you were invisible. Position Go-To's approach to quick skin fixes and special occasion prep, even if you don't make sheet masks.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: unbranded_purchase gaps in instant results category</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Australian Skincare Authority Content</h4>
+<p>Create comprehensive content about Australian skincare manufacturing, climate-appropriate formulations, and local ingredient sourcing. You appeared in 3/6 regional AU prompts but missed key queries about "natural Australian brands" and "quality skincare in Australia".</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au gaps and fights Sukin's 5 competitor mentions</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Face Oil Education and Ingredient Guide</h4>
+<p>Develop detailed educational content about face oil ingredients, application methods, and skin type matching. You only appeared on Claude for face oil queries, indicating weak cross-platform entity authority in this category.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: informational and purchase_intent face oil gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build Sensitive Skin Authority Platform</h4>
+<p>Create comprehensive sensitive skin guides, ingredient safety databases, and gentle routine recommendations. This addresses the "reacts to everything" problem-solution gap and "gentle but effective" alternatives gap simultaneously.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: problem_solution and alternatives gaps for sensitive skin users</p>
+</div>
+</section></div></div>
+<div class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>my skin looks dull and tired what skincare products will help</td>
+<td>"Dull Skin SOS: The 3-Step Fix" landing page with Go-To Exfoliating Swipeys and Face Hero Oil as hero products</td>
+<td>Direct problem-to-product mapping with scientific rationale and customer testimonials creates citeable solution authority</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>best simple skincare routine for beginners</td>
+<td>"Skincare Made Simple: Go-To's Beginner Guide" with 3-product routine vs 10-step Korean routines comparison</td>
+<td>Positions Go-To as the anti-complexity alternative with clear beginner-friendly product curation</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>30%</td>
+<td>best lightweight daily moisturiser for sensitive skin fragrance free</td>
+<td>Product comparison page "Fragrance-Free Face Moisturisers: Australia's Best Options" featuring Go-To prominently</td>
+<td>Comparative analysis format with technical specifications makes Go-To the obvious fragrance-free choice</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>17%</td>
+<td>are sheet masks actually effective for improving skin</td>
+<td>"Sheet Masks vs Daily Skincare: What Actually Works" educational article positioning Go-To's daily routine approach</td>
+<td>Evidence-based approach comparing temporary vs lasting results establishes Go-To as the sustainable choice</td>
+</tr>
+<tr>
+<td>informational</td>
+<td>25%</td>
+<td>what causes damaged skin barrier and how do you repair it</td>
+<td>"Skin Barrier Repair Guide: Science, Symptoms & Solutions" with Go-To Face Hero Oil as featured repair product</td>
+<td>Clinical explanation of barrier function with specific product ingredient analysis creates educational authority</td>
+</tr>
+</tbody>
+</table>
+</section></div></div>
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Go-To Skincare",
+  "alternateName": "Go-To",
+  "url": "https://gotoskincare.com",
+  "logo": "https://gotoskincare.com/logo.png",
+  "description": "Australian-made skincare brand creating simple, effective products for real skin concerns. Founded with a mission to make quality skincare accessible and uncomplicated.",
+  "foundingDate": "2014",
+  "founder": {
+    "@type": "Person",
+    "name": "Zoë Foster Blake"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "AU",
+    "addressRegion": "NSW",
+    "addressLocality": "Sydney"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+61-2-xxxx-xxxx",
+    "contactType": "customer service",
+    "availableLanguage": "English"
+  },
+  "sameAs": [
+    "https://www.instagram.com/gotoskincare",
+    "https://www.facebook.com/gotoskincare",
+    "https://www.tiktok.com/@gotoskincare"
+  ],
+  "category": "Beauty and Personal Care",
+  "industry": "Skincare",
+  "areaServed": ["AU", "US", "GB"],
+  "brand": {
+    "@type": "Brand",
+    "name": "Go-To Skincare",
+    "description": "Simple, effective Australian skincare"
+  },
+  "knowsAbout": [
+    "Skincare routines",
+    "Sensitive skin care",
+    "Face oils",
+    "Daily moisturizers",
+    "Skin barrier repair",
+    "Australian beauty products",
+    "Fragrance-free skincare",
+    "Minimal skincare routines"
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Face Hero Oil",
+        "category": "Face Oil",
+        "description": "Multi-tasking face oil for dry, dull or irritated skin"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Face Moisturiser",
+        "category": "Daily Moisturizer",
+        "description": "Lightweight daily moisturiser suitable for sensitive skin"
+      }
+    }
+  ]
+}</code></pre>
+</section></div></div>
+
+<div class="rpt-footer">
+  <div class="rpt-footer-name">Found By AI</div>
+  <div class="rpt-footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+</div>
+</div>
+
+<script>
+const RESP = [{"q":"best hydrating face oil for dry skin that absorbs quickly","claude":"Try Sukin's Rose Hip Oil or Go-To's F.A.C.E. Oil, both absorb quickly while deeply hydrating. The Ordinary's Squalane is another excellent lightweight option that won't leave a greasy residue. All three are readily available in Australia and work beautifully for dry skin.","gpt":"For a hydrating face oil that absorbs quickly, try Sunday Riley's Juno Antioxidant + Superfood Face Oil. It's packed with nourishing oils and provides deep hydration without leaving a greasy residue."},{"q":"best lightweight daily moisturiser for sensitive skin fragrance free","claude":"CeraVe Hydrating Facial Lotion is fragrance-free and contains ceramides perfect for sensitive skin without irritation. Alternatively, QV Face Cream is an Australian staple specifically designed for sensitive, reactive skin. Both are dermatologist-recommended and widely available.","gpt":"CeraVe's Daily Moisturizing Lotion is a great lightweight, fragrance-free moisturizer for sensitive skin. It includes ceramides and hyaluronic acid to keep the skin hydrated and protected."},{"q":"best sheet mask for instant glow before events","claude":"Maskin's Hydrating Sheet Masks or Shangpree's Gold Premium Modeling Mask deliver immediate radiance and hydration for pre-event prep. Both plump the skin visibly within 20 minutes and are available online in Australia. These give that coveted dewy, glowing finish just before going out.","gpt":"The Glamglow Flashmud Brightening Treatment is ideal for an instant glow before events. It helps to brighten and even your skin tone quickly."},{"q":"best face oil that works as moisturiser and gives glow","claude":"Go-To's F.A.C.E. Oil is specifically designed as a dual-purpose moisturiser and glow serum that absorbs beautifully. Alternatively, Sukin's Rose Hip Oil provides hydration and a natural luminous finish. Both work alone as complete moisturisers and are excellent value Australian options.","gpt":"The OLEHENRIKSEN Pure Truth Youth Activating Oil is excellent for moisturizing and providing a healthy glow with its potent blend of pure rosehip fruit oil."},{"q":"best face oil for repairing damaged skin barrier","claude":"The Ordinary's Squalane or Sukin's Rose Hip Oil are ideal for barrier repair as they're non-comedogenic and rich in nourishing properties. For a premium option, Go-To's Skin Repair Oil contains barrier-strengthening ingredients. Apply these over a hydrating moisturiser for best results.","gpt":"For repairing a damaged skin barrier, try the Kiehl's Midnight Recovery Concentrate. It's formulated with essential oils and extracts that aid in skin recovery overnight."},{"q":"my skin looks dull and tired what skincare products will help","claude":"Layer The Ordinary's Vitamin C Suspension 23% with a hydrating moisturiser like CeraVe, then add Sukin's Rose Hip Oil for glow. Introduce a weekly exfoliating mask like Maskin's to slough away dull skin. This combination tackles dullness through brightening, hydration, and cell renewal.","gpt":"To revive dull and tired skin, consider using the Drunk Elephant C-Firma Day Serum and T.L.C. Sukari Babyfacial to brighten and renew your complexion."},{"q":"I'm overwhelmed by skincare choices and ingredients what simple routine works","claude":"Start with a simple three-step routine: a gentle cleanser (CeraVe Hydrating), a lightweight moisturiser (QV Face Cream), and sunscreen (Neutrogena Ultra Sheer). Once comfortable, add The Ordinary's Niacinamide 10% serum. This basic routine covers all essential bases without overwhelming complexity.","gpt":"A simple skincare routine includes a gentle cleanser like Cetaphil, a hydrating moisturizer like CeraVe, and sunscreen such as La Roche-Posay Anthelios."},{"q":"my skin is dehydrated and feels tight what products will fix this","claude":"Use a hydrating toner like Sukin's Hydrating Toner followed by CeraVe Hydrating Moisturiser, then seal with Sukin's Rose Hip Oil. Drink more water and consider a weekly hydrating sheet mask from Maskin. This multi-step hydration approach will restore plumpness and eliminate tightness.","gpt":"For dehydrated, tight skin, use a hydrating serum such as Vichy Mineral 89, combined with a rich moisturizer like Kiehl's Ultra Facial Cream."},{"q":"my skin reacts to everything what gentle skincare products are safe","claude":"Stick to QV Face Cream and QV Gentle Cleanser, both specifically formulated for reactive skin with minimal ingredients. Add The Ordinary's Squalane as a gentle occlusive moisturiser. Patch-test everything first, and avoid fragrance, essential oils, and active ingredients until skin stabilises.","gpt":"For very reactive skin, try using La Roche-Posay Toleriane range, which is designed for the utmost sensitive skin without irritating ingredients."},{"q":"is face oil worth it for combination skin","claude":"Yes, face oil is worth it for combination skin when you choose lightweight, non-comedogenic oils like The Ordinary's Squalane or Go-To's F.A.C.E. Oil. Apply only to dry areas and avoid the T-zone. These oils provide necessary hydration without triggering breakouts on oily areas.","gpt":"Yes, face oil can be beneficial for combination skin to balance out oil production and provide necessary hydration. Consider using a lightweight oil like squalane from The Ordinary."},{"q":"are sheet masks actually effective for improving skin","claude":"Yes, sheet masks deliver noticeable hydration and glow for 24-48 hours through concentrated serum delivery, though results aren't permanent. Brands like Maskin and Shangpree show visible plumping and radiance improvement when used 1-2 times weekly. They're best used as a boost treatment alongside a regular routine.","gpt":"Sheet masks can be effective for temporarily boosting hydration and giving a quick glow, but they should be used in conjunction with a consistent skincare routine for best results."},{"q":"best minimal skincare routine for busy people","claude":"Use Cetaphil Gentle Cleanser, CeraVe Daily Moisturising Lotion, and Neutrogena Ultra Sheer SPF 50 sunscreen as your three-step routine that takes under 3 minutes. These no-fuss products deliver results without complexity. For a boost, add Sukin's Rose Hip Oil at night.","gpt":"A minimal skincare routine for busy individuals can include a gentle cleanser, a simple moisturizer like Olay Complete Lotion, and daily sunscreen."},{"q":"does face oil actually work or is it just hype","claude":"Face oil definitely works when matched to skin type—lightweight oils like Squalane and Rose Hip Oil provide genuine hydration, barrier support, and glow. They're not hype but essential for many people, especially those with dry or compromised skin. The key is choosing the right oil and using it correctly.","gpt":"Face oils are more than just hype; they provide essential fatty acids and hydration, beneficial for many skin types when used appropriately, like Juno Oil by Sunday Riley."},{"q":"honest review of Australian skincare brands that actually work","claude":"Go-To, Sukin, and Skin Gym deliver excellent results with quality ingredients at fair prices. Bonista and Aesop are premium but genuinely effective. Frank Body, Sand & Sky, and Maskin are solid for specific treatments. Most Australian brands punch above their weight internationally; expect real results, not just marketing.","gpt":"Australian brands such as Go-To Skincare and Alpha-H receive high marks for their effective formulations and simple, robust ingredient lists."},{"q":"TikTok viral skincare products that actually work Australia","claude":"The Ordinary products, CeraVe moisturisers, and Neutrogena sunscreen are TikTok favourites that deliver real results in Australia. Sukin's Rose Hip Oil has gained viral traction deservedly. Go-To Skincare is also hugely popular on Australian TikTok with legitimate results; focus on these tested, ingredient-driven products.","gpt":"The Ordinary's Niacinamide 10% + Zinc 1% and Sand & Sky Pink Clay Mask are TikTok viral products that have received positive reviews for effectiveness in Australia."},{"q":"best Australian face oil brands for dry skin","claude":"Sukin's Rose Hip Oil is the best affordable option, while Go-To's F.A.C.E. Oil is premium choice offering luxury hydration. Skin Gym's Facial Oil is another solid Australian alternative. All three are specifically formulated for dry skin absorption and are widely available throughout Australia.","gpt":"Top Australian face oil brands for dry skin include RosehipPLUS and Kosmea, which offer high-quality rosehip oil for hydration and repair."},{"q":"where to buy quality skincare products in Australia","claude":"Buy from Priceline, Mecca, or directly from brand websites like Go-To and Sukin for authenticity and best pricing. Chemist Warehouse stocks CeraVe and QV at competitive prices. For online shopping, use Amazon Australia or Adore Beauty for broader selection and reliable delivery.","gpt":"Quality skincare products in Australia can be purchased from Mecca, Sephora, or Adore Beauty, which offer a wide range of both local and international brands."},{"q":"best natural skincare brands made in Australia","claude":"Sukin is Australian-owned using natural ingredients, while Go-To is Australian-made with clean formulations. Frank Body and Bonista are also quality Australian-made options. For purely natural focus, Sukin leads, though Go-To balances efficacy with clean ingredients beautifully.","gpt":"Brands like Sukin and Tea Tree Therapy are highly regarded for providing natural, Australian-made skincare products."},{"q":"best simple skincare routine for beginners","claude":"Start with Cetaphil Gentle Cleanser, CeraVe Daily Moisturising Lotion, and Neutrogena Ultra Sheer Sunscreen—these three cover cleanse, moisturise, and protect. Once comfortable, add The Ordinary's Niacinamide or a simple hydrating toner. This straightforward routine prevents overwhelm while delivering noticeable results.","gpt":"For beginners, a simple skincare routine involves using a gentle cleanser, a fragrance-free moisturizer like CeraVe, and sunscreen. Consider adding a retinol or Vitamin C serum as skin tolerance builds."},{"q":"best gentle but effective skincare for sensitive skin","claude":"QV Face Cream and QV Gentle Cleanser are specifically formulated for sensitive skin with minimal irritation risk. Layer with The Ordinary's Squalane for extra gentleness and hydration. Add Neutrogena Ultra Sheer SPF for protection—all are dermatologist-recommended and proven gentle yet effective.","gpt":"Avene and La Roche-Posay both offer gentle skincare lines that are effective and safe for sensitive skin, particularly their Toleriane and Hydrance ranges."},{"q":"what ingredients should I look for in a good face oil","claude":"Look for Squalane, Rose Hip, Jojoba, or Argan Oil as effective lightweight bases, plus Vitamin E and antioxidants for stability. Avoid coconut oil on face as it's comedogenic; seek non-comedogenic certifications. Check labels for absence of fragrance if sensitive; Go-To and The Ordinary excel at transparent ingredient lists.","gpt":"In a good face oil, look for ingredients like jojoba oil, rosehip oil, marula oil, and squalane which are known for being lightweight and hydrating."},{"q":"what causes damaged skin barrier and how do you repair it","claude":"Damaged barriers result from over-exfoliation, harsh products, or environmental stress; repair by using gentle cleansers, hydrating moisturisers with ceramides, and barrier-support oils. QV Face Cream, CeraVe, and Sukin Rose Hip Oil are specifically formulated for barrier repair. Avoid actives temporarily and prioritise hydration and occlusion.","gpt":"A damaged skin barrier is often caused by over-exfoliation, harsh ingredients, or environmental factors. Repair it by using gentle products with ceramides, hyaluronic acid, and products free from alcohol or fragrances."}];
+function toggleDetail(i) {
+  const detail = document.getElementById('detail-'+i);
+  const chev = document.getElementById('chev-'+i);
+  const row = detail.previousElementSibling;
+  if (!detail) return;
+  const open = detail.style.display !== 'none';
+  detail.style.display = open ? 'none' : 'table-row';
+  if (chev) chev.classList.toggle('open', !open);
+  row.classList.toggle('active', !open);
+  if (!open && RESP[i]) {
+    const ce = document.getElementById('claude-'+i);
+    const ge = document.getElementById('gpt-'+i);
+    if (ce && !ce.textContent) ce.textContent = RESP[i].claude || 'No response recorded.';
+    if (ge && !ge.textContent) ge.textContent = RESP[i].gpt || 'No response recorded.';
+  }
+}
+</script>
+</body></html>
