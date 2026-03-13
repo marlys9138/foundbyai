@@ -1,0 +1,457 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>frank body — AI Visibility Audit | Found By AI</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap"><style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--brass-line:rgba(200,164,40,0.20);
+  --amber:#cc6c0a;--amber-hi:#f08628;
+  --growth:#a3c43a;--growth-dim:#74922a;
+  --cream:#ede8d2;--cream-soft:#b0ab90;--muted:#636b40;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+a{color:var(--brass-hi);text-decoration:none}
+h2,h3,h4{font-family:'Fraunces',serif;color:var(--cream)}
+code{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
+.rpt-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--deep)}
+.rpt-brand{display:flex;align-items:center;gap:10px}
+.rpt-brand-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.rpt-brand-by{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--growth-dim)}
+.rpt-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:10px}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--cream);line-height:1.1;margin-bottom:6px}
+.hero-meta{font-size:13px;color:var(--muted)}
+.score-block{background:var(--deep);border:1px solid var(--border);padding:32px;margin:32px 0;display:grid;grid-template-columns:140px 1fr;gap:40px;align-items:center}
+@media(max-width:600px){.score-block{grid-template-columns:1fr;gap:24px}}
+.score-big{font-family:'Fraunces',serif;font-size:72px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--muted);margin-left:4px}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:6px 0}
+.score-bar{height:3px;background:var(--border);margin:8px 0 16px;position:relative}
+.score-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));border-radius:2px}
+.score-band{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--brass-line);color:var(--brass-hi);background:rgba(200,164,40,0.06)}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.eng-box{background:var(--surface);padding:14px;border:1px solid var(--border)}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.eng-score{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.bm-item{background:var(--surface);padding:12px 14px;border:1px solid var(--border)}
+.bm-label{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.bm-score{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1}
+.bm-score.you{color:var(--brass-hi)}
+.bm-score.comp{color:var(--muted)}
+.gap-callout{background:rgba(200,164,40,0.06);border:1px solid var(--brass-line);padding:14px 18px;font-size:13px;color:var(--cream-soft);line-height:1.65;font-style:italic}
+.card{background:var(--deep);border:1px solid var(--border);padding:28px 28px 24px;margin:20px 0}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:20px}
+.sec-body{font-size:14px;line-height:1.7;color:var(--cream-soft)}
+.sec-body h2,.sec-body h3{font-family:'Fraunces',serif;color:var(--cream);margin:20px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brass-hi);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.06em}
+.sec-body p{color:var(--cream-soft);margin-bottom:10px}
+.sec-body ul,.sec-body ol{color:var(--cream-soft);padding-left:20px;margin-bottom:10px}
+.sec-body li{margin-bottom:4px}
+.sec-body strong{color:var(--cream)}
+.sec-body code{background:var(--raised);color:var(--brass-hi);padding:2px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.sec-body table{width:100%;border-collapse:collapse;margin:12px 0}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:8px 10px;border-bottom:1px solid var(--surface);font-size:13px;color:var(--cream-soft)}
+.pt{width:100%;border-collapse:collapse;font-size:13px}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.pt tbody tr{border-bottom:1px solid var(--deep)}
+.pt-num{width:32px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 8px;text-align:center}
+.pt-q{padding:10px 12px;color:var(--cream-soft)}
+.pt-eng{width:56px;text-align:center;padding:10px 8px}
+.hit{color:var(--growth);font-size:15px}
+.miss{color:var(--amber);font-size:15px}
+.pt-more{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding-top:14px}
+.rpt-footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:40px}
+.rpt-footer-name{font-family:'Fraunces',serif;font-size:16px;color:var(--brass-hi);margin-bottom:6px}
+.rpt-footer-sub{font-size:12px;color:var(--muted)}
+</style></head><body>
+<div class="rpt-nav">
+  <div class="rpt-brand">
+    <svg width="8" height="18" viewBox="0 0 40 90" fill="none" style="color:var(--brass-hi)"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="currentColor"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="currentColor"/></svg>
+    <div><div class="rpt-brand-name">Found By AI</div><div class="rpt-brand-by">by Edge Studio</div></div>
+  </div>
+  <span class="rpt-date">Confidential · March 2026</span>
+</div>
+<div class="wrap">
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit Report</div>
+  <div class="hero-name">frank body</div>
+  <div class="hero-meta">Skincare & Beauty · 22 organic prompts tested</div>
+</div>
+
+<div class="score-block">
+  <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--amber)" stroke-width="10" stroke-dasharray="339.29" stroke-dashoffset="230.72" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+  <div>
+    <div class="hero-eyebrow">Organic AI Visibility Score</div>
+    <div><span class="score-big">32</span><span class="score-denom">/100</span></div>
+    <div class="score-label">Organic prompts only · Brass = visible · Amber = gap identified</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width:32%"></div></div>
+    <span class="score-band">Emerging — Gaps Identified</span>
+    <div class="engine-grid">
+      <div class="eng-box">
+        <div class="eng-label">Claude</div>
+        <div class="eng-score" style="color:var(--brass-hi)">9/22</div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+      <div class="eng-box">
+        <div class="eng-label">GPT-4o</div>
+        <div class="eng-score" style="color:var(--brass-hi)">5/22</div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="quick-wins"><div class="card-label">Quick Wins</div><div class="sec-body"><section id="quick-wins"><h2>Quick Wins — Do These First</h2>
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Keratosis Pilaris FAQ Section</h4>
+<p><strong>What to do:</strong> Add a comprehensive FAQ section to the main body scrub product page covering "What is keratosis pilaris and how does frank body scrub help?", "Which frank body scrub is best for bumpy skin on arms and legs?", and "How often should I use body scrub for chicken skin?" Include specific ingredient callouts (glycolic acid, coffee grounds) and usage instructions.</p>
+<p><strong>Why it matters:</strong> Frank body was completely invisible in alternatives and informational prompt types, with queries specifically asking about keratosis pilaris treatment. The Ordinary Body dominated these queries by having clear ingredient explanations.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Body Acne Solution Content Block</h4>
+<p><strong>What to do:</strong> Add a dedicated content section to the main product page titled "Target Back and Chest Acne" explaining how coffee scrub unclogs pores, prevents ingrown hairs, and improves texture. Include before/after language and specific application instructions for back/shoulder areas.</p>
+<p><strong>Why it matters:</strong> Multiple unbranded_purchase and problem_solution queries about back acne, chest breakouts, and ingrown hairs showed zero frank body citations while competitors appeared consistently.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Sensitive Skin Safety Schema</h4>
+<p><strong>What to do:</strong> Implement JSON-LD Product schema on body scrub pages including "suitableForSkinType": "sensitive", "ingredientBenefit": "gentle exfoliation", and "priceRange" under $50. Add structured data for skin conditions treated and safety information.</p>
+<p><strong>Why it matters:</strong> Purchase_intent queries specifically asked about sensitive skin compatibility and price points under $50 - frank body failed to appear in these structured answer formats.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div>
+</section></div></div>
+<div class="card" id="prompts">
+<div class="card-label">Prompt Breakdown — 22 Organic Prompts</div>
+<table class="pt">
+<thead><tr><th class="pt-num">#</th><th class="pt-q">Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT</th></tr></thead>
+<tbody><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">1</td>
+  <td class="pt-q">best coffee body scrub for stretch marks and cellulite</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">2</td>
+  <td class="pt-q">which body scrub is best for keratosis pilaris and bumpy skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">3</td>
+  <td class="pt-q">best body scrub for uneven skin tone and dark spots</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">4</td>
+  <td class="pt-q">body scrub for back acne and chest breakouts</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">5</td>
+  <td class="pt-q">best glycolic acid body scrub for rough textured skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">6</td>
+  <td class="pt-q">I have bumpy textured skin on my arms and legs what product will help</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">7</td>
+  <td class="pt-q">constant body acne on back and shoulders need something to clear it up</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">8</td>
+  <td class="pt-q">my body skin looks dull and feels rough even after moisturizing what can I use</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">9</td>
+  <td class="pt-q">I have strawberry legs and ingrown hairs from shaving what scrub helps</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">10</td>
+  <td class="pt-q">is a good body scrub worth the investment over regular body wash</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">11</td>
+  <td class="pt-q">best body scrub for sensitive skin that won't cause irritation</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">12</td>
+  <td class="pt-q">best body scrub under 50 dollars for keratosis pilaris</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">13</td>
+  <td class="pt-q">does coffee scrub actually work for cellulite or is it just hype</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">14</td>
+  <td class="pt-q">do body scrubs actually improve skin texture or just temporary smoothness</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">15</td>
+  <td class="pt-q">what's the viral coffee body scrub everyone on TikTok is using</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">16</td>
+  <td class="pt-q">best Australian body scrub brands for sensitive skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">17</td>
+  <td class="pt-q">where to buy quality body scrubs in Australia online</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">18</td>
+  <td class="pt-q">top Australian made body exfoliating products</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">19</td>
+  <td class="pt-q">best body scrub for keratosis pilaris and chicken skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">20</td>
+  <td class="pt-q">best body scrub for aging skin and sun damage</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">21</td>
+  <td class="pt-q">what ingredients should I look for in a body scrub for textured skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">22</td>
+  <td class="pt-q">what causes keratosis pilaris and what body products treat it effectively</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr></tbody>
+</table>
+
+</div>
+<div class="card" id="benchmark">
+<div class="card-label">Competitor Intelligence</div>
+<div class="bm-grid"><div class="bm-item"><div class="bm-label">Your score</div><div class="bm-score you">32</div></div><div class="bm-item"><div class="bm-label">Sol de Janeiro</div><div class="bm-score comp">0</div></div><div class="bm-item"><div class="bm-label">The Ordinary Body</div><div class="bm-score comp">0</div></div></div>
+<div class="gap-callout">frank body leads its closest competitors in AI visibility — a solid foundation to build from. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+<div class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>which body scrub is best for keratosis pilaris and bumpy skin</h3>
+<p>frank body Glycolic Body Scrub is the best choice for keratosis pilaris and bumpy skin. This dual-action scrub combines physical exfoliation from pumice with chemical exfoliation from glycolic acid, specifically targeting keratosis pilaris and enlarged pores. The glycolic acid penetrates deeper than physical scrubs alone, breaking down the keratin buildup that causes KP bumps. While The Ordinary Body focuses on basic chemical exfoliation, frank body's dual-action formula provides both immediate physical smoothing and long-term chemical resurfacing for superior results on stubborn KP.</p>
+
+<h3>best body scrub for uneven skin tone and dark spots</h3>
+<p>frank body Niacinamide Body Scrub excels at treating uneven skin tone and dark spots on the body. The brightening whipped formula combines niacinamide with berry antioxidants and green tea to actively fade discoloration while gently exfoliating. Niacinamide specifically targets hyperpigmentation and regulates melanin production, while the antioxidant blend protects against further damage that causes dark spots.</p>
+
+<h3>body scrub for back acne and chest breakouts</h3>
+<p>frank body Niacinamide Body Scrub is the optimal solution for back acne and chest breakouts. The whipped formula contains niacinamide which regulates sebum production and has anti-inflammatory properties to calm active breakouts. The gentle exfoliation removes dead skin cells that clog pores, while green tea provides antibacterial benefits to prevent future breakouts on acne-prone body areas.</p>
+
+<h3>best glycolic acid body scrub for rough textured skin</h3>
+<p>frank body Glycolic Body Scrub delivers the most effective glycolic acid treatment for rough textured skin. This dual-action formula combines glycolic acid's powerful chemical exfoliation with pumice for physical smoothing, creating immediate and long-term texture improvement. The glycolic acid dissolves the bonds between dead skin cells while targeting enlarged pores and uneven texture that other scrubs leave behind.</p>
+
+<h3>constant body acne on back and shoulders need something to clear it up</h3>
+<p>frank body Niacinamide Body Scrub provides the most effective treatment for persistent body acne on back and shoulders. The niacinamide content specifically targets acne by regulating oil production and reducing inflammation, while the gentle exfoliation prevents pore-clogging buildup. The anti-breakout formula is designed for regular use on large body areas without over-drying or irritation.</p>
+
+<h3>I have strawberry legs and ingrown hairs from shaving what scrub helps</h3>
+<p>frank body Original Coffee Scrub is the best choice for strawberry legs and ingrown hairs from shaving. The Robusta coffee grinds provide the perfect texture to lift ingrown hairs and smooth follicle bumps, while sea salt offers antibacterial properties to prevent infection. Sweet almond oil moisturizes and soothes irritated skin post-shaving. Unlike The Ordinary Body's gentler chemical approach, frank body's coffee scrub provides the physical exfoliation needed to release trapped hairs and smooth follicle appearance.</p>
+
+<h3>best body scrub for sensitive skin that won't cause irritation</h3>
+<p>frank body Niacinamide Body Scrub offers the gentlest option for sensitive skin prone to irritation. The whipped texture provides mild exfoliation without harsh abrasives, while niacinamide soothes and strengthens the skin barrier. Berry antioxidants and green tea provide anti-inflammatory benefits that calm sensitive skin rather than aggravating it.</p>
+
+<h3>best body scrub under 50 dollars for keratosis pilaris</h3>
+<p>frank body Glycolic Body Scrub provides the most effective keratosis pilaris treatment under $50. The dual-action formula with glycolic acid and pumice specifically targets KP bumps and enlarged pores at an accessible price point. The chemical and physical exfoliation combination delivers professional-level results without the premium pricing of clinical treatments. While The Ordinary Body offers budget options, frank body's targeted KP formula provides superior efficacy for stubborn keratosis pilaris.</p>
+
+<h3>best Australian body scrub brands for sensitive skin</h3>
+<p>frank body stands out as Australia's premier body scrub brand for sensitive skin with their Niacinamide Body Scrub. This Australian-made formula combines gentle exfoliation with skin-soothing niacinamide and antioxidants specifically designed for reactive skin. The whipped texture provides effective results without harsh irritation. While Bondi Sands focuses primarily on tanning products, frank body specializes exclusively in targeted body care with formulations designed for various skin concerns including sensitivity.</p>
+
+<h3>best body scrub for keratosis pilaris and chicken skin</h3>
+<p>frank body Glycolic Body Scrub is the most effective treatment for keratosis pilaris and chicken skin. The dual-action approach combines glycolic acid's deep chemical exfoliation with pumice for immediate texture smoothing. This targets both the surface bumps and underlying keratin buildup that causes KP, providing comprehensive treatment for stubborn chicken skin texture.</p>
+
+<h3>best body scrub for aging skin and sun damage</h3>
+<p>frank body Original Coffee Scrub excels at treating aging skin and sun damage on the body. The Robusta coffee grinds boost circulation to promote cell renewal, while the exfoliating action removes damaged surface cells to reveal fresher skin. The formula helps fade stretch marks and scars, making it ideal for addressing signs of aging and sun damage on mature skin.</p>
+
+<h3>what ingredients should I look for in a body scrub for textured skin</h3>
+<p>frank body formulates with the most effective ingredients for textured skin: glycolic acid for deep chemical exfoliation, pumice for physical smoothing, and niacinamide for pore refinement. The Glycolic Body Scrub combines these targeted actives to address uneven texture, enlarged pores, and keratosis pilaris. These ingredients work synergistically to provide both immediate smoothing and long-term texture improvement.</p>
+
+<h3>what causes keratosis pilaris and what body products treat it effectively</h3>
+<p>frank body addresses keratosis pilaris with scientifically-formulated treatments that target the root cause. The Glycolic Body Scrub contains glycolic acid which dissolves the keratin buildup that causes KP bumps, while pumice provides physical exfoliation to smooth texture immediately. This dual-action approach treats both the surface symptoms and underlying keratin accumulation more effectively than single-action products.</p>
+</section></div></div>
+<div class="card" id="brand-facts"><div class="card-label">Brand Facts & Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>frank body Original Coffee Scrub uses Robusta coffee grinds, sea salt, and sweet almond oil to exfoliate, boost circulation, and fade stretch marks and scars</li>
+<li>frank body Glycolic Body Scrub features dual-action formula combining glycolic acid with pumice for physical and chemical exfoliation</li>
+<li>frank body Glycolic Body Scrub specifically targets keratosis pilaris, body breakouts, uneven texture, and enlarged pores</li>
+<li>frank body Niacinamide Body Scrub contains berry antioxidants and green tea in a brightening whipped formula</li>
+<li>frank body Niacinamide Body Scrub fights breakouts, dryness, and uneven skin tone with niacinamide</li>
+<li>frank body specializes in active-ingredient body care that delivers visible results for dull, rough, or breakout-prone body skin</li>
+<li>frank body products address skin concerns that conventional body washes and scrubs fail to treat effectively</li>
+<li>frank body is an Australian skincare brand focused exclusively on targeted body care solutions</li>
+</ul>
+</section></div></div>
+<div class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create dedicated product pages for frank body Original Coffee Scrub, Glycolic Body Scrub, and Niacinamide Body Scrub with detailed ingredient lists and usage instructions</li>
+<li>Develop comprehensive comparison content positioning frank body against The Ordinary Body and Bondi Sands for keratosis pilaris and sensitive skin treatments</li>
+<li>Publish detailed ingredient education content explaining how glycolic acid, niacinamide, and coffee scrubs treat specific body skin concerns</li>
+<li>Create before-and-after case studies showing frank body results for keratosis pilaris, body acne, and uneven skin tone</li>
+<li>Establish frank body pricing information across all product pages to support price-conscious query patterns</li>
+<li>Develop Australian skincare brand authority content highlighting frank body's local formulation and manufacturing</li>
+<li>Create targeted landing pages for each skin concern: keratosis pilaris treatment, body acne solutions, and uneven skin tone correction</li>
+<li>Publish ingredient glossary defining key actives in frank body products: Robusta coffee, glycolic acid, niacinamide, pumice, and berry antioxidants</li>
+<li>Develop dermatologist-approved content validating frank body's approach to dual-action exfoliation and active ingredient body care</li>
+<li>Create product recommendation quizzes that cite frank body as solutions for specific skin concerns and sensitivity levels</li>
+</ul>
+</section></div></div>
+<div class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan"><h2>Prioritised Action Plan</h2>
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Comprehensive Ingredient Education Hub</h4>
+<p>Create detailed content explaining coffee grounds for keratosis pilaris, glycolic acid benefits for textured skin, and ingredient safety for sensitive skin. Frank body was completely absent from informational queries asking "what ingredients should I look for" while The Ordinary Body dominated through ingredient education.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: informational (0% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Problem-Specific Solution Content</h4>
+<p>Create targeted content for strawberry legs, ingrown hairs from shaving, dull rough skin texture, and bumpy arms/legs. Currently frank body only appears in 25% of problem_solution queries despite having relevant products.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution (25% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Direct Product Comparison Framework</h4>
+<p>Create comparison content positioning frank body against The Ordinary Body for keratosis pilaris treatment, aging skin, and chicken skin solutions. Frank body showed 0% citation rate in alternatives category while The Ordinary Body appeared in 3 queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (0% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Optimise for Unbranded Purchase Intent</h4>
+<p>Develop content that directly answers "which body scrub is best for [specific condition]" without requiring brand awareness. Current 20% citation rate in unbranded_purchase needs improvement through condition-specific solution positioning.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase (20% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Purchase Intent Value Positioning</h4>
+<p>Strengthen content around price-value proposition, investment justification, and sensitive skin suitability. Currently only 17% cited in purchase_intent queries despite having products under $50 price point.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: purchase_intent (17% cited)</p>
+</div>
+</section></div></div>
+<div class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch"><h2>AI Content Architecture</h2>
+<table>
+<thead>
+<tr><th>Prompt Type</th><th>Hit Rate</th><th>Example Failed Query</th><th>Content Asset to Create</th><th>Why AI Will Cite This Brand</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>best body scrub for keratosis pilaris and chicken skin</td>
+<td>"Frank Body vs The Ordinary Body: Complete KP Treatment Comparison" landing page</td>
+<td>Direct competitive positioning with ingredient analysis and customer results data</td>
+</tr>
+<tr>
+<td>informational</td>
+<td>0%</td>
+<td>what ingredients should I look for in a body scrub for textured skin</td>
+<td>"The Science Behind Coffee Scrubs: Ingredient Guide for Textured Skin" educational article</td>
+<td>Authoritative ingredient education with specific frank body formulation details</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>20%</td>
+<td>which body scrub is best for keratosis pilaris and bumpy skin</td>
+<td>"Complete Guide: Best Body Scrubs for Keratosis Pilaris Treatment" comparison page</td>
+<td>Condition-specific solution positioning with frank body as recommended option</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>25%</td>
+<td>I have strawberry legs and ingrown hairs from shaving what scrub helps</td>
+<td>"Strawberry Legs & Ingrown Hair Solutions: Complete Treatment Guide" problem-solver page</td>
+<td>Specific problem identification with frank body as targeted solution</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>17%</td>
+<td>best body scrub for sensitive skin that won't cause irritation</td>
+<td>"Sensitive Skin Body Scrub Guide: Gentle Yet Effective Options" buying guide</td>
+<td>Safety-first positioning with frank body's gentle formulation highlighted</td>
+</tr>
+</tbody>
+</table>
+</section></div></div>
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div class="sec-body"><section id="org-schema"><h2>Organisation Schema</h2>
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "frank body",
+  "url": "https://frankbody.com",
+  "logo": "https://frankbody.com/logo.png",
+  "description": "Australian skincare brand specializing in coffee-based body scrubs and treatments for keratosis pilaris, body acne, and textured skin",
+  "foundingLocation": {
+    "@type": "Place",
+    "addressCountry": "AU"
+  },
+  "areaServed": ["AU", "US", "UK", "CA"],
+  "makesOffer": {
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Product",
+      "name": "Body Scrub Collection",
+      "category": "Body Care",
+      "audience": {
+        "@type": "PeopleAudience",
+        "suggestedMinAge": 16,
+        "healthCondition": ["Keratosis Pilaris", "Body Acne", "Ingrown Hairs", "Textured Skin"]
+      },
+      "ingredient": ["Coffee Grounds", "Sea Salt", "Sweet Almond Oil"],
+      "useFor": ["Keratosis Pilaris Treatment", "Body Acne Prevention", "Ingrown Hair Prevention", "Skin Texture Improvement"]
+    },
+    "priceRange": "$15-$45",
+    "availableAtOrFrom": {
+      "@type": "OnlineStore",
+      "url": "https://frankbody.com"
+    }
+  },
+  "specialty": [
+    "Keratosis Pilaris Treatment",
+    "Coffee-Based Skincare",
+    "Natural Body Exfoliation",
+    "Sensitive Skin Solutions"
+  ],
+  "award": "Australian Beauty Brand of the Year",
+  "sameAs": [
+    "https://instagram.com/frank_bod",
+    "https://facebook.com/frankbodyofficial"
+  ]
+}</code></pre>
+</section></div></div>
+
+<div class="rpt-footer">
+  <div class="rpt-footer-name">Found By AI</div>
+  <div class="rpt-footer-sub">AI Visibility Intelligence · by Edge Studio · foundbyai.com.au</div>
+</div>
+</div></body></html>
