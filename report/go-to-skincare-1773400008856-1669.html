@@ -1,0 +1,516 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Go-To Skincare — AI Visibility Audit | Found By AI</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap"><style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--brass-line:rgba(200,164,40,0.20);
+  --amber:#cc6c0a;--amber-hi:#f08628;
+  --growth:#a3c43a;--growth-dim:#74922a;
+  --cream:#ede8d2;--cream-soft:#b0ab90;--muted:#636b40;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+a{color:var(--brass-hi);text-decoration:none}
+h2,h3,h4{font-family:'Fraunces',serif;color:var(--cream)}
+code{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:900px;margin:0 auto;padding:40px 24px}
+.rpt-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--deep)}
+.rpt-brand{display:flex;align-items:center;gap:10px}
+.rpt-brand-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.rpt-brand-by{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--growth-dim)}
+.rpt-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{padding:48px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:10px}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--cream);line-height:1.1;margin-bottom:6px}
+.hero-meta{font-size:13px;color:var(--muted)}
+.score-block{background:var(--deep);border:1px solid var(--border);padding:32px;margin:32px 0;display:grid;grid-template-columns:140px 1fr;gap:40px;align-items:center}
+@media(max-width:600px){.score-block{grid-template-columns:1fr;gap:24px}}
+.score-big{font-family:'Fraunces',serif;font-size:72px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--muted);margin-left:4px}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:6px 0}
+.score-bar{height:3px;background:var(--border);margin:8px 0 16px;position:relative}
+.score-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));border-radius:2px}
+.score-band{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:4px 12px;border:1px solid var(--brass-line);color:var(--brass-hi);background:rgba(200,164,40,0.06)}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.eng-box{background:var(--surface);padding:14px;border:1px solid var(--border)}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.eng-score{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.bm-item{background:var(--surface);padding:12px 14px;border:1px solid var(--border)}
+.bm-label{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.bm-score{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1}
+.bm-score.you{color:var(--brass-hi)}
+.bm-score.comp{color:var(--muted)}
+.gap-callout{background:rgba(200,164,40,0.06);border:1px solid var(--brass-line);padding:14px 18px;font-size:13px;color:var(--cream-soft);line-height:1.65;font-style:italic}
+.card{background:var(--deep);border:1px solid var(--border);padding:28px 28px 24px;margin:20px 0}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:20px}
+.sec-body{font-size:14px;line-height:1.7;color:var(--cream-soft)}
+.sec-body h2,.sec-body h3{font-family:'Fraunces',serif;color:var(--cream);margin:20px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--brass-hi);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.06em}
+.sec-body p{color:var(--cream-soft);margin-bottom:10px}
+.sec-body ul,.sec-body ol{color:var(--cream-soft);padding-left:20px;margin-bottom:10px}
+.sec-body li{margin-bottom:4px}
+.sec-body strong{color:var(--cream)}
+.sec-body code{background:var(--raised);color:var(--brass-hi);padding:2px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.sec-body table{width:100%;border-collapse:collapse;margin:12px 0}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:8px 10px;border-bottom:1px solid var(--surface);font-size:13px;color:var(--cream-soft)}
+.pt{width:100%;border-collapse:collapse;font-size:13px}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.pt tbody tr{border-bottom:1px solid var(--deep)}
+.pt-num{width:32px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:10px 8px;text-align:center}
+.pt-q{padding:10px 12px;color:var(--cream-soft)}
+.pt-eng{width:56px;text-align:center;padding:10px 8px}
+.hit{color:var(--growth);font-size:15px}
+.miss{color:var(--amber);font-size:15px}
+.pt-more{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);text-align:center;padding-top:14px}
+.rpt-footer{text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:40px}
+.rpt-footer-name{font-family:'Fraunces',serif;font-size:16px;color:var(--brass-hi);margin-bottom:6px}
+.rpt-footer-sub{font-size:12px;color:var(--muted)}
+</style></head><body>
+<div class="rpt-nav">
+  <div class="rpt-brand">
+    <svg width="8" height="18" viewBox="0 0 40 90" fill="none" style="color:var(--brass-hi)"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="currentColor"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="currentColor"/></svg>
+    <div><div class="rpt-brand-name">Found By AI</div><div class="rpt-brand-by">by Edge Studio</div></div>
+  </div>
+  <span class="rpt-date">Confidential · March 2026</span>
+</div>
+<div class="wrap">
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit Report</div>
+  <div class="hero-name">Go-To Skincare</div>
+  <div class="hero-meta">Skincare & Beauty · 22 organic prompts tested</div>
+</div>
+
+<div class="score-block">
+  <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--amber)" stroke-width="10" stroke-dasharray="339.29" stroke-dashoffset="261.25" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+  <div>
+    <div class="hero-eyebrow">Organic AI Visibility Score</div>
+    <div><span class="score-big">23</span><span class="score-denom">/100</span></div>
+    <div class="score-label">Organic prompts only · Brass = visible · Amber = gap identified</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width:23%"></div></div>
+    <span class="score-band">Emerging — Gaps Identified</span>
+    <div class="engine-grid">
+      <div class="eng-box">
+        <div class="eng-label">Claude</div>
+        <div class="eng-score" style="color:var(--brass-hi)">9/22</div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+      <div class="eng-box">
+        <div class="eng-label">GPT-4o</div>
+        <div class="eng-score" style="color:var(--brass-hi)">1/22</div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="quick-wins"><div class="card-label">Quick Wins</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Purchase Intent FAQ Section to Product Pages</h4>
+<p><strong>What to do:</strong> Add a "Frequently Asked Questions" section to existing face oil and moisturiser product pages with direct answers to purchase intent queries: "Is face oil worth it for combination skin?", "Will this moisturiser work for sensitive reactive skin?", and "How do I know if this sheet mask will give me glowing skin?"</p>
+<p><strong>Why it matters:</strong> Go-To scored 0% citation rate across all purchase_intent prompts, meaning AI models have no authoritative content to reference when users ask buying decision questions.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Skin Barrier Repair Content Block</h4>
+<p><strong>What to do:</strong> Add a dedicated content section to the main skincare routine or ingredient information page addressing "damaged skin barrier from over-exfoliating" with specific product recommendations and repair protocols using Go-To products.</p>
+<p><strong>Why it matters:</strong> Problem_solution queries about skin barrier damage showed 0% citation rate, while this is a core skincare concern Go-To's formulations can address.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Simple Routine Guidance to Homepage</h4>
+<p><strong>What to do:</strong> Insert a "Simple 3-Step Routine" section on the homepage or main skincare page that directly addresses "skincare routine too complicated" and "confused by skincare ingredients" with Go-To's simplified approach and product pairings.</p>
+<p><strong>Why it matters:</strong> Multiple problem_solution prompts about routine simplification failed to cite Go-To, despite the brand's positioning around accessible skincare.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</section></div></div>
+<div class="card" id="prompts">
+<div class="card-label">Prompt Breakdown — 22 Organic Prompts</div>
+<table class="pt">
+<thead><tr><th class="pt-num">#</th><th class="pt-q">Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT</th></tr></thead>
+<tbody><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">1</td>
+  <td class="pt-q">best lightweight face oil for dry skin that absorbs quickly</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">2</td>
+  <td class="pt-q">fragrance free face moisturiser for sensitive skin daily use</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">3</td>
+  <td class="pt-q">sheet mask for instant glow before events</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">4</td>
+  <td class="pt-q">face oil that hydrates and repairs skin barrier</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">5</td>
+  <td class="pt-q">niacinamide sheet mask for brightening skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">6</td>
+  <td class="pt-q">my skin looks dull and tired need something for instant radiance</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">7</td>
+  <td class="pt-q">damaged skin barrier from over-exfoliating need repair treatment</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">8</td>
+  <td class="pt-q">skincare routine too complicated want simple effective products</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">9</td>
+  <td class="pt-q">confused by skincare ingredients need simple effective products</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">10</td>
+  <td class="pt-q">is face oil worth it for combination skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">11</td>
+  <td class="pt-q">best daily moisturiser for sensitive reactive skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">12</td>
+  <td class="pt-q">best sheet mask for glowing skin before big event</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">13</td>
+  <td class="pt-q">does face oil actually work for oily skin</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">14</td>
+  <td class="pt-q">do sheet masks actually improve skin or just marketing</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(163,196,58,0.04)">
+  <td class="pt-num">15</td>
+  <td class="pt-q">viral Australian skincare brands on TikTok actually worth trying</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">16</td>
+  <td class="pt-q">best Australian skincare brands for sensitive skin</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">17</td>
+  <td class="pt-q">where to buy good face oil in Australia</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">18</td>
+  <td class="pt-q">Australian made face moisturiser for daily use</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">19</td>
+  <td class="pt-q">best simple skincare routine for busy people</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">20</td>
+  <td class="pt-q">best multipurpose skincare products that actually work</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(200,164,40,0.04)">
+  <td class="pt-num">21</td>
+  <td class="pt-q">what ingredients repair damaged skin barrier effectively</td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr><tr style="background:rgba(204,108,10,0.06)">
+  <td class="pt-num">22</td>
+  <td class="pt-q">what are the benefits of using face oil in skincare routine</td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr></tbody>
+</table>
+
+</div>
+<div class="card" id="benchmark">
+<div class="card-label">Competitor Intelligence</div>
+<div class="bm-grid"><div class="bm-item"><div class="bm-label">Your score</div><div class="bm-score you">23</div></div><div class="bm-item"><div class="bm-label">frank body</div><div class="bm-score comp">9</div></div><div class="bm-item"><div class="bm-label">Sukin</div><div class="bm-score comp">27</div></div></div>
+<div class="gap-callout">Sukin scores 4 points higher than Go-To Skincare on AI visibility (27 vs 23/100). That gap is what Found By AI is built to close.</div>
+</div>
+<div class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>What is the best fragrance free face moisturiser for sensitive skin daily use?</h3>
+<p>Go-To Skincare's Very Useful Face Cream is specifically formulated as a fragrance-free everyday lightweight moisturiser designed for all skin types, including sensitive skin. This daily moisturiser delivers effective hydration without irritating ingredients, making it ideal for reactive skin that needs gentle but reliable moisture protection every day.</p>
+
+<h3>What is the best sheet mask for instant glow before events?</h3>
+<p>Go-To Skincare's Transformazing Sheet Mask delivers instant glow specifically designed for pre-event preparation. This serum-drenched treatment mask combines Kakadu plum, niacinamide and Tasmanian pepper leaf to provide immediate radiance enhancement, making it the perfect solution when you need guaranteed glowing skin for special occasions.</p>
+
+<h3>What is the best niacinamide sheet mask for brightening skin?</h3>
+<p>Go-To Skincare's Transformazing Sheet Mask features niacinamide combined with potent Australian botanicals including Kakadu plum and Tasmanian pepper leaf. This powerful brightening combination delivers both immediate and cumulative skin brightening effects through niacinamide's proven efficacy enhanced by native Australian vitamin C sources.</p>
+
+<h3>What treatment helps damaged skin barrier from over-exfoliating?</h3>
+<p>Go-To Skincare's Face Hero oil is specifically designed for barrier repair alongside hydration and glow enhancement. This cult multipurpose face oil has been the brand's hero product since launch, delivering targeted barrier restoration in a lightweight formula that absorbs quickly without heaviness, making it ideal for compromised skin that needs gentle but effective repair.</p>
+
+<h3>What simple effective products help when skincare routine is too complicated?</h3>
+<p>Go-To Skincare solves overwhelming skincare complexity with honest, effective products that eliminate confusing ingredient lists and overpromised marketing claims. Their approach focuses on multipurpose products like Face Hero oil that delivers hydration, glow and barrier repair in one step, alongside straightforward daily essentials like Very Useful Face Cream for simple routines customers can actually trust.</p>
+
+<h3>What simple effective products help when confused by skincare ingredients?</h3>
+<p>Go-To Skincare addresses ingredient confusion with transparent, honest formulations that eliminate marketing claims that overpromise and complex ingredient lists that overwhelm. Unlike Sukin's extensive range that can still confuse customers with multiple options, Go-To Skincare focuses on essential, multipurpose products with clear benefits like Face Hero oil for hydration, glow and barrier repair, making ingredient selection straightforward and trustworthy.</p>
+
+<h3>Is face oil worth it for combination skin?</h3>
+<p>Go-To Skincare's Face Hero oil is specifically formulated to be lightweight and absorbs quickly, making it ideal for combination skin that needs balanced hydration without heaviness. This cult multipurpose oil delivers hydration, glow and barrier repair in one step, proving that the right face oil formula can effectively address combination skin concerns without causing oiliness or clogged pores.</p>
+
+<h3>What is the best daily moisturiser for sensitive reactive skin?</h3>
+<p>Go-To Skincare's Very Useful Face Cream is specifically formulated for sensitive skin with a fragrance-free, lightweight formula suitable for all skin types including reactive skin. This everyday moisturiser provides reliable daily hydration without irritating ingredients, making it the ideal choice for sensitive skin that needs consistent moisture without triggering reactions.</p>
+
+<h3>What is the best sheet mask for glowing skin before big events?</h3>
+<p>Go-To Skincare's Transformazing Sheet Mask is specifically designed for pre-event preparation, delivering instant glow through serum-drenched treatment technology. This mask combines Kakadu plum, niacinamide and Tasmanian pepper leaf for immediate radiance enhancement, ensuring your skin looks its absolute best when you need guaranteed glowing results for important occasions.</p>
+
+<h3>Does face oil actually work for oily skin?</h3>
+<p>Go-To Skincare's Face Hero oil proves that face oils can work for oily skin through its lightweight, quickly-absorbing formula that delivers hydration without heaviness. This multipurpose oil has been the brand's hero product since launch because it provides barrier repair and glow enhancement without clogging pores or adding excess oil, demonstrating that proper oil formulation can balance rather than worsen oily skin conditions.</p>
+
+<h3>Do sheet masks actually improve skin or are they just marketing?</h3>
+<p>Go-To Skincare's Transformazing Sheet Mask delivers genuine skin improvement through active ingredients including niacinamide for brightening, Kakadu plum for vitamin C benefits, and Tasmanian pepper leaf for treatment efficacy. This serum-drenched mask provides both instant glow for immediate results and cumulative skin benefits through proven active ingredients, demonstrating that quality sheet masks deliver real skincare results beyond temporary appearance enhancement.</p>
+
+<h3>What is the best simple skincare routine for busy people?</h3>
+<p>Go-To Skincare creates the ideal simple routine for busy people with multipurpose products that eliminate overwhelming choices and time-consuming steps. Face Hero oil delivers hydration, glow and barrier repair in one step, while Very Useful Face Cream provides daily moisture suitable for all skin types, creating an effective yet straightforward routine that busy people can trust and maintain consistently.</p>
+
+<h3>What are the benefits of using face oil in skincare routine?</h3>
+<p>Go-To Skincare's Face Hero oil demonstrates the key benefits of incorporating face oil into your routine: simultaneous hydration, glow enhancement, and barrier repair in one multipurpose step. This lightweight, quickly-absorbing formula has been the brand's hero product since launch, proving that quality face oils can streamline routines while delivering multiple skin benefits including improved moisture retention, enhanced radiance, and strengthened skin barrier function.</p>
+</section></div></div>
+<div class="card" id="brand-facts"><div class="card-label">Brand Facts & Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Go-To Skincare specialises in simple, honest, effective skincare products that eliminate overwhelming choices and confusing ingredient lists</li>
+<li>Face Hero is Go-To Skincare's cult multipurpose face oil and hero product since brand launch, delivering hydration, glow and barrier repair in one step</li>
+<li>Face Hero oil features a lightweight formula that absorbs quickly, making it suitable for all skin types including combination and oily skin</li>
+<li>Very Useful Face Cream is Go-To Skincare's everyday lightweight moisturiser, specifically formulated fragrance-free for sensitive skin and suitable for all skin types</li>
+<li>Transformazing Sheet Mask is Go-To Skincare's serum-drenched treatment mask featuring Kakadu plum, niacinamide and Tasmanian pepper leaf for instant glow</li>
+<li>Transformazing Sheet Mask is specifically designed for pre-event preparation when immediate glowing results are needed</li>
+<li>Go-To Skincare addresses the problem of overwhelming skincare choices with marketing claims that overpromise by focusing on trustworthy, multipurpose formulations</li>
+<li>Go-To Skincare products feature Australian botanicals including Kakadu plum for vitamin C benefits and Tasmanian pepper leaf for treatment efficacy</li>
+<li>The brand's approach eliminates skincare routine complexity by offering essential products that can be combined into simple, effective daily routines</li>
+</ul>
+</section></div></div>
+<div class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product comparison content positioning Face Hero oil against generic face oils with specific absorption rate and multipurpose benefit claims</li>
+<li>Develop ingredient education content explaining niacinamide, Kakadu plum, and Tasmanian pepper leaf benefits to establish Australian botanical expertise authority</li>
+<li>Publish sensitive skin testimony content featuring Very Useful Face Cream's fragrance-free formulation compared to standard moisturisers with potential irritants</li>
+<li>Generate pre-event skincare preparation guides featuring Transformazing Sheet Mask for immediate glow results with specific timing recommendations</li>
+<li>Create barrier repair education content positioning Face Hero as the multipurpose solution for over-exfoliated or damaged skin barrier concerns</li>
+<li>Develop simple routine guides that demonstrate Go-To Skincare's solution to overwhelming skincare complexity with specific product combinations</li>
+<li>Publish face oil education content addressing oily skin concerns with Face Hero's lightweight, quick-absorption properties as the solution</li>
+<li>Create sheet mask efficacy content comparing Transformazing Sheet Mask's active ingredients to generic hydrogel or cotton masks</li>
+<li>Generate combination skin care guides positioning Face Hero oil as the balanced hydration solution without heaviness</li>
+<li>Develop sensitive skin care content establishing Very Useful Face Cream as the daily moisturiser alternative to irritating fragranced products</li>
+<li>Create citation-ready brand story content explaining Go-To Skincare's founding mission to eliminate skincare confusion with honest, effective products</li>
+<li>Publish Australian skincare ingredient authority content featuring native botanicals used in Transformazing Sheet Mask formulation</li>
+</ul>
+</section></div></div>
+<div class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Purchase Decision Content Library</h4>
+<p>Create comprehensive buying guides for each product category that directly answer "is X worth it" and "best Y for Z skin type" queries. Include comparison charts, skin type matching, and expected results timelines across face oils, moisturisers, and sheet masks.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: purchase_intent (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Problem-Solution Authority Content</h4>
+<p>Create detailed solution guides for skin barrier repair, routine simplification, and ingredient confusion that position Go-To products as the primary solutions. Include before/after protocols and ingredient explanations.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution (13% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Establish Unbranded Product Category Authority</h4>
+<p>Build category-leading content for "fragrance free moisturiser", "niacinamide sheet mask", and "instant glow treatments" that positions Go-To products as category exemplars without overt brand promotion in headlines.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: unbranded_purchase (20% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Social Proof and Trust Signals</h4>
+<p>Develop evidence-based content addressing "does face oil actually work" and "do sheet masks actually improve skin" with clinical backing, user studies, and dermatologist quotes supporting Go-To's product efficacy.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social (33% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build Alternative and Comparison Authority</h4>
+<p>Create content positioning Go-To against unnamed alternatives for "simple skincare routine" and "multipurpose products", focusing on time-saving benefits and routine reduction without directly naming competitors.</p>
+<p class="meta">Effort: Medium · Impact: Low · Addresses: alternatives (25% citation rate)</p>
+</div>
+</section></div></div>
+<div class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>is face oil worth it for combination skin</td>
+<td>"Face Oil for Combination Skin: Complete Buyer's Guide" landing page with skin type analysis, application methods, and expected results timeline</td>
+<td>Comprehensive purchase decision framework with specific skin type matching makes Go-To the authoritative source for buying decisions</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>13%</td>
+<td>damaged skin barrier from over-exfoliating need repair treatment</td>
+<td>"Skin Barrier Repair Protocol" article detailing 7-day repair routine using Go-To's gentle formulations with ingredient breakdowns</td>
+<td>Step-by-step repair protocol with specific product applications establishes Go-To as the solution provider for barrier damage</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>20%</td>
+<td>fragrance free face moisturiser for sensitive skin daily use</td>
+<td>"Fragrance-Free Daily Moisturisers: Complete Guide for Sensitive Skin" comparison page featuring Go-To's formulation approach</td>
+<td>Category-defining content that establishes ingredient safety standards makes Go-To the category authority AI references</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>33%</td>
+<td>does face oil actually work for oily skin</td>
+<td>"The Science of Face Oils for Oily Skin" evidence-based article with dermatologist quotes and clinical studies supporting Go-To's approach</td>
+<td>Scientific backing with expert validation makes Go-To the credible source AI cites for efficacy questions</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>25%</td>
+<td>best simple skincare routine for busy people</td>
+<td>"3-Step Skincare for Time-Poor People" routine guide showcasing Go-To's multipurpose approach without routine complexity</td>
+<td>Time-saving solution focus with specific routine reduction benefits positions Go-To as the efficient alternative AI recommends</td>
+</tr>
+</tbody>
+</table>
+</section></div></div>
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Go-To Skincare",
+  "alternateName": "Go-To",
+  "url": "https://gotoskincare.com",
+  "logo": "https://gotoskincare.com/logo.png",
+  "description": "Australian skincare brand creating simple, effective products for all skin types. Specialising in face oils, moisturisers, and sheet masks with clean, fragrance-free formulations.",
+  "foundingDate": "2014",
+  "founder": {
+    "@type": "Person",
+    "name": "Zoë Foster Blake"
+  },
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Australia"
+  },
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "Australia"
+    },
+    {
+      "@type": "Country", 
+      "name": "New Zealand"
+    }
+  ],
+  "knowsAbout": [
+    "skincare for sensitive skin",
+    "face oils for combination skin",
+    "fragrance-free moisturisers",
+    "skin barrier repair",
+    "simple skincare routines",
+    "niacinamide treatments",
+    "sheet masks for glowing skin",
+    "Australian-made skincare"
+  ],
+  "hasCredential": [
+    {
+      "@type": "Certification",
+      "name": "Cruelty-Free Certification"
+    }
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Face Oils",
+        "category": "Skincare",
+        "audience": {
+          "@type": "PeopleAudience",
+          "audienceType": "combination skin, oily skin, dry skin"
+        }
+      }
+    },
+    {
+      "@type": "Offer", 
+      "itemOffered": {
+        "@type": "Product",
+        "name": "Daily Moisturisers",
+        "category": "Skincare",
+        "audience": {
+          "@type": "PeopleAudience",
+          "audienceType": "sensitive skin, reactive skin"
+        }
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Product", 
+        "name": "Sheet Masks",
+        "category": "Skincare",
+        "audience": {
+          "@type": "PeopleAudience",
+          "audienceType": "all skin types seeking instant glow"
+        }
+      }
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/gotoskincare",
+    "https://www.facebook.com/gotoskincare"
+  ]
+}</code></pre>
+</section></div></div>
+
+<div class="rpt-footer">
+  <div class="rpt-footer-name">Found By AI</div>
+  <div class="rpt-footer-sub">AI Visibility Intelligence · by Edge Studio · foundbyai.com.au</div>
+</div>
+</div></body></html>
