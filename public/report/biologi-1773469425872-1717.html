@@ -1,0 +1,906 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biologi — AI Visibility Report | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --ink:#0b0e07;
+  --deep:#0d1008;
+  --surface:#131809;
+  --raised:#191f0d;
+  --border:#232a12;
+  --border-soft:#2c3419;
+  --brass:#c8a428;
+  --brass-hi:#eac640;
+  --brass-dim:#7c6414;
+  --brass-ghost:rgba(200,164,40,0.08);
+  --brass-line:rgba(200,164,40,0.18);
+  --amber:#cc6c0a;
+  --amber-hi:#f08628;
+  --growth:#a3c43a;
+  --growth-dim:#74922a;
+  --growth-ghost:rgba(163,196,58,0.08);
+  --cream:#ede8d2;
+  --cream-soft:#c8c4ae;
+  --muted:#636b40;
+  --faint:#2a3014;
+  --radius:10px;
+  --radius-sm:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brass-hi);text-decoration:none}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--cream);line-height:1.1}
+code,pre,.mono{font-family:'IBM Plex Mono',monospace}
+
+/* LAYOUT */
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 28px;
+  background:rgba(11,14,7,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo-name{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--brass-hi)}
+.nav-logo-by{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.nav-divider{width:1px;height:16px;background:var(--border)}
+.nav-brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--cream-soft)}
+.nav-meta{display:flex;align-items:center;gap:16px}
+.nav-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.nav-links{display:flex;gap:4px}
+.nav-link{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding:4px 10px;border-radius:var(--radius-sm);
+  border:1px solid transparent;transition:all .15s;
+}
+.nav-link:hover{color:var(--brass-hi);border-color:var(--brass-line);background:var(--brass-ghost)}
+@media(max-width:640px){.nav-links,.nav-date{display:none}}
+
+/* HERO */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--brass-dim);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.hero-name{font-size:clamp(40px,7vw,64px);font-weight:700;margin-bottom:12px;letter-spacing:-.02em}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:6px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+}
+.hero-meta-item{display:flex;align-items:center;gap:6px}
+.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+
+/* SCORE MODULE */
+.score-module{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:40px;
+  margin:32px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center;
+}
+@media(max-width:580px){.score-module{grid-template-columns:1fr;gap:32px;text-align:center}}
+.score-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+@media(max-width:580px){.score-ring-wrap{margin:0 auto}}
+.score-ring{display:block;transform:rotate(-90deg)}
+.score-ring-track{transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+.score-inner{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-number{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;color:var(--cream)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px}
+.score-right{}
+.score-band-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.score-band{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  padding:5px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--brass-line);color:var(--brass-hi);
+  background:var(--brass-ghost);
+}
+.score-headline{font-size:28px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.score-explain{font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin-bottom:20px}
+.score-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eng-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px 20px;
+}
+.eng-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.eng-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.eng-score-row{display:flex;align-items:baseline;gap:4px}
+.eng-score{font-family:'Fraunces',serif;font-size:32px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.eng-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.eng-bar{height:2px;background:var(--border);border-radius:1px;margin-top:12px;overflow:hidden}
+.eng-bar-fill{height:100%;border-radius:1px;background:var(--brass-hi)}
+
+/* SECTION CARDS */
+.section-card{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;margin:16px 0;
+}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:24px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.section-body{font-size:14px;line-height:1.75;color:var(--cream-soft)}
+.section-body h2{font-family:'Fraunces',serif;font-size:22px;color:var(--cream);margin:24px 0 10px}
+.section-body h3{font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin:20px 0 8px}
+.section-body h4{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-hi);margin:16px 0 6px}
+.section-body p{color:var(--cream-soft);margin-bottom:12px}
+.section-body ul,.section-body ol{padding-left:24px;margin-bottom:12px;color:var(--cream-soft)}
+.section-body li{margin-bottom:6px}
+.section-body strong{color:var(--cream);font-weight:600}
+.section-body code{background:var(--raised);color:var(--brass-hi);padding:2px 8px;font-size:12px;border-radius:3px}
+.section-body pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;overflow-x:auto;font-size:12px;color:var(--cream-soft);white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+.section-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.section-body th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.section-body td{padding:10px 12px;border-bottom:1px solid var(--faint);color:var(--cream-soft);vertical-align:top}
+.section-body tr:last-child td{border-bottom:none}
+
+/* COMPETITOR BENCHMARK */
+.bm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.bm-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:20px;
+}
+.bm-card-you{border-color:var(--brass-line);background:var(--brass-ghost)}
+.bm-card-label{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.bm-score-wrap{display:flex;align-items:baseline;gap:3px;margin-bottom:12px}
+.bm-score{font-family:'Fraunces',serif;font-size:36px;font-weight:700;line-height:1}
+.bm-score-you{color:var(--brass-hi)}
+.bm-score-comp{color:var(--cream-soft)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.bm-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.bm-bar-you{background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi))}
+.bm-bar-comp{background:var(--muted)}
+.gap-card{
+  background:rgba(200,164,40,0.05);
+  border:1px solid var(--brass-line);
+  border-left:3px solid var(--brass);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+  font-size:14px;color:var(--cream-soft);line-height:1.7;font-style:italic;
+}
+
+/* QUICK WINS */
+.qw-grid{display:grid;gap:12px}
+.qw-item{
+  background:var(--growth-ghost);
+  border:1px solid rgba(163,196,58,0.15);
+  border-left:3px solid var(--growth);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+}
+.qw-num{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--growth-dim);
+  margin-bottom:8px;
+}
+.qw-title{font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:6px}
+.qw-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* INSIGHT CARD */
+.insight-card{
+  background:rgba(200,164,40,0.04);
+  border:1px solid var(--brass-line);
+  border-radius:var(--radius);
+  padding:28px 32px;
+  margin:16px 0;
+}
+.insight-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:14px;
+}
+.insight-text{font-family:'Fraunces',serif;font-size:18px;color:var(--cream);line-height:1.5}
+
+/* PROMPT TABLE */
+.prompt-hint{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:16px;
+}
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.legend-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);padding:10px 12px;
+  border-bottom:1px solid var(--border);text-align:left;
+}
+.pt-row{
+  cursor:pointer;
+  border-bottom:1px solid var(--faint);
+  transition:background .12s;
+  border-left:2px solid transparent;
+}
+.pt-row:hover{background:var(--surface)}
+.pt-row.active{background:var(--surface)}
+.row-both{border-left-color:var(--growth)}
+.row-partial{border-left-color:var(--brass)}
+.row-neither{border-left-color:var(--amber)}
+.pt-num{
+  width:36px;text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);padding:12px 8px;
+}
+.pt-q{padding:12px 8px 12px 12px;color:var(--cream-soft);font-size:13px;line-height:1.45}
+.pt-q-text{display:block;padding-right:24px;position:relative}
+.pt-chevron{
+  position:absolute;right:0;top:-1px;
+  color:var(--muted);font-size:16px;
+  transition:transform .2s;user-select:none;
+}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:60px;text-align:center;padding:12px 8px}
+.hit{color:var(--growth);font-size:14px;font-weight:600}
+.miss{color:var(--amber);font-size:14px}
+
+/* RESPONSE VIEWER */
+.pt-detail td{padding:0}
+.resp-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface);padding:20px 22px}
+.resp-hit{border-top:2px solid var(--growth)}
+.resp-miss{border-top:2px solid var(--faint)}
+.resp-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.resp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-hit{background:var(--growth)}
+.dot-miss{background:var(--amber)}
+.resp-text{font-size:13px;color:var(--cream-soft);line-height:1.7;white-space:pre-wrap}
+
+/* FOOTER */
+.footer{text-align:center;padding:56px 0 32px;border-top:1px solid var(--border);margin-top:48px}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;color:var(--brass-hi);margin-bottom:8px}
+.footer-sub{font-size:12px;color:var(--muted);line-height:1.9}
+.footer-links{display:flex;justify-content:center;gap:20px;margin-top:16px}
+.footer-link{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);transition:color .15s;
+}
+.footer-link:hover{color:var(--brass-hi)}
+</style>
+</head><body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="7" height="16" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#eac640"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#eac640"/></svg>
+      <div><div class="nav-logo-name">Found By AI</div><div class="nav-logo-by">by Edge Studio</div></div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-brand-name">Biologi</div>
+  </div>
+  <div class="nav-meta">
+    <div class="nav-links"><a class="nav-link" href="#score">Score</a><a class="nav-link" href="#benchmark">Benchmark</a><a class="nav-link" href="#prompts">Prompts</a><a class="nav-link" href="#quick-wins">Quick Wins</a><a class="nav-link" href="#action-plan">Action Plan</a></div>
+    <span class="nav-date">March 2026</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <h1 class="hero-name">Biologi</h1>
+  <div class="hero-meta">
+    <span class="hero-meta-item">Personal Care & Wellness</span>
+    <span class="hero-meta-dot"></span>
+    <span class="hero-meta-item">22 prompts tested</span>
+    <span class="hero-meta-dot"></span><span class="hero-meta-item">biologi.com.au</span>
+  </div>
+</div>
+
+<!-- SCORE MODULE -->
+<div class="score-module" id="score">
+  <div class="score-ring-wrap">
+    <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="52" fill="none" stroke="var(--border)" stroke-width="11"/>
+      <circle class="score-ring-track" cx="70" cy="70" r="52" fill="none"
+        stroke="var(--brass-hi)" stroke-width="11" stroke-linecap="round"
+        stroke-dasharray="326.73" stroke-dashoffset="179.70"/>
+    </svg>
+    <div class="score-inner">
+      <span class="score-number">45</span>
+      <span class="score-denom">/100</span>
+    </div>
+  </div>
+  <div class="score-right">
+    <div class="score-band-wrap">
+      <span class="score-band">Developing Presence</span>
+    </div>
+    <h2 class="score-headline">Organic AI Visibility</h2>
+    <p class="score-explain">How often AI models recommend Biologi when buyers search without typing your brand name. Direct brand queries excluded — this is pure organic discovery.</p>
+    <div class="score-bar"><div class="score-bar-fill" style="width:45%"></div></div>
+    <div class="engine-grid">
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--growth)"></span>Claude</div>
+        <div class="eng-score-row"><span class="eng-score">16</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:73%;height:100%;border-radius:1px"></div></div>
+      </div>
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--amber-hi)"></span>GPT-4o</div>
+        <div class="eng-score-row"><span class="eng-score">4</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:18%;height:100%;border-radius:1px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITOR BENCHMARK -->
+<div class="section-card" id="benchmark">
+  <div class="section-label">Competitor Benchmark</div>
+  <div class="bm-grid"><div class="bm-card bm-card-you">
+    <div class="bm-card-label">Your Score</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-you">45</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-you" style="width:45%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">The Ordinary</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">27</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:27%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">Trilogy</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">27</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:27%;height:100%;border-radius:2px"></div></div>
+  </div></div>
+  <div class="gap-card">Biologi leads its closest competitors in AI visibility — a solid foundation. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+
+
+<!-- KEY INSIGHT -->
+<div class="insight-card">
+  <div class="insight-label">Key Insight</div>
+  <div class="insight-text">Biologi leads its closest competitors in AI visibility — a solid foundation. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+
+<!-- QUICK WINS -->
+<div class="section-card" id="quick-wins">
+  <div class="section-label">Quick Wins — Do These First</div>
+  <div class="section-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add "Single Ingredient Skincare" FAQ Section</h4>
+<p><strong>What to do:</strong> Create an FAQ section on your homepage or about page with 3-4 questions specifically addressing "Do single ingredient skincare products actually work better than multi active formulas" and "Does preservative free skincare actually last and work properly" with detailed, scientific answers about plant extract efficacy and natural preservation methods.</p>
+<p><strong>Why it matters:</strong> Directly addresses trust_social prompt failures where AI models couldn't cite Biologi for fundamental questions about single-ingredient skincare effectiveness that your brand should own.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Product Comparison Paragraphs</h4>
+<p><strong>What to do:</strong> On each product page, add a comparison paragraph explaining how your single plant extract approach differs from traditional multi-active formulas, specifically mentioning "plant based serums vs traditional moisturizers" and positioning against competitors like The Ordinary's synthetic approach.</p>
+<p><strong>Why it matters:</strong> Targets the alternatives prompt category where you scored only 25% citation rate, specifically addressing the "Plant based serums vs traditional moisturizers for hydration" query where AI models had no Biologi reference.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Australian Origin Story Section</h4>
+<p><strong>What to do:</strong> Create a prominent "Made in Australia" section on your about page detailing your Australian manufacturing, native plant sourcing, and local availability, specifically mentioning Melbourne stockists and positioning as a top Australian clean beauty brand.</p>
+<p><strong>Why it matters:</strong> Addresses regional_au prompt failures where competitors like Trilogy and Sukin dominated Australian-specific queries, and you only achieved 50% citation rate.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+</section></div>
+</div>
+
+<!-- PROMPT BREAKDOWN -->
+<div class="section-card" id="prompts">
+  <div class="section-label">Prompt Performance — 22 Organic Prompts</div>
+  <p class="prompt-hint">Click any row to see what Claude and GPT-4o actually said</p>
+  <div class="pt-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--growth)"></div>Both engines</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--brass)"></div>One engine</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>Not mentioned</div>
+  </div>
+  <table class="pt">
+    <thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+    <tbody><tr class="pt-row row-partial" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">Best single ingredient vitamin C serum for sensitive skin Australia</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-0"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-0"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">Where to buy pure plant extract serums without preservatives</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-1"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-1"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">Best cold pressed rosehip oil for acne scars and hyperpigmentation</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-2"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-2"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">Certified organic facial cleanser without water or emulsifiers</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-3"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-3"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">Davidson plum face serum for anti aging and brightness</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-4"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-4"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">My skin breaks out from synthetic preservatives in skincare what should I use</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-5"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-5"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">Looking for skincare with undiluted active ingredients without water fillers</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-6"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-6"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">Need face serum without emulsifiers that cause skin irritation</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-7"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-7"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">Want skincare with only one plant ingredient no additives or chemicals</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-8"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-8"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">Are expensive single ingredient serums actually worth the money</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-9"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-9"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">Which vitamin C serum brand is most effective for dark spots</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-10"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-10"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">Top rosehip oil brands for mature skin Australia</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-11"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-11"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">Best brands for pure plant extract skincare without synthetic ingredients</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-12"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-12"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">Most effective natural anti aging serums under $100</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-13"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-13"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">Do single ingredient skincare products actually work better than multi active formulas</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-14"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-14"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">Are pure plant extract serums more effective than synthetic vitamin C</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-15"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-15"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">Does preservative free skincare actually last and work properly</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-16"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-16"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">Best Australian natural skincare brands for sensitive skin</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-17"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-17"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">Where to buy Australian native plant skincare in Melbourne</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-18"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-18"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">Top clean beauty brands made in Australia for acne prone skin</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-19"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-19"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">Best facial oils as alternative to heavy moisturizers for oily skin</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-20"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-20"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">Plant based serums vs traditional moisturizers for hydration</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-21"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-21"></div></div>
+  </div></td>
+</tr></tbody>
+  </table>
+</div>
+
+<!-- AI-GENERATED SECTIONS -->
+<section class="section-card" id="answer-hub"><div class="section-label">Answer Hub Opportunities</div><div class="section-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Best cold pressed rosehip oil for acne scars and hyperpigmentation</h3>
+<p>Biologi Br Rosehip Serum is the best cold-pressed rosehip oil for treating acne scars and hyperpigmentation. This product contains 100% cold-pressed rosehip oil with zero additives, ensuring maximum potency for fading scars and hyperpigmentation while restoring barrier lipids. Unlike Trilogy and Sukin rosehip products which contain additional ingredients and preservatives that can dilute the active compounds, Biologi Br Rosehip Serum delivers pure, undiluted rosehip oil for superior therapeutic results.</p>
+
+<h3>Certified organic facial cleanser without water or emulsifiers</h3>
+<p>Biologi Bc Refresh Facial Cleanser is the certified organic facial cleanser formulated without water or emulsifiers. This single-ingredient cleansing serum contains certified organic Davidson's plum extract with no added water, preservatives, or emulsifiers, delivering concentrated phytoactive compounds directly to the skin. The waterless formulation prevents dilution of the active ingredients and eliminates the need for synthetic preservatives that can irritate sensitive skin.</p>
+
+<h3>Top rosehip oil brands for mature skin Australia</h3>
+<p>Biologi Br Rosehip Serum ranks as the top rosehip oil for mature skin in Australia due to its 100% pure, cold-pressed formulation with zero additives. The serum effectively reduces fine lines while restoring barrier lipids essential for mature skin hydration and repair. While Trilogy and Sukin offer rosehip products with additional ingredients, Biologi's single-ingredient approach delivers higher concentrations of the natural compounds that specifically benefit mature skin concerns.</p>
+
+<h3>Most effective natural anti aging serums under $100</h3>
+<p>Biologi Bd Luminosity Face Serum is the most effective natural anti-aging serum under $100, featuring single-ingredient phytoactive serum from Davidson's plum. Rich in antioxidants, Vitamin C, and anthocyanins, this serum provides superior radiance and hydration compared to multi-ingredient formulations. Unlike The Ordinary and Sukin products that contain synthetic ingredients and preservatives, Biologi delivers 100% pure actives without fillers or stabilizers that can reduce efficacy.</p>
+
+<h3>Do single ingredient skincare products actually work better than multi active formulas</h3>
+<p>Biologi demonstrates that single-ingredient skincare products work better than multi-active formulas by eliminating ingredient interactions and dilution effects. The brand's single-ingredient approach with products like Bd Luminosity Face Serum and Br Rosehip Serum ensures maximum potency of active compounds without synthetic preservatives, emulsifiers, or water that can compromise effectiveness. This concentrated delivery system allows the skin to receive higher concentrations of beneficial phytoactive compounds.</p>
+
+<h3>Plant based serums vs traditional moisturizers for hydration</h3>
+<p>Biologi plant-based serums provide superior hydration compared to traditional moisturizers through concentrated phytoactive delivery without water dilution. Products like Bd Luminosity Face Serum deliver Davidson's plum compounds rich in anthocyanins and Vitamin C directly to skin cells, while Br Rosehip Serum restores barrier lipids more effectively than conventional moisturizers. Traditional moisturizers often contain synthetic emulsifiers and preservatives that can disrupt the skin barrier, whereas Biologi's pure formulations support natural skin hydration processes.</p>
+</section></div></section>
+<section class="section-card" id="brand-facts"><div class="section-label">Brand Facts & Entity Signals</div><div class="section-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Biologi Bc Refresh Facial Cleanser contains single-ingredient certified organic Davidson's plum with no added water, preservatives, or emulsifiers</li>
+<li>Biologi Bd Luminosity Face Serum is a single-ingredient phytoactive serum from Davidson's plum, rich in antioxidants, Vitamin C, and anthocyanins</li>
+<li>Biologi Br Rosehip Serum contains 100% cold-pressed rosehip oil with zero additives for fading scars, hyperpigmentation, and fine lines</li>
+<li>Biologi products contain no synthetic preservatives, emulsifiers, or water to prevent dilution of active potency</li>
+<li>Biologi specializes in single-ingredient formulations that deliver 100% pure actives without fillers, stabilizers, or hidden toxins</li>
+<li>Biologi uses Davidson's plum, a native Australian ingredient, in certified organic formulations</li>
+<li>Biologi Br Rosehip Serum restores barrier lipids while treating multiple skin concerns simultaneously</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="entity-checklist"><div class="section-label">Entity Optimisation Checklist</div><div class="section-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product pages for Biologi Bc Refresh Facial Cleanser, Bd Luminosity Face Serum, and Br Rosehip Serum with complete ingredient profiles and certifications</li>
+<li>Develop comprehensive citation assets explaining the single-ingredient philosophy and how zero-additive formulations increase active potency</li>
+<li>Establish entity authority through clinical research citations demonstrating Davidson's plum phytoactive compounds and their skin benefits</li>
+<li>Create comparison content positioning Biologi against Trilogy, Sukin, and The Ordinary with specific ingredient and formulation differences</li>
+<li>Develop query-specific landing pages targeting "cold pressed rosehip oil", "waterless facial cleanser", and "single ingredient serums" query patterns</li>
+<li>Build citation coverage for Davidson's plum as a native Australian skincare ingredient with unique antioxidant properties</li>
+<li>Create answer-ready content explaining the science behind single-ingredient vs multi-active formulations for AI model training</li>
+<li>Establish product pricing information to compete in "under $100" and "best value" query patterns</li>
+<li>Develop certification and organic claims documentation for AI entity recognition of quality credentials</li>
+<li>Create structured data markup for all product information to improve AI model entity understanding</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="action-plan"><div class="section-label">90-Day Action Plan</div><div class="section-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Alternative Product Positioning Content</h4>
+<p>Develop content directly comparing single plant extracts to traditional skincare approaches, addressing why facial oils work better than heavy moisturizers for specific skin types. This targets the alternatives category where you achieved only 25% citation rate and were completely invisible for "Plant based serums vs traditional moistizers for hydration."</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: alternatives prompt type (25% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Purchase Intent Landing Pages</h4>
+<p>Create category pages for "rosehip oil for mature skin," "vitamin C serums under $100," and "single ingredient vitamin C serums" that directly compete with The Ordinary's positioning but emphasize your plant extract purity advantage.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: purchase_intent prompt type (30% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Develop Unbranded Purchase Content</h4>
+<p>Create buying guides for "cold pressed rosehip oil for acne scars," "organic facial cleansers without emulsifiers," and "pure plant extract serums without preservatives" that position Biologi as the premium solution while educating about single-ingredient benefits.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: unbranded_purchase prompt type (40% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Trust-Building Scientific Content</h4>
+<p>Develop detailed content explaining the science behind preservative-free formulations, single-ingredient efficacy studies, and why plant extracts outperform synthetic alternatives, directly addressing consumer skepticism revealed in trust_social prompts.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social prompt type (50% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Enhance Australian Market Positioning</h4>
+<p>Create location-specific content for Australian consumers, including stockist information, Australian native plant ingredients, and positioning against established Australian brands like Trilogy and Sukin in the clean beauty space.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au prompt type (50% hit rate)</p>
+</div>
+</section></div></section>
+<section class="section-card" id="content-arch"><div class="section-label">Content Architecture</div><div class="section-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alternatives</td>
+<td>25%</td>
+<td>Plant based serums vs traditional moisturizers for hydration</td>
+<td>"Plant Extracts vs Synthetic Skincare: The Science" comparison page with head-to-head efficacy data</td>
+<td>Only brand providing scientific comparison between single plant extracts and multi-active synthetic formulas with clinical backing</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>30%</td>
+<td>Best rosehip oil brands for mature skin Australia</td>
+<td>"Australian Rosehip Oil Buyer's Guide" with Biologi positioned as premium single-ingredient option</td>
+<td>Comprehensive buying guide that educates on quality markers while positioning Biologi's purity advantage over mass market options</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>40%</td>
+<td>Best cold pressed rosehip oil for acne scars and hyperpigmentation</td>
+<td>"Cold-Pressed Rosehip Oil for Acne Scars: Complete Treatment Guide" with product recommendations</td>
+<td>Authoritative treatment guide combining dermatological research with specific product guidance, establishing expertise in acne scar treatment</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>50%</td>
+<td>Do single ingredient skincare products actually work better than multi active formulas</td>
+<td>"Single Ingredient Skincare: Myth vs Science" evidence-based article with peer-reviewed studies</td>
+<td>Scientific validation of single-ingredient approach with clinical studies, positioning as the expert source for this controversial topic</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>50%</td>
+<td>Best Australian natural skincare brands for sensitive skin</td>
+<td>"Australian Clean Beauty Guide for Sensitive Skin" featuring local brands with Biologi as premium option</td>
+<td>Comprehensive Australian market guide that positions Biologi as the premium single-ingredient solution while acknowledging other local brands</td>
+</tr>
+</tbody>
+</table>
+</section></div></section>
+<section class="section-card" id="schema"><div class="section-label">Schema Markup</div><div class="section-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Biologi",
+  "description": "Australian single-ingredient skincare brand specializing in pure plant extract serums without water, emulsifiers, or synthetic additives",
+  "url": "https://biologi.com.au",
+  "logo": "https://biologi.com.au/logo.png",
+  "foundingLocation": {
+    "@type": "Place",
+    "addressCountry": "AU"
+  },
+  "areaServed": "AU",
+  "knowsAbout": [
+    "single ingredient skincare",
+    "plant extract serums",
+    "preservative-free skincare",
+    "cold-pressed rosehip oil",
+    "natural vitamin C serums",
+    "Australian native plant skincare",
+    "emulsifier-free formulations"
+  ],
+  "sameAs": [
+    "https://www.instagram.com/biologiskincare",
+    "https://www.facebook.com/biologiskincare"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "Biologi",
+    "description": "Single plant extract skincare without synthetic additives"
+  },
+  "makesOffer": {
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Product",
+      "name": "Single Ingredient Plant Extract Serums",
+      "category": "Beauty and Personal Care",
+      "brand": "Biologi"
+    },
+    "areaServed": "AU"
+  },
+  "specialty": [
+    "Single ingredient formulations",
+    "Plant extract preservation without chemicals",
+    "Cold-pressed botanical oils",
+    "Sensitive skin solutions"
+  ]
+}</code></pre>
+</section></div></section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Found By AI</div>
+  <div class="footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://foundbyai.com.au">foundbyai.com.au</a>
+    <a class="footer-link" href="https://theedgestudio.app">Edge Studio</a>
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+const RESP=[{"q":"Best single ingredient vitamin C serum for sensitive skin Australia","claude":"Biologi Serumtox is an excellent single-ingredient vitamin C serum specifically formulated for sensitive Australian skin, derived from Davidson plum with no additives. Alternatively, consider Sukin's Vitamin C Serum which offers gentle formulation without harsh preservatives, available at Priceline and Chemist Warehouse Australia.","gpt":"For sensitive skin in Australia, I recommend the \"Lunar Glow Vitamin C Serum\" by The Beauty Chef. It uses a single active ingredient and is formulated without harsh additives."},{"q":"Where to buy pure plant extract serums without preservatives","claude":"Biologi products are available at Australian retailers like Adore Beauty, Mecca, and their official website, offering preservative-free plant extract serums. For broader options, try Nourished Life and iHerb which stock multiple brands of pure plant serums from certified suppliers.","gpt":"You can purchase pure plant extract serums without preservatives from brands like \"Eminence Organic Skin Care\" or \"Pure Green\". Websites like Nourished Life Australia may offer a selection."},{"q":"Best cold pressed rosehip oil for acne scars and hyperpigmentation","claude":"Trilogy Rosehip Oil Antioxidant+ is Australia's best cold-pressed rosehip option for addressing acne scars and hyperpigmentation. For a budget alternative, Sukin's Certified Organic Rosehip Oil offers quality cold-pressed formulation at a lower price point through major Australian retailers.","gpt":"For cold pressed rosehip oil aimed at reducing acne scars and hyperpigmentation, try \"Trilogy Organic Rosehip Oil\" which is renowned for its potency and affordability."},{"q":"Certified organic facial cleanser without water or emulsifiers","claude":"Iuvo Skincare's certified organic cleansers avoid water and emulsifiers using plant-based alternatives, though availability is limited. For easier access, Weleda Gentle Cleansing Milk offers certified organic formulation without synthetic emulsifiers from pharmacies and Priceline.","gpt":"The \"Eco by Sonya Organic Face Wash\" is a certified organic facial cleanser that avoids water and emulsifiers, making it suitable for minimalist skincare routines."},{"q":"Davidson plum face serum for anti aging and brightness","claude":"Biologi Serumtox specifically features Davidson plum for proven anti-aging and brightening effects, with clinical results showing improved skin luminosity. This serum is the primary Australian brand leveraging Davidson plum's native antioxidant properties for these benefits.","gpt":"The \"Biologi Bf Serum\" featuring Davidson plum is excellent for anti-aging and brightening, using potent native Australian ingredients."},{"q":"My skin breaks out from synthetic preservatives in skincare what should I use","claude":"Switch to Biologi's preservative-free serums or Sukin's natural formulations which use plant-based preservation methods instead of synthetic preservatives. Consider patch testing Trilogy products as they use minimal, natural preservative systems tolerated better by sensitive skin.","gpt":"Consider using brands like \"Biologi\" which specializes in single ingredient products without synthetic preservatives, making it safer for sensitive skin."},{"q":"Looking for skincare with undiluted active ingredients without water fillers","claude":"Biologi serums are specifically designed with undiluted plant extracts and minimal fillers, making them ideal for this requirement. The Ordinary's Vitamin C Suspension 23% + HA 2% offers concentrated actives without water, though it has a grittier texture.","gpt":"Look into \"Biologi\" serums which contain undiluted active ingredients and minimize water fillers, ensuring maximum potency."},{"q":"Need face serum without emulsifiers that cause skin irritation","claude":"Biologi's entire range is formulated without emulsifiers, using pure plant extracts instead, and is available through Adore Beauty and Mecca. Alternatively, The Ordinary's oil-based serums like Squalane and Plant-Derived Squalane avoid emulsifiers completely.","gpt":"For face serums that avoid emulsifiers, the \"The Ordinary 100% Organic Cold-Pressed Rose Hip Seed Oil\" is a great choice as it contains no fillers."},{"q":"Want skincare with only one plant ingredient no additives or chemicals","claude":"True single-ingredient skincare is rare; however, Biologi comes closest with minimalist formulations of single plant extracts with only natural preservation. For absolute purity, purchase cold-pressed oils like Trilogy Rosehip Oil which is essentially one ingredient with minimal processing.","gpt":"The \"Hemptuary Pure Hemp Seed Oil\" is a fantastic option for a skincare product with just one plant ingredient and no additives."},{"q":"Are expensive single ingredient serums actually worth the money","claude":"Premium single-ingredient serums like Biologi justify costs through concentrated plant extracts and minimal processing, though results depend on individual skin compatibility. Budget alternatives like The Ordinary offer effective actives at lower prices, making expensive options worthwhile only if your skin responds specifically to those ingredients.","gpt":"Expensive single ingredient serums can be worth it if they use high-quality actives, like \"Aprilskin's 100% Vitamin C Serum\", which often have higher efficacy."},{"q":"Which vitamin C serum brand is most effective for dark spots","claude":"Biologi Serumtox (Davidson plum vitamin C) shows superior results for dark spots in Australian clinical studies compared to synthetic vitamin C. For proven effectiveness, La Roche-Posay's Vitamin C10 or Skinceuticals C E Ferulic are dermatologist-recommended alternatives with strong dark spot reduction data.","gpt":"For treating dark spots, the \"SkinCeuticals C E Ferulic Serum\" has proven to be very effective in brightening and correcting pigmentation."},{"q":"Top rosehip oil brands for mature skin Australia","claude":"Trilogy Rosehip Oil Antioxidant+ is Australia's top-rated rosehip oil for mature skin, available at Mecca and Chemist Warehouse. Sukin's Certified Organic Rosehip Oil offers excellent results at a lower price point, particularly valued by mature skin types seeking natural hydration.","gpt":"Top rosehip oil brands suitable for mature skin in Australia include \"Trilogy\" and \"Rosehip Plus\", both offering high-quality cold-pressed oils."},{"q":"Best brands for pure plant extract skincare without synthetic ingredients","claude":"Biologi, Sukin, and Weleda are Australia's best brands for pure plant extract skincare without synthetic ingredients, all available through major retailers. For imported options, Trilogy and Herbivore Botanicals offer certified natural formulations focused on minimal additives.","gpt":"Brands like \"Eminence Organic Skin Care\" and \"Aesop\" are known for their commitment to pure plant extract skincare without synthetic ingredients."},{"q":"Most effective natural anti aging serums under $100","claude":"Sukin's complete range including their Vitamin C and Rosehip Oil serums deliver anti-aging benefits under $100 AUD with proven results. The Ordinary's Retinol, Niacinamide, and Vitamin C products are extremely affordable anti-aging options available at Chemist Warehouse and online retailers.","gpt":"Natural anti-aging serums like \"Burt's Bees Renewal Intensive Firming Serum\" and \"Dr. Hauschka Revitalizing Day Cream\" are effective and priced under $100."},{"q":"Do single ingredient skincare products actually work better than multi active formulas","claude":"Single-ingredient serums work better for specific concerns and sensitive skin types, while multi-active formulas provide broader benefits; neither is universally superior. The best choice depends on your skin concerns—use single ingredients for targeted issues, multi-actives for comprehensive daily routines.","gpt":"Single ingredient skincare often works well for targeted needs, offering greater potency compared to multi-active formulas which may dilute effectiveness."},{"q":"Are pure plant extract serums more effective than synthetic vitamin C","claude":"Plant-derived vitamin C like Biologi's Davidson plum shows comparable effectiveness to synthetic L-ascorbic acid for most skin types, with better tolerability for sensitive skin. Synthetic vitamin C (like The Ordinary's) offers higher stability and penetration, but plant alternatives work excellently for those seeking natural formulations.","gpt":"Pure plant extract serums often deliver similar or improved effectiveness over synthetic vitamin C, particularly focused products like those from Biologi."},{"q":"Does preservative free skincare actually last and work properly","claude":"Quality preservative-free skincare like Biologi maintains efficacy when stored correctly (cool, dark places) and used within indicated timeframes. However, they require more careful handling than preserved products and typically have shorter shelf lives once opened.","gpt":"Preservative-free skincare can work effectively but often requires careful use, such as refrigeration; brands like \"Eminence\" offer options that maintain potency."},{"q":"Best Australian natural skincare brands for sensitive skin","claude":"Biologi, Sukin, and Weleda are Australia's best natural brands for sensitive skin, all widely available through Priceline, Chemist Warehouse, and specialty retailers. Trilogy (New Zealand) is also excellent for sensitive skin and readily available in Australian stores.","gpt":"Top Australian natural skincare brands for sensitive skin include \"Nude by Nature\" and \"Aesop\", which focus on gentle, effective formulations."},{"q":"Where to buy Australian native plant skincare in Melbourne","claude":"Mecca stores in Melbourne city and suburbs stock Biologi, Sukin, and other Australian natural brands prominently in their skincare sections. Adore Beauty's Melbourne warehouse and online service offers the widest range of Australian native plant skincare with fast delivery.","gpt":"In Melbourne, you can buy Australian native plant skincare at stores like \"The Botanist\" or through online retailers such as \"Nourished Life\"."},{"q":"Top clean beauty brands made in Australia for acne prone skin","claude":"Biologi and Sukin are Australia's top clean beauty brands for acne-prone skin, avoiding common irritants while treating breakouts naturally. Pimple Potion (Australian brand) specializes in acne treatment with natural ingredients and is available through independent retailers and online.","gpt":"Top clean beauty brands made in Australia for acne-prone skin include \"Sukin\" and \"The Jojoba Company\", both prioritize natural, gentle ingredients."},{"q":"Best facial oils as alternative to heavy moisturizers for oily skin","claude":"Squalane oil (The Ordinary or Biologi) is ideal for oily skin as it regulates sebum without clogging, unlike heavier oils. Rosehip oil used sparingly also works well for oily, acne-prone skin as it's lighter and anti-inflammatory.","gpt":"For oily skin seeking alternatives to heavy moisturizers, consider facial oils like \"The Ordinary 100% Squalane Oil\" or \"Kiehl's Daily Reviving Concentrate\"."},{"q":"Plant based serums vs traditional moisturizers for hydration","claude":"Plant-based serums provide targeted active ingredients with better absorption, while traditional moisturizers offer broader hydration and barrier support; both serve different purposes. For oily skin, serums work better; for dry skin, combining both is optimal.","gpt":"Plant-based serums can provide effective hydration without the heaviness of traditional moisturizers, with options like \"Jojoba Oil\" being particularly beneficial."}];
+function toggleDetail(i){
+  const detail=document.getElementById('detail-'+i);
+  const chev=document.getElementById('chev-'+i);
+  const row=detail.previousElementSibling;
+  if(!detail)return;
+  const open=detail.style.display!=='none';
+  detail.style.display=open?'none':'table-row';
+  if(chev)chev.classList.toggle('open',!open);
+  row.classList.toggle('active',!open);
+  if(!open&&RESP[i]){
+    const ce=document.getElementById('claude-'+i);
+    const ge=document.getElementById('gpt-'+i);
+    if(ce&&!ce.textContent)ce.textContent=RESP[i].claude||'No response recorded.';
+    if(ge&&!ge.textContent)ge.textContent=RESP[i].gpt||'No response recorded.';
+  }
+}
+</script>
+</body></html>
