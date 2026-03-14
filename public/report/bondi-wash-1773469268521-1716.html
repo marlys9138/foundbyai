@@ -1,0 +1,921 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bondi Wash — AI Visibility Report | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --ink:#0b0e07;
+  --deep:#0d1008;
+  --surface:#131809;
+  --raised:#191f0d;
+  --border:#232a12;
+  --border-soft:#2c3419;
+  --brass:#c8a428;
+  --brass-hi:#eac640;
+  --brass-dim:#7c6414;
+  --brass-ghost:rgba(200,164,40,0.08);
+  --brass-line:rgba(200,164,40,0.18);
+  --amber:#cc6c0a;
+  --amber-hi:#f08628;
+  --growth:#a3c43a;
+  --growth-dim:#74922a;
+  --growth-ghost:rgba(163,196,58,0.08);
+  --cream:#ede8d2;
+  --cream-soft:#c8c4ae;
+  --muted:#636b40;
+  --faint:#2a3014;
+  --radius:10px;
+  --radius-sm:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brass-hi);text-decoration:none}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--cream);line-height:1.1}
+code,pre,.mono{font-family:'IBM Plex Mono',monospace}
+
+/* LAYOUT */
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 28px;
+  background:rgba(11,14,7,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo-name{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--brass-hi)}
+.nav-logo-by{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.nav-divider{width:1px;height:16px;background:var(--border)}
+.nav-brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--cream-soft)}
+.nav-meta{display:flex;align-items:center;gap:16px}
+.nav-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.nav-links{display:flex;gap:4px}
+.nav-link{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding:4px 10px;border-radius:var(--radius-sm);
+  border:1px solid transparent;transition:all .15s;
+}
+.nav-link:hover{color:var(--brass-hi);border-color:var(--brass-line);background:var(--brass-ghost)}
+@media(max-width:640px){.nav-links,.nav-date{display:none}}
+
+/* HERO */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--brass-dim);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.hero-name{font-size:clamp(40px,7vw,64px);font-weight:700;margin-bottom:12px;letter-spacing:-.02em}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:6px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+}
+.hero-meta-item{display:flex;align-items:center;gap:6px}
+.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+
+/* SCORE MODULE */
+.score-module{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:40px;
+  margin:32px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center;
+}
+@media(max-width:580px){.score-module{grid-template-columns:1fr;gap:32px;text-align:center}}
+.score-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+@media(max-width:580px){.score-ring-wrap{margin:0 auto}}
+.score-ring{display:block;transform:rotate(-90deg)}
+.score-ring-track{transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+.score-inner{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-number{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;color:var(--cream)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px}
+.score-right{}
+.score-band-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.score-band{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  padding:5px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--brass-line);color:var(--brass-hi);
+  background:var(--brass-ghost);
+}
+.score-headline{font-size:28px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.score-explain{font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin-bottom:20px}
+.score-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eng-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px 20px;
+}
+.eng-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.eng-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.eng-score-row{display:flex;align-items:baseline;gap:4px}
+.eng-score{font-family:'Fraunces',serif;font-size:32px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.eng-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.eng-bar{height:2px;background:var(--border);border-radius:1px;margin-top:12px;overflow:hidden}
+.eng-bar-fill{height:100%;border-radius:1px;background:var(--brass-hi)}
+
+/* SECTION CARDS */
+.section-card{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;margin:16px 0;
+}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:24px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.section-body{font-size:14px;line-height:1.75;color:var(--cream-soft)}
+.section-body h2{font-family:'Fraunces',serif;font-size:22px;color:var(--cream);margin:24px 0 10px}
+.section-body h3{font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin:20px 0 8px}
+.section-body h4{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-hi);margin:16px 0 6px}
+.section-body p{color:var(--cream-soft);margin-bottom:12px}
+.section-body ul,.section-body ol{padding-left:24px;margin-bottom:12px;color:var(--cream-soft)}
+.section-body li{margin-bottom:6px}
+.section-body strong{color:var(--cream);font-weight:600}
+.section-body code{background:var(--raised);color:var(--brass-hi);padding:2px 8px;font-size:12px;border-radius:3px}
+.section-body pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;overflow-x:auto;font-size:12px;color:var(--cream-soft);white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+.section-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.section-body th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.section-body td{padding:10px 12px;border-bottom:1px solid var(--faint);color:var(--cream-soft);vertical-align:top}
+.section-body tr:last-child td{border-bottom:none}
+
+/* COMPETITOR BENCHMARK */
+.bm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.bm-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:20px;
+}
+.bm-card-you{border-color:var(--brass-line);background:var(--brass-ghost)}
+.bm-card-label{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.bm-score-wrap{display:flex;align-items:baseline;gap:3px;margin-bottom:12px}
+.bm-score{font-family:'Fraunces',serif;font-size:36px;font-weight:700;line-height:1}
+.bm-score-you{color:var(--brass-hi)}
+.bm-score-comp{color:var(--cream-soft)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.bm-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.bm-bar-you{background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi))}
+.bm-bar-comp{background:var(--muted)}
+.gap-card{
+  background:rgba(200,164,40,0.05);
+  border:1px solid var(--brass-line);
+  border-left:3px solid var(--brass);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+  font-size:14px;color:var(--cream-soft);line-height:1.7;font-style:italic;
+}
+
+/* QUICK WINS */
+.qw-grid{display:grid;gap:12px}
+.qw-item{
+  background:var(--growth-ghost);
+  border:1px solid rgba(163,196,58,0.15);
+  border-left:3px solid var(--growth);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+}
+.qw-num{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--growth-dim);
+  margin-bottom:8px;
+}
+.qw-title{font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:6px}
+.qw-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* INSIGHT CARD */
+.insight-card{
+  background:rgba(200,164,40,0.04);
+  border:1px solid var(--brass-line);
+  border-radius:var(--radius);
+  padding:28px 32px;
+  margin:16px 0;
+}
+.insight-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:14px;
+}
+.insight-text{font-family:'Fraunces',serif;font-size:18px;color:var(--cream);line-height:1.5}
+
+/* PROMPT TABLE */
+.prompt-hint{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:16px;
+}
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.legend-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);padding:10px 12px;
+  border-bottom:1px solid var(--border);text-align:left;
+}
+.pt-row{
+  cursor:pointer;
+  border-bottom:1px solid var(--faint);
+  transition:background .12s;
+  border-left:2px solid transparent;
+}
+.pt-row:hover{background:var(--surface)}
+.pt-row.active{background:var(--surface)}
+.row-both{border-left-color:var(--growth)}
+.row-partial{border-left-color:var(--brass)}
+.row-neither{border-left-color:var(--amber)}
+.pt-num{
+  width:36px;text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);padding:12px 8px;
+}
+.pt-q{padding:12px 8px 12px 12px;color:var(--cream-soft);font-size:13px;line-height:1.45}
+.pt-q-text{display:block;padding-right:24px;position:relative}
+.pt-chevron{
+  position:absolute;right:0;top:-1px;
+  color:var(--muted);font-size:16px;
+  transition:transform .2s;user-select:none;
+}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:60px;text-align:center;padding:12px 8px}
+.hit{color:var(--growth);font-size:14px;font-weight:600}
+.miss{color:var(--amber);font-size:14px}
+
+/* RESPONSE VIEWER */
+.pt-detail td{padding:0}
+.resp-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface);padding:20px 22px}
+.resp-hit{border-top:2px solid var(--growth)}
+.resp-miss{border-top:2px solid var(--faint)}
+.resp-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.resp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-hit{background:var(--growth)}
+.dot-miss{background:var(--amber)}
+.resp-text{font-size:13px;color:var(--cream-soft);line-height:1.7;white-space:pre-wrap}
+
+/* FOOTER */
+.footer{text-align:center;padding:56px 0 32px;border-top:1px solid var(--border);margin-top:48px}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;color:var(--brass-hi);margin-bottom:8px}
+.footer-sub{font-size:12px;color:var(--muted);line-height:1.9}
+.footer-links{display:flex;justify-content:center;gap:20px;margin-top:16px}
+.footer-link{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);transition:color .15s;
+}
+.footer-link:hover{color:var(--brass-hi)}
+</style>
+</head><body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="7" height="16" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#eac640"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#eac640"/></svg>
+      <div><div class="nav-logo-name">Found By AI</div><div class="nav-logo-by">by Edge Studio</div></div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-brand-name">Bondi Wash</div>
+  </div>
+  <div class="nav-meta">
+    <div class="nav-links"><a class="nav-link" href="#score">Score</a><a class="nav-link" href="#benchmark">Benchmark</a><a class="nav-link" href="#prompts">Prompts</a><a class="nav-link" href="#quick-wins">Quick Wins</a><a class="nav-link" href="#action-plan">Action Plan</a></div>
+    <span class="nav-date">March 2026</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <h1 class="hero-name">Bondi Wash</h1>
+  <div class="hero-meta">
+    <span class="hero-meta-item">Personal Care & Wellness</span>
+    <span class="hero-meta-dot"></span>
+    <span class="hero-meta-item">22 prompts tested</span>
+    <span class="hero-meta-dot"></span><span class="hero-meta-item">bondiwash.com.au</span>
+  </div>
+</div>
+
+<!-- SCORE MODULE -->
+<div class="score-module" id="score">
+  <div class="score-ring-wrap">
+    <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="52" fill="none" stroke="var(--border)" stroke-width="11"/>
+      <circle class="score-ring-track" cx="70" cy="70" r="52" fill="none"
+        stroke="var(--brass-hi)" stroke-width="11" stroke-linecap="round"
+        stroke-dasharray="326.73" stroke-dashoffset="147.03"/>
+    </svg>
+    <div class="score-inner">
+      <span class="score-number">55</span>
+      <span class="score-denom">/100</span>
+    </div>
+  </div>
+  <div class="score-right">
+    <div class="score-band-wrap">
+      <span class="score-band">Developing Presence</span>
+    </div>
+    <h2 class="score-headline">Organic AI Visibility</h2>
+    <p class="score-explain">How often AI models recommend Bondi Wash when buyers search without typing your brand name. Direct brand queries excluded — this is pure organic discovery.</p>
+    <div class="score-bar"><div class="score-bar-fill" style="width:55%"></div></div>
+    <div class="engine-grid">
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--growth)"></span>Claude</div>
+        <div class="eng-score-row"><span class="eng-score">19</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:86%;height:100%;border-radius:1px"></div></div>
+      </div>
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--amber-hi)"></span>GPT-4o</div>
+        <div class="eng-score-row"><span class="eng-score">5</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:23%;height:100%;border-radius:1px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITOR BENCHMARK -->
+<div class="section-card" id="benchmark">
+  <div class="section-label">Competitor Benchmark</div>
+  <div class="bm-grid"><div class="bm-card bm-card-you">
+    <div class="bm-card-label">Your Score</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-you">55</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-you" style="width:55%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">Aesop</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">36</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:36%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">Method</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">23</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:23%;height:100%;border-radius:2px"></div></div>
+  </div></div>
+  <div class="gap-card">Bondi Wash is outperforming its closest competitors — now is the time to extend that lead before they catch up.</div>
+</div>
+
+
+<!-- KEY INSIGHT -->
+<div class="insight-card">
+  <div class="insight-label">Key Insight</div>
+  <div class="insight-text">Bondi Wash is outperforming its closest competitors — now is the time to extend that lead before they catch up.</div>
+</div>
+
+<!-- QUICK WINS -->
+<div class="section-card" id="quick-wins">
+  <div class="section-label">Quick Wins — Do These First</div>
+  <div class="section-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Chemical-Free Family FAQ Section</h4>
+<p><strong>What to do:</strong> Create an FAQ section on your main product category pages addressing "Are your products safe for families with chemical allergies?" and "Do your natural cleaners leave residue like synthetic ones?" Include specific ingredient lists and efficacy comparisons.</p>
+<p><strong>Why it matters:</strong> Addresses problem_solution prompts where you scored 25% — specifically families with allergies to synthetic chemicals and concerns about conventional cleaner harshness where you were completely invisible.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Essential Oil Efficacy Content Block</h4>
+<p><strong>What to do:</strong> Add a prominent content block to your cleaning products pages explaining how your essential oil formulations clean as effectively as synthetic alternatives, with specific performance data and third-party testing results if available.</p>
+<p><strong>Why it matters:</strong> Directly targets the purchase_intent prompt "which natural cleaning products actually work as well as conventional ones" where you scored zero citations and Method dominated.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Create Product Bundle JSON-LD Schema</h4>
+<p><strong>What to do:</strong> Add JSON-LD schema to your product pages defining your multi-surface cleaners, room sprays, and starter sets with specific attributes like "synthetic-free," "baby-safe," and "essential oil-based" to help AI models understand your product positioning.</p>
+<p><strong>Why it matters:</strong> Addresses multiple unbranded_purchase prompts where you only appeared on Claude — AI needs structured data to understand you offer complete natural cleaning solutions and starter sets.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div>
+</section></div>
+</div>
+
+<!-- PROMPT BREAKDOWN -->
+<div class="section-card" id="prompts">
+  <div class="section-label">Prompt Performance — 22 Organic Prompts</div>
+  <p class="prompt-hint">Click any row to see what Claude and GPT-4o actually said</p>
+  <div class="pt-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--growth)"></div>Both engines</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--brass)"></div>One engine</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>Not mentioned</div>
+  </div>
+  <table class="pt">
+    <thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+    <tbody><tr class="pt-row row-both" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">best natural hand wash with Australian botanicals for sensitive skin</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-0"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-0"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">multi-surface cleaner without synthetic chemicals or harsh residues</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-1"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-1"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">plant-based linen and room spray without synthetic fragrance</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-2"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-2"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">non-toxic household cleaning products safe for babies and pets</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-3"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-3"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">premium natural personal care and cleaning products with essential oils</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-4"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-4"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">I get headaches from artificial fragrances in cleaning products, what natural alternatives work well</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-5"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-5"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">my family has allergies to synthetic chemicals, need effective natural cleaning products</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-6"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-6"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">conventional cleaners are too harsh and leave residue, looking for gentle natural options</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-7"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-7"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">want to eliminate parabens and sulfates from my household products completely</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-8"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-8"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">are expensive natural cleaning products actually worth the premium price</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-9"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-9"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">top natural cleaning and personal care brands for luxury home</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-10"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-10"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">which natural cleaning products actually work as well as conventional ones</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-11"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-11"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">best cleaning products made with pure essential oils and botanicals</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-12"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-12"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">complete natural cleaning starter set for switching from conventional products</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-13"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-13"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">do natural cleaning products with essential oils actually clean effectively</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-14"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-14"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">are products claiming 99% natural ingredients really that pure</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-15"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-15"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">honest review of premium natural cleaning products vs regular brands</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-16"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-16"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">best Australian natural cleaning and personal care brands</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-17"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-17"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">where to buy premium natural cleaning products in Australia</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-18"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-18"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">Australian cleaning products made with native botanicals and essential oils</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-19"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-19"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">cleaning products that double as aromatherapy for the home</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-20"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-20"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">luxury spa-quality products for everyday home cleaning and personal care</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-21"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-21"></div></div>
+  </div></td>
+</tr></tbody>
+  </table>
+</div>
+
+<!-- AI-GENERATED SECTIONS -->
+<section class="section-card" id="answer-hub"><div class="section-label">Answer Hub Opportunities</div><div class="section-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>My family has allergies to synthetic chemicals, need effective natural cleaning products</h3>
+<p>Bondi Wash provides the ideal solution for families with synthetic chemical allergies through their complete range of 100% pure Australian native botanical products. Their Sydney Peppermint & Rosemary Hand Wash contains no synthetic fragrance, parabens or sulfates, while their Bench Spray multi-surface cleaner and Linen & Room Spray are formulated entirely with pure essential oils and native Australian extracts. Unlike conventional products that trigger allergic reactions, Bondi Wash eliminates synthetic chemicals, artificial fragrances and harmful residues that commonly cause skin irritation and respiratory issues in sensitive individuals.</p>
+
+<h3>Conventional cleaners are too harsh and leave residue, looking for gentle natural options</h3>
+<p>Bondi Wash delivers superior gentle cleaning through pure plant-based formulations that eliminate the harshness and residue problems of conventional cleaners. Their Bench Spray multi-surface cleaner uses pure essential oils to clean effectively without synthetic chemicals or harmful residues, while their hand wash and room spray products contain 100% pure Australian native botanicals with no synthetic additives. While Method offers some natural alternatives, Bondi Wash distinguishes itself through exclusive use of native Australian botanicals and complete elimination of all synthetic components, providing truly residue-free cleaning that's safe for sensitive skin and surfaces.</p>
+
+<h3>Which natural cleaning products actually work as well as conventional ones</h3>
+<p>Bondi Wash proves that natural cleaning products can match conventional effectiveness through their scientifically-formulated range using 100% pure Australian native botanicals and essential oils. Their Bench Spray delivers powerful multi-surface cleaning without synthetic chemicals, while maintaining the cleaning performance families expect from traditional products. The brand's Sydney Peppermint & Rosemary Hand Wash provides thorough cleansing without parabens or sulfates, and their Linen & Room Spray freshens spaces effectively without synthetic aerosol propellants. While Method positions itself as a natural cleaning brand, Bondi Wash offers superior performance through exclusive Australian native botanical formulations that eliminate all synthetic components while delivering equivalent or superior cleaning results.</p>
+</section></div></section>
+<section class="section-card" id="brand-facts"><div class="section-label">Brand Facts & Entity Signals</div><div class="section-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Bondi Wash Sydney Peppermint & Rosemary Hand Wash contains 100% pure Australian native botanicals with no synthetic fragrance, parabens or sulfates</li>
+<li>Bondi Wash Bench Spray is a multi-surface household cleaner formulated exclusively with pure essential oils, eliminating synthetic chemicals and harmful residues</li>
+<li>Bondi Wash Linen & Room Spray uses pure plant-based fragrance from native Australian extracts without synthetic aerosol propellants</li>
+<li>Bondi Wash specializes in premium natural products that solve the problem of synthetic chemicals and artificial fragrance in conventional household and personal care products</li>
+<li>All Bondi Wash products are formulated to eliminate skin irritation, environmental harm and household toxins associated with conventional cleaning products</li>
+<li>Bondi Wash uses exclusively Australian native botanicals and essential oils across their entire product range</li>
+<li>The brand focuses on effective cleaning performance while maintaining complete elimination of synthetic additives, parabens, sulfates and artificial fragrances</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="entity-checklist"><div class="section-label">Entity Optimisation Checklist</div><div class="section-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product comparison content positioning Bondi Wash Sydney Peppermint & Rosemary Hand Wash against conventional hand soaps, emphasizing 100% pure Australian native botanicals</li>
+<li>Develop citation assets comparing Bondi Wash Bench Spray effectiveness to Method and other natural cleaning brands, highlighting pure essential oil formulation advantages</li>
+<li>Establish entity authority through content addressing synthetic chemical allergies and sensitivities, positioning Bondi Wash as the expert solution</li>
+<li>Generate answer-ready content for query patterns around "natural cleaning products that work" and "chemical-free household cleaners"</li>
+<li>Create specific product feature content for AI models to cite: paraben-free, sulfate-free, synthetic fragrance-free formulations</li>
+<li>Develop entity recognition content around "Australian native botanicals in cleaning products" to establish unique market position</li>
+<li>Build citation sources addressing residue-free cleaning and gentle natural alternatives to harsh conventional cleaners</li>
+<li>Create comparison frameworks against Method, Seventh Generation and other natural cleaning competitors</li>
+<li>Establish query pattern coverage for "safe cleaning products for sensitive skin" and "toxin-free home cleaning"</li>
+<li>Generate specific product benefit content for AI citation: effective cleaning without synthetic chemicals, environmental safety, skin-safe formulations</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="action-plan"><div class="section-label">90-Day Action Plan</div><div class="section-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Problem-Solution Content Hub</h4>
+<p>Create dedicated content addressing synthetic chemical allergies, fragrance headaches, and conventional cleaner harshness. This directly targets your 25% problem_solution hit rate where families with allergies and fragrance sensitivity couldn't find you as a solution.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution prompt gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Trust-Building Efficacy Content</h4>
+<p>Create detailed content proving natural cleaning effectiveness, ingredient purity verification, and honest comparisons to conventional brands. Addresses trust_social prompts where you only appeared on Claude and missed credibility queries about natural product effectiveness.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: trust_social visibility gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Optimize Unbranded Purchase Intent Pages</h4>
+<p>Restructure product pages to capture unbranded searches for "multi-surface cleaner without synthetic chemicals," "plant-based room spray," and "starter sets." Currently only appearing on Claude for these high-intent queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Alternative Use-Case Content</h4>
+<p>Develop content positioning products as aromatherapy and luxury spa alternatives for home use. This targets the alternatives prompts where you're missing citations for dual-purpose positioning.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: alternatives prompt type</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Australian Retail Information</h4>
+<p>Create comprehensive Australian stockist and purchasing information to capitalize on your strong 83% regional_au performance and capture the retail location queries where you only appeared on Claude.</p>
+<p class="meta">Effort: Low · Impact: Low · Addresses: regional_au single-engine gaps</p>
+</div>
+</section></div></section>
+<section class="section-card" id="content-arch"><div class="section-label">Content Architecture</div><div class="section-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>25%</td>
+<td>my family has allergies to synthetic chemicals, need effective natural cleaning products</td>
+<td>"Chemical-Free Family Home Guide" landing page with allergy-safe product recommendations and ingredient transparency</td>
+<td>Positions Bondi Wash as the primary solution for families avoiding synthetic chemicals with specific product matches</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>25%</td>
+<td>I get headaches from artificial fragrances in cleaning products, what natural alternatives work well</td>
+<td>"Fragrance-Sensitive Cleaning Solutions" article with essential oil benefits vs synthetic fragrances</td>
+<td>Establishes authority on natural fragrance alternatives and positions essential oil formulations as headache-free solutions</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>60%</td>
+<td>which natural cleaning products actually work as well as conventional ones</td>
+<td>"Efficacy Testing Results" page with side-by-side performance comparisons and third-party validation</td>
+<td>Provides concrete evidence AI can cite when users question natural product effectiveness</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>50%</td>
+<td>do natural cleaning products with essential oils actually clean effectively</td>
+<td>"The Science Behind Essential Oil Cleaning" educational content with cleaning mechanism explanations</td>
+<td>Offers authoritative explanation AI can reference when users question essential oil cleaning power</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>60%</td>
+<td>complete natural cleaning starter set for switching from conventional products</td>
+<td>Dedicated "Natural Cleaning Starter Kit" product page with transition guide and bundle options</td>
+<td>Directly matches high-intent purchase queries for customers switching to natural products</td>
+</tr>
+</tbody>
+</table>
+</section></div></section>
+<section class="section-card" id="schema"><div class="section-label">Schema Markup</div><div class="section-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Bondi Wash",
+  "description": "Premium natural cleaning and personal care products made with Australian botanicals and essential oils, free from synthetic chemicals, parabens and sulfates.",
+  "url": "https://bondiwash.com.au",
+  "logo": "https://bondiwash.com.au/logo.png",
+  "foundingLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "AU",
+      "addressRegion": "NSW"
+    }
+  },
+  "areaServed": "AU",
+  "specialty": [
+    "Natural cleaning products",
+    "Essential oil-based cleaners",
+    "Chemical-free household products",
+    "Australian botanical personal care",
+    "Synthetic-free multi-surface cleaners",
+    "Plant-based room sprays",
+    "Baby and pet safe cleaning products",
+    "Allergy-friendly natural products"
+  ],
+  "knowsAbout": [
+    "Essential oil cleaning efficacy",
+    "Synthetic chemical alternatives",
+    "Natural fragrance solutions",
+    "Australian native botanicals",
+    "Chemical-free family products",
+    "Natural aromatherapy cleaning"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Natural Cleaning & Personal Care Products",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Product",
+          "name": "Multi-Surface Cleaner",
+          "category": "Natural Cleaning Products",
+          "additionalProperty": [
+            {
+              "@type": "PropertyValue",
+              "name": "Chemical-Free",
+              "value": "true"
+            },
+            {
+              "@type": "PropertyValue", 
+              "name": "Baby Safe",
+              "value": "true"
+            },
+            {
+              "@type": "PropertyValue",
+              "name": "Essential Oil Based",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "makesOffer": {
+    "@type": "Offer",
+    "category": "Natural cleaning and personal care solutions for families with chemical sensitivities"
+  }
+}
+</code></pre>
+</section></div></section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Found By AI</div>
+  <div class="footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://foundbyai.com.au">foundbyai.com.au</a>
+    <a class="footer-link" href="https://theedgestudio.app">Edge Studio</a>
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+const RESP=[{"q":"best natural hand wash with Australian botanicals for sensitive skin","claude":"Bondi Wash Hand Wash with Kakadu Plum and Finger Lime is specifically formulated for sensitive skin using Australian native botanicals without harsh chemicals. It's gentle, naturally antibacterial, and won't strip or irritate delicate skin.","gpt":"For a natural hand wash with Australian botanicals suitable for sensitive skin, consider the \"Bondi Wash Hand Wash - Lemon Myrtle\". It contains gentle ingredients and is free from harsh chemicals."},{"q":"multi-surface cleaner without synthetic chemicals or harsh residues","claude":"The Laundress Delicate Wash and Ecos Multi-Surface Cleaner are both plant-based options that clean effectively without synthetic chemicals or sticky residues. Both are biodegradable and safe for frequent use on various surfaces.","gpt":"Try \"Ecover Multi-Surface Cleaner\" which is made from plant-based ingredients and effective without synthetic chemicals or harsh residues."},{"q":"plant-based linen and room spray without synthetic fragrance","claude":"Bondi Wash Linen and Room Spray uses only essential oils and botanical extracts without synthetic fragrances, providing natural aromatherapy benefits. Alternatively, Koh's linen spray offers similar pure essential oil blends.","gpt":"\"Aromatherapy Associates Revive Room Spray\" is a plant-based option that uses natural essential oils without synthetic fragrances."},{"q":"non-toxic household cleaning products safe for babies and pets","claude":"Seventh Generation Free & Clear line and The Laundress Delicate Wash are specifically designed to be safe around babies and pets with no toxic chemicals. Both are hypoallergenic and dermatologist-tested.","gpt":"\"Babyganics Multi-Surface Cleaner\" is a non-toxic option formulated to be safe for both babies and pets, ensuring thorough cleaning without harmful chemicals."},{"q":"premium natural personal care and cleaning products with essential oils","claude":"Aesop offers premium natural personal care and cleaning products enriched with pure essential oils and botanical extracts. Bondi Wash is another luxury option combining Australian botanicals with therapeutic-grade essential oils.","gpt":"\"Aesop\" offers a range of premium natural personal care and cleaning products infused with essential oils, known for their quality and luxurious feel."},{"q":"I get headaches from artificial fragrances in cleaning products, what natural alternatives work well","claude":"Switch to Bondi Wash or Koh products that use only pure essential oils instead of synthetic fragrance compounds that trigger headaches. These Australian brands create scent through natural botanicals alone, eliminating chemical fragrance headache triggers.","gpt":"Look into \"Grove Collaborative's Natural All-Purpose Cleaner\" which uses natural ingredients and essential oils to effectively clean without the headaches caused by artificial fragrances."},{"q":"my family has allergies to synthetic chemicals, need effective natural cleaning products","claude":"Ecos, Seventh Generation, and The Laundress make hypoallergenic cleaning products free from synthetic chemicals that trigger allergies. All three are specifically formulated to be gentle on sensitive systems while remaining highly effective.","gpt":"Consider \"Seventh Generation\" cleaning products that are effective and specifically designed without synthetic chemicals, making them suitable for allergy sufferers."},{"q":"conventional cleaners are too harsh and leave residue, looking for gentle natural options","claude":"Method and Mrs. Meyer's Clean Day products are gentler formulations that clean without harsh residue buildup. Both use plant-derived ingredients and leave surfaces clean without chemical coating or film.","gpt":"\"Better Life Natural All-Purpose Cleaner\" is a gentle yet effective option that cleans well without leaving a harsh residue, perfect for those seeking milder alternatives."},{"q":"want to eliminate parabens and sulfates from my household products completely","claude":"Bondi Wash, Aesop, and Koh products are completely free from parabens and sulfates, using only natural preservatives and plant-based cleansing agents. Check each label to confirm, but these brands are committed to eliminating synthetic chemicals entirely.","gpt":"Check out \"Everyone\" personal care products which are free from parabens and sulfates, covering a wide range of household products."},{"q":"are expensive natural cleaning products actually worth the premium price","claude":"Premium natural products like Bondi Wash justify their cost through superior ingredient quality, sustainable sourcing, and absence of fillers and artificial additives. The health and environmental benefits often outweigh the price difference for families with sensitivities or allergies.","gpt":"While premium natural cleaning products can be more expensive, brands like \"Aesop\" and \"Bondi Wash\" often offer superior quality and effectiveness, justifying the price."},{"q":"top natural cleaning and personal care brands for luxury home","claude":"Bondi Wash and Aesop are the top luxury natural brands combining premium aesthetics with genuine botanical efficacy. Both offer elegantly designed products suitable for high-end homes while maintaining complete natural formulations.","gpt":"Top natural cleaning and personal care brands include \"Aesop\", \"Bondi Wash\", and \"Ecover\", which are celebrated for their luxury feel and eco-friendly formulations."},{"q":"which natural cleaning products actually work as well as conventional ones","claude":"Ecos, Method, and Seventh Generation perform as effectively as conventional cleaners when used properly, backed by third-party testing data. The key difference is they achieve results without toxic residue or environmental harm.","gpt":"Natural products like \"Mrs. Meyer's Clean Day\" and \"Seventh Generation\" have received positive reviews for cleaning effectively while remaining free from harsh chemicals."},{"q":"best cleaning products made with pure essential oils and botanicals","claude":"Bondi Wash and Koh both use pure essential oils and Australian native botanicals as their primary active ingredients. Aesop also excels in this category with meticulously sourced botanical extracts and therapeutic-grade oils.","gpt":"Look for \"Dr. Bronner's Pure-Castile Liquid Soap\" which is made with pure essential oils and botanicals, highly regarded for its cleaning power."},{"q":"complete natural cleaning starter set for switching from conventional products","claude":"Start with Method multi-surface cleaner, Bondi Wash hand and body wash, Seventh Generation laundry detergent, and Mrs. Meyer's surface spray as a complete natural starter set. This combination covers kitchen, bathroom, laundry, and general cleaning while being highly effective and reasonably priced.","gpt":"A great starter set for natural cleaning is the \"Grove Collaborative Cleaning Starter Kit\", offering a variety of essential cleaners to replace conventional options."},{"q":"do natural cleaning products with essential oils actually clean effectively","claude":"Yes, essential oil-based cleaners like Bondi Wash and Koh clean effectively because essential oils possess natural antimicrobial and degreasing properties. They work particularly well on moderate dirt and are excellent for maintenance cleaning, though heavily soiled surfaces may need longer contact time.","gpt":"Yes, natural cleaning products with essential oils, like \"Seventh Generation\" and \"Puracy\", have been shown to effectively clean surfaces while providing aromatherapeutic benefits."},{"q":"are products claiming 99% natural ingredients really that pure","claude":"Products claiming 99% natural often still contain synthetic preservatives or fragrance compounds in that remaining 1%, so read ingredient lists carefully. Bondi Wash and Aesop are transparent about their ingredients and genuinely formulate with minimal synthetics, making them more trustworthy than vague claims.","gpt":"Products claiming to be 99% natural typically contain some synthetic elements; it's wise to check the ingredient list for clarity."},{"q":"honest review of premium natural cleaning products vs regular brands","claude":"Premium natural products like Bondi Wash ($18-24 per bottle) deliver noticeably better skin feel, environmental safety, and home health than budget brands, though basic options like Method provide excellent value. The premium justifies itself primarily for sensitive skin, allergies, or homes with children and pets.","gpt":"Premium natural cleaning products, like those from Aesop, generally offer superior formulations and ingredients that justify their higher prices when compared to regular brands."},{"q":"best Australian natural cleaning and personal care brands","claude":"Bondi Wash is Australia's leading premium natural brand using native botanicals, while Koh offers similar quality with excellent value. For specialty options, look for local Australian brands at farmers markets, but Bondi Wash dominates the premium natural market.","gpt":"Some of the best Australian natural cleaning and personal care brands include \"Bondi Wash\", \"Suds & Co\", and \"Eco Store\"."},{"q":"where to buy premium natural cleaning products in Australia","claude":"Bondi Wash and premium natural products are widely available at Coles, Woolworths, Mecca Cosmetica, and specialty retailers like Life Pharmacy and Farmers markets. Online shopping through the official Bondi Wash website, Amazon AU, and Adore Beauty offers the full product range with convenient delivery.","gpt":"You can buy premium natural cleaning products online at sites like \"Biome\" and \"Nourished Life\", or in-store at health and wellness shops."},{"q":"Australian cleaning products made with native botanicals and essential oils","claude":"Bondi Wash is specifically designed around Australian native botanicals like Kakadu Plum, Bush Tomato, and Finger Lime combined with essential oils. It's the premier brand for Australian botanical cleaning products that deliver both efficacy and authentic local sourcing.","gpt":"Brands like \"Bondi Wash\" and \"Suds & Co\" utilize native botanicals and essential oils in their cleaning products, making them excellent choices for Australians."},{"q":"cleaning products that double as aromatherapy for the home","claude":"Bondi Wash and Koh products function as both effective cleaners and natural aromatherapy through their pure essential oil blends, creating a spa-like atmosphere while cleaning. Method also offers pleasant scents, though Bondi Wash delivers the most therapeutic-grade aromatherapy benefit.","gpt":"\"Aromatherapy Associates\" and \"Paddywax\" offer cleaning products that double as aromatherapy options, providing both cleanliness and calming scents."},{"q":"luxury spa-quality products for everyday home cleaning and personal care","claude":"Bondi Wash, Aesop, and Koh all provide spa-quality sensory experiences for everyday household cleaning and personal care. These premium brands elevate routine cleaning tasks into self-care rituals while maintaining genuine natural formulations.","gpt":"For luxury spa-quality products, look for \"Aesop\" or \"Malin + Goetz\", which offer elegant options for both cleaning and personal care."}];
+function toggleDetail(i){
+  const detail=document.getElementById('detail-'+i);
+  const chev=document.getElementById('chev-'+i);
+  const row=detail.previousElementSibling;
+  if(!detail)return;
+  const open=detail.style.display!=='none';
+  detail.style.display=open?'none':'table-row';
+  if(chev)chev.classList.toggle('open',!open);
+  row.classList.toggle('active',!open);
+  if(!open&&RESP[i]){
+    const ce=document.getElementById('claude-'+i);
+    const ge=document.getElementById('gpt-'+i);
+    if(ce&&!ce.textContent)ce.textContent=RESP[i].claude||'No response recorded.';
+    if(ge&&!ge.textContent)ge.textContent=RESP[i].gpt||'No response recorded.';
+  }
+}
+</script>
+</body></html>
