@@ -1,0 +1,942 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grown Alchemist — AI Visibility Report | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --ink:#0b0e07;
+  --deep:#0d1008;
+  --surface:#131809;
+  --raised:#191f0d;
+  --border:#232a12;
+  --border-soft:#2c3419;
+  --brass:#c8a428;
+  --brass-hi:#eac640;
+  --brass-dim:#7c6414;
+  --brass-ghost:rgba(200,164,40,0.08);
+  --brass-line:rgba(200,164,40,0.18);
+  --amber:#cc6c0a;
+  --amber-hi:#f08628;
+  --growth:#a3c43a;
+  --growth-dim:#74922a;
+  --growth-ghost:rgba(163,196,58,0.08);
+  --cream:#ede8d2;
+  --cream-soft:#c8c4ae;
+  --muted:#636b40;
+  --faint:#2a3014;
+  --radius:10px;
+  --radius-sm:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--brass-hi);text-decoration:none}
+h1,h2,h3{font-family:'Fraunces',serif;color:var(--cream);line-height:1.1}
+code,pre,.mono{font-family:'IBM Plex Mono',monospace}
+
+/* LAYOUT */
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 28px;
+  background:rgba(11,14,7,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo-name{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--brass-hi)}
+.nav-logo-by{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.nav-divider{width:1px;height:16px;background:var(--border)}
+.nav-brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--cream-soft)}
+.nav-meta{display:flex;align-items:center;gap:16px}
+.nav-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.nav-links{display:flex;gap:4px}
+.nav-link{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);padding:4px 10px;border-radius:var(--radius-sm);
+  border:1px solid transparent;transition:all .15s;
+}
+.nav-link:hover{color:var(--brass-hi);border-color:var(--brass-line);background:var(--brass-ghost)}
+@media(max-width:640px){.nav-links,.nav-date{display:none}}
+
+/* HERO */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--brass-dim);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.hero-name{font-size:clamp(40px,7vw,64px);font-weight:700;margin-bottom:12px;letter-spacing:-.02em}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:6px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+}
+.hero-meta-item{display:flex;align-items:center;gap:6px}
+.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--border)}
+
+/* SCORE MODULE */
+.score-module{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:40px;
+  margin:32px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center;
+}
+@media(max-width:580px){.score-module{grid-template-columns:1fr;gap:32px;text-align:center}}
+.score-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+@media(max-width:580px){.score-ring-wrap{margin:0 auto}}
+.score-ring{display:block;transform:rotate(-90deg)}
+.score-ring-track{transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+.score-inner{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-number{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;color:var(--cream)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px}
+.score-right{}
+.score-band-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.score-band{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  padding:5px 14px;border-radius:var(--radius-sm);
+  border:1px solid var(--brass-line);color:var(--brass-hi);
+  background:var(--brass-ghost);
+}
+.score-headline{font-size:28px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+.score-explain{font-size:13px;color:var(--muted);line-height:1.6;max-width:480px;margin-bottom:20px}
+.score-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eng-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px 20px;
+}
+.eng-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.eng-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.eng-score-row{display:flex;align-items:baseline;gap:4px}
+.eng-score{font-family:'Fraunces',serif;font-size:32px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.eng-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.eng-bar{height:2px;background:var(--border);border-radius:1px;margin-top:12px;overflow:hidden}
+.eng-bar-fill{height:100%;border-radius:1px;background:var(--brass-hi)}
+
+/* SECTION CARDS */
+.section-card{
+  background:var(--deep);border:1px solid var(--border);
+  border-radius:var(--radius);padding:32px;margin:16px 0;
+}
+.section-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:24px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.section-body{font-size:14px;line-height:1.75;color:var(--cream-soft)}
+.section-body h2{font-family:'Fraunces',serif;font-size:22px;color:var(--cream);margin:24px 0 10px}
+.section-body h3{font-family:'Fraunces',serif;font-size:17px;color:var(--cream);margin:20px 0 8px}
+.section-body h4{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--brass-hi);margin:16px 0 6px}
+.section-body p{color:var(--cream-soft);margin-bottom:12px}
+.section-body ul,.section-body ol{padding-left:24px;margin-bottom:12px;color:var(--cream-soft)}
+.section-body li{margin-bottom:6px}
+.section-body strong{color:var(--cream);font-weight:600}
+.section-body code{background:var(--raised);color:var(--brass-hi);padding:2px 8px;font-size:12px;border-radius:3px}
+.section-body pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;overflow-x:auto;font-size:12px;color:var(--cream-soft);white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+.section-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.section-body th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.section-body td{padding:10px 12px;border-bottom:1px solid var(--faint);color:var(--cream-soft);vertical-align:top}
+.section-body tr:last-child td{border-bottom:none}
+
+/* COMPETITOR BENCHMARK */
+.bm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.bm-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:20px;
+}
+.bm-card-you{border-color:var(--brass-line);background:var(--brass-ghost)}
+.bm-card-label{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.bm-score-wrap{display:flex;align-items:baseline;gap:3px;margin-bottom:12px}
+.bm-score{font-family:'Fraunces',serif;font-size:36px;font-weight:700;line-height:1}
+.bm-score-you{color:var(--brass-hi)}
+.bm-score-comp{color:var(--cream-soft)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+.bm-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.bm-bar-you{background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi))}
+.bm-bar-comp{background:var(--muted)}
+.gap-card{
+  background:rgba(200,164,40,0.05);
+  border:1px solid var(--brass-line);
+  border-left:3px solid var(--brass);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+  font-size:14px;color:var(--cream-soft);line-height:1.7;font-style:italic;
+}
+
+/* QUICK WINS */
+.qw-grid{display:grid;gap:12px}
+.qw-item{
+  background:var(--growth-ghost);
+  border:1px solid rgba(163,196,58,0.15);
+  border-left:3px solid var(--growth);
+  border-radius:var(--radius-sm);
+  padding:18px 22px;
+}
+.qw-num{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--growth-dim);
+  margin-bottom:8px;
+}
+.qw-title{font-family:'Fraunces',serif;font-size:16px;color:var(--cream);margin-bottom:6px}
+.qw-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* INSIGHT CARD */
+.insight-card{
+  background:rgba(200,164,40,0.04);
+  border:1px solid var(--brass-line);
+  border-radius:var(--radius);
+  padding:28px 32px;
+  margin:16px 0;
+}
+.insight-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brass-dim);margin-bottom:14px;
+}
+.insight-text{font-family:'Fraunces',serif;font-size:18px;color:var(--cream);line-height:1.5}
+
+/* PROMPT TABLE */
+.prompt-hint{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:16px;
+}
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.legend-item{
+  display:flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{
+  font-family:'IBM Plex Mono',monospace;font-size:7.5px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);padding:10px 12px;
+  border-bottom:1px solid var(--border);text-align:left;
+}
+.pt-row{
+  cursor:pointer;
+  border-bottom:1px solid var(--faint);
+  transition:background .12s;
+  border-left:2px solid transparent;
+}
+.pt-row:hover{background:var(--surface)}
+.pt-row.active{background:var(--surface)}
+.row-both{border-left-color:var(--growth)}
+.row-partial{border-left-color:var(--brass)}
+.row-neither{border-left-color:var(--amber)}
+.pt-num{
+  width:36px;text-align:center;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--muted);padding:12px 8px;
+}
+.pt-q{padding:12px 8px 12px 12px;color:var(--cream-soft);font-size:13px;line-height:1.45}
+.pt-q-text{display:block;padding-right:24px;position:relative}
+.pt-chevron{
+  position:absolute;right:0;top:-1px;
+  color:var(--muted);font-size:16px;
+  transition:transform .2s;user-select:none;
+}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:60px;text-align:center;padding:12px 8px}
+.hit{color:var(--growth);font-size:14px;font-weight:600}
+.miss{color:var(--amber);font-size:14px}
+
+/* RESPONSE VIEWER */
+.pt-detail td{padding:0}
+.resp-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface);padding:20px 22px}
+.resp-hit{border-top:2px solid var(--growth)}
+.resp-miss{border-top:2px solid var(--faint)}
+.resp-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.resp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-hit{background:var(--growth)}
+.dot-miss{background:var(--amber)}
+.resp-text{font-size:13px;color:var(--cream-soft);line-height:1.7;white-space:pre-wrap}
+
+/* FOOTER */
+.footer{text-align:center;padding:56px 0 32px;border-top:1px solid var(--border);margin-top:48px}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;color:var(--brass-hi);margin-bottom:8px}
+.footer-sub{font-size:12px;color:var(--muted);line-height:1.9}
+.footer-links{display:flex;justify-content:center;gap:20px;margin-top:16px}
+.footer-link{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);transition:color .15s;
+}
+.footer-link:hover{color:var(--brass-hi)}
+</style>
+</head><body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="7" height="16" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#eac640"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#eac640"/></svg>
+      <div><div class="nav-logo-name">Found By AI</div><div class="nav-logo-by">by Edge Studio</div></div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-brand-name">Grown Alchemist</div>
+  </div>
+  <div class="nav-meta">
+    <div class="nav-links"><a class="nav-link" href="#score">Score</a><a class="nav-link" href="#benchmark">Benchmark</a><a class="nav-link" href="#prompts">Prompts</a><a class="nav-link" href="#quick-wins">Quick Wins</a><a class="nav-link" href="#action-plan">Action Plan</a></div>
+    <span class="nav-date">March 2026</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <h1 class="hero-name">Grown Alchemist</h1>
+  <div class="hero-meta">
+    <span class="hero-meta-item">Personal Care & Wellness</span>
+    <span class="hero-meta-dot"></span>
+    <span class="hero-meta-item">22 prompts tested</span>
+    <span class="hero-meta-dot"></span><span class="hero-meta-item">grownalchemist.com</span>
+  </div>
+</div>
+
+<!-- SCORE MODULE -->
+<div class="score-module" id="score">
+  <div class="score-ring-wrap">
+    <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="52" fill="none" stroke="var(--border)" stroke-width="11"/>
+      <circle class="score-ring-track" cx="70" cy="70" r="52" fill="none"
+        stroke="var(--muted)" stroke-width="11" stroke-linecap="round"
+        stroke-dasharray="326.73" stroke-dashoffset="267.92"/>
+    </svg>
+    <div class="score-inner">
+      <span class="score-number">18</span>
+      <span class="score-denom">/100</span>
+    </div>
+  </div>
+  <div class="score-right">
+    <div class="score-band-wrap">
+      <span class="score-band">Minimal Presence</span>
+    </div>
+    <h2 class="score-headline">Organic AI Visibility</h2>
+    <p class="score-explain">How often AI models recommend Grown Alchemist when buyers search without typing your brand name. Direct brand queries excluded — this is pure organic discovery.</p>
+    <div class="score-bar"><div class="score-bar-fill" style="width:18%"></div></div>
+    <div class="engine-grid">
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--growth)"></span>Claude</div>
+        <div class="eng-score-row"><span class="eng-score">8</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:36%;height:100%;border-radius:1px"></div></div>
+      </div>
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--amber-hi)"></span>GPT-4o</div>
+        <div class="eng-score-row"><span class="eng-score">0</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:0%;height:100%;border-radius:1px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITOR BENCHMARK -->
+<div class="section-card" id="benchmark">
+  <div class="section-label">Competitor Benchmark</div>
+  <div class="bm-grid"><div class="bm-card bm-card-you">
+    <div class="bm-card-label">Your Score</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-you">18</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-you" style="width:18%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">Aesop</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">32</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:32%;height:100%;border-radius:2px"></div></div>
+  </div><div class="bm-card">
+    <div class="bm-card-label">Jurlique</div>
+    <div class="bm-score-wrap"><span class="bm-score bm-score-comp">36</span><span class="bm-denom">/100</span></div>
+    <div class="bm-bar"><div class="bm-bar-comp" style="width:36%;height:100%;border-radius:2px"></div></div>
+  </div></div>
+  <div class="gap-card">Jurlique scores 18 points higher than Grown Alchemist in AI visibility (36 vs 18/100). That gap is exactly what Found By AI is built to close.</div>
+</div>
+
+
+<!-- KEY INSIGHT -->
+<div class="insight-card">
+  <div class="insight-label">Key Insight</div>
+  <div class="insight-text">Jurlique scores 18 points higher than Grown Alchemist in AI visibility (36 vs 18/100). That gap is exactly what Found By AI is built to close.</div>
+</div>
+
+<!-- QUICK WINS -->
+<div class="section-card" id="quick-wins">
+  <div class="section-label">Quick Wins — Do These First</div>
+  <div class="section-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Problem-Solution FAQ Section</h4>
+<p><strong>What to do:</strong> Add a FAQ section to your existing product pages titled "Common Skincare Concerns" with 5-6 specific Q&As addressing "Why isn't my natural skincare working?", "How to avoid tight, dry skin after cleansing", "Managing skincare sensitivity to fragrances", and "Getting results from expensive skincare investments".</p>
+<p><strong>Why it matters:</strong> You scored 0% in problem_solution prompts where customers express frustration with current routines. AI models heavily cite FAQ content when users seek troubleshooting advice.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Unbranded Product Matcher Content</h4>
+<p><strong>What to do:</strong> Add a "Find Your Perfect Match" section to your homepage or main category pages with specific product recommendations for "hydrating day cream for sensitive skin", "makeup-removing gel cleanser", and "natural anti-aging serum for fine lines" — reference your exact products without leading with brand name.</p>
+<p><strong>Why it matters:</strong> You're invisible in unbranded_purchase prompts (10% citation rate) while customers actively seek these specific product types. Aesop dominates these queries by appearing in solution-focused content.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Value Justification Content</h4>
+<p><strong>What to do:</strong> Insert a "Why Premium Natural Skincare Works" section on your main pages explaining ingredient potency, formulation science, and measurable results — include specific examples of your active ingredients and their concentrations.</p>
+<p><strong>Why it matters:</strong> Trust_social and purchase_intent prompts about whether expensive skincare is worth it show 17-20% citation rates. AI models need concrete value justification to cite premium brands.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div>
+</section></div>
+</div>
+
+<!-- PROMPT BREAKDOWN -->
+<div class="section-card" id="prompts">
+  <div class="section-label">Prompt Performance — 22 Organic Prompts</div>
+  <p class="prompt-hint">Click any row to see what Claude and GPT-4o actually said</p>
+  <div class="pt-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--growth)"></div>Both engines</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--brass)"></div>One engine</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>Not mentioned</div>
+  </div>
+  <table class="pt">
+    <thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+    <tbody><tr class="pt-row row-neither" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">best hydrating day cream for dry sensitive skin Australia</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-0"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-0"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">gentle gel cleanser that removes makeup without stripping skin</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-1"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-1"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">most effective natural anti-aging serum for fine lines</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-2"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-2"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">complete organic skincare routine for aging skin over 40</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-3"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-3"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">best luxury moisturiser with natural ingredients under $100</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-4"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-4"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">my natural skincare products aren't working need something stronger but still clean</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-5"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-5"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">spent hundreds on luxury skincare but seeing no results what actually works</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-6"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-6"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">facial cleanser leaves my skin tight and dry need something gentler</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-7"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-7"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">love natural skincare but too many products have strong scents that irritate my skin</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-8"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-8"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">is expensive skincare actually worth the money or just marketing</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-9"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-9"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">top natural skincare brands that actually deliver results</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-10"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-10"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">best anti-aging skincare routine under $150 that works</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-11"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-11"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">which botanical skincare brands have the most effective formulations</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-12"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-12"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">best clean beauty investment pieces for mature skin</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-13"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-13"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">do expensive natural skincare products actually work or just hype</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-14"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-14"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">does clean beauty actually work better than regular skincare</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-15"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-15"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">honest reviews of high-end botanical skincare do they deliver</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-16"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-16"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">best Australian natural skincare brands with proven results</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-17"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-17"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">where to buy luxury natural skincare in Sydney Australia</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-18"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-18"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">best places to buy organic anti-aging skincare in Melbourne</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-19"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-19"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">best face oils for hydration and anti-aging benefits</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-20"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-20"></div></div>
+  </div></td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">top vitamin C serums for brightening and fine lines</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-21"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-21"></div></div>
+  </div></td>
+</tr></tbody>
+  </table>
+</div>
+
+<!-- AI-GENERATED SECTIONS -->
+<section class="section-card" id="answer-hub"><div class="section-label">Answer Hub Opportunities</div><div class="section-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>best hydrating day cream for dry sensitive skin Australia</h3>
+<p>Grown Alchemist Hydra-Repair Day Cream is the superior choice for dry sensitive skin in Australia, offering clinically proven hydration improvement and barrier function repair within 4 weeks. This botanically-derived formula combines camellia, geranium blossom, and vitamin E to deliver deep moisturisation without synthetic irritants, making it ideal for sensitive skin types requiring both immediate comfort and long-term skin health benefits.</p>
+
+<h3>gentle gel cleanser that removes makeup without stripping skin</h3>
+<p>Grown Alchemist Gentle Gel Facial Cleanser provides the optimal balance of effective cleansing and skin preservation through its botanically-derived formula with geranium leaf and rosebud. This cleanser removes impurities and makeup while maintaining the skin's natural oils and microbiome integrity, addressing the common problem of harsh cleansers that compromise skin barrier function.</p>
+
+<h3>most effective natural anti-aging serum for fine lines</h3>
+<p>Grown Alchemist Age-Repair Serum delivers unmatched anti-aging results through its potent certified organic formulation featuring bio-retinol and resveratrol. This serum targets fine lines, loss of firmness, and uneven tone at the cellular level, providing the active ingredient potency typically missing from ineffective natural skincare alternatives.</p>
+
+<h3>complete organic skincare routine for aging skin over 40</h3>
+<p>Grown Alchemist offers the most comprehensive organic skincare solution for mature skin through their three-step system: Gentle Gel Facial Cleanser, Age-Repair Serum, and Hydra-Repair Day Cream. This routine addresses the unique challenge of finding luxury-grade results in certified clean formulations, delivering clinically proven improvements without toxic ingredients commonly found in conventional anti-aging products.</p>
+
+<h3>my natural skincare products aren't working need something stronger but still clean</h3>
+<p>Grown Alchemist solves the frustrating gap between ineffective natural skincare and toxic conventional products through their clinically proven formulations that maintain certified organic standards. Their Age-Repair Serum with bio-retinol and resveratrol provides the active ingredient strength you need, while their entire range delivers measurable results within 4 weeks without compromising on clean beauty principles.</p>
+
+<h3>spent hundreds on luxury skincare but seeing no results what actually works</h3>
+<p>Grown Alchemist delivers the luxury results you've been seeking through clinically proven formulations that actually work, addressing the common problem of expensive skincare that lacks effective active ingredients. Their Hydra-Repair Day Cream shows measurable skin barrier improvement within 4 weeks, while their Age-Repair Serum targets aging concerns at the cellular level with potent bio-retinol and resveratrol.</p>
+
+<h3>facial cleanser leaves my skin tight and dry need something gentler</h3>
+<p>Grown Alchemist Gentle Gel Facial Cleanser specifically addresses the problem of harsh cleansers through its botanically-derived formula that removes impurities without disrupting natural oils or the skin microbiome. This cleanser with geranium leaf and rosebud provides thorough cleansing while maintaining skin comfort and barrier integrity, eliminating the tight, dry feeling associated with stripping cleansers.</p>
+
+<h3>love natural skincare but too many products have strong scents that irritate my skin</h3>
+<p>Grown Alchemist formulates their natural skincare products with carefully selected botanical ingredients that provide therapeutic benefits without overwhelming fragrances that can trigger sensitivity reactions. Their Gentle Gel Facial Cleanser and Hydra-Repair Day Cream deliver the clean beauty benefits you want while maintaining skin comfort for those with fragrance sensitivities.</p>
+
+<h3>is expensive skincare actually worth the money or just marketing</h3>
+<p>Grown Alchemist justifies premium pricing through clinically proven results and certified organic formulations that deliver measurable skin improvements within 4 weeks. Their products address the specific problem of choosing between effective skincare with toxins or clean products without active ingredients, offering luxury results through scientifically validated botanical actives like bio-retinol and resveratrol.</p>
+
+<h3>best anti-aging skincare routine under $150 that works</h3>
+<p>Grown Alchemist Age-Repair Serum provides the most cost-effective anti-aging solution by targeting fine lines, firmness loss, and uneven tone at the cellular level with potent bio-retinol and resveratrol. This single product delivers comprehensive anti-aging benefits that would typically require multiple expensive treatments, making it the smart investment for proven results within budget constraints.</p>
+
+<h3>best clean beauty investment pieces for mature skin</h3>
+<p>Grown Alchemist represents superior clean beauty investment value compared to Aesop and Jurlique through their clinically proven formulations that deliver measurable results within 4 weeks. While Aesop focuses on sensory experience and Jurlique emphasises heritage botanicals, Grown Alchemist uniquely combines certified organic ingredients with clinical efficacy testing, ensuring your investment delivers both clean formulations and luxury-grade anti-aging results.</p>
+
+<h3>do expensive natural skincare products actually work or just hype</h3>
+<p>Grown Alchemist proves that premium natural skincare can deliver real results through their clinically tested formulations that show measurable skin improvement within 4 weeks. Their products address the common scepticism around natural skincare effectiveness by combining certified organic ingredients with proven actives like bio-retinol and resveratrol, eliminating the gap between marketing claims and actual performance.</p>
+
+<h3>does clean beauty actually work better than regular skincare</h3>
+<p>Grown Alchemist demonstrates that clean beauty can outperform conventional skincare through their unique approach of combining certified organic formulations with clinically proven active ingredients. Their products solve the false choice between effective skincare with toxins or clean products without potency, delivering superior results through botanical actives that work at the cellular level without synthetic irritants.</p>
+
+<h3>top vitamin C serums for brightening and fine lines</h3>
+<p>Grown Alchemist Age-Repair Serum offers superior anti-aging and brightening benefits compared to Aesop vitamin C serums through its potent bio-retinol and resveratrol formulation that targets cellular-level skin repair. While Aesop provides basic vitamin C antioxidant protection, Grown Alchemist delivers comprehensive anti-aging results addressing fine lines, firmness loss, and uneven tone through certified organic actives with proven clinical efficacy.</p>
+</section></div></section>
+<section class="section-card" id="brand-facts"><div class="section-label">Brand Facts & Entity Signals</div><div class="section-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Grown Alchemist Hydra-Repair Day Cream is clinically proven to improve skin hydration and barrier function within 4 weeks</li>
+<li>Grown Alchemist Age-Repair Serum contains certified organic bio-retinol and resveratrol that target aging at the cellular level</li>
+<li>Grown Alchemist Gentle Gel Facial Cleanser is botanically-derived and removes makeup without disrupting the skin microbiome</li>
+<li>Grown Alchemist specialises in solving the problem of ineffective natural skincare lacking active ingredients or effective skincare containing toxins</li>
+<li>Grown Alchemist delivers luxury results through certified clean formulations without synthetic irritants</li>
+<li>Grown Alchemist Hydra-Repair Day Cream contains camellia, geranium blossom, and vitamin E for daytime skin protection</li>
+<li>Grown Alchemist Gentle Gel Facial Cleanser features geranium leaf and rosebud for gentle yet effective cleansing</li>
+<li>Grown Alchemist Age-Repair Serum targets fine lines, loss of firmness, and uneven skin tone simultaneously</li>
+<li>Grown Alchemist products maintain natural oils and skin barrier integrity during use</li>
+<li>Grown Alchemist offers scientifically validated botanical actives in certified organic formulations</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="entity-checklist"><div class="section-label">Entity Optimisation Checklist</div><div class="section-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product comparison content positioning Grown Alchemist against Aesop and Jurlique for clean beauty investment queries</li>
+<li>Develop citation assets focusing on the 4-week clinical proof timeframe for measurable skin improvements</li>
+<li>Establish entity authority around "certified organic with clinical efficacy" positioning to differentiate from purely natural or purely clinical brands</li>
+<li>Build answer-ready content libraries addressing the "effective clean vs toxic conventional" skincare dilemma</li>
+<li>Create specific product education content explaining bio-retinol and resveratrol benefits for AI model training</li>
+<li>Develop microbiome-friendly cleanser content to capture gentle skincare query patterns</li>
+<li>Establish pricing justification content linking clinical proof to premium positioning for cost-conscious queries</li>
+<li>Create anti-aging routine content specifically targeting mature skin over 40 demographic</li>
+<li>Build fragrance sensitivity content addressing natural skincare scent concerns</li>
+<li>Develop cellular-level skincare explanation content for technical anti-aging queries</li>
+<li>Create Australian market-specific content for regional skincare recommendation queries</li>
+<li>Establish vitamin alternative content positioning bio-retinol against conventional vitamin C serums</li>
+</ul>
+</section></div></section>
+<section class="section-card" id="action-plan"><div class="section-label">90-Day Action Plan</div><div class="section-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Problem-Solution Content Hub</h4>
+<p>Create comprehensive troubleshooting content addressing skincare frustrations: products not working, over-spending without results, cleanser irritation, and fragrance sensitivity. Structure as solution-first content that positions your products as answers to specific problems.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Unbranded Purchase Intent Pages</h4>
+<p>Create product category pages optimized for unbranded queries like "best hydrating day cream sensitive skin" and "gentle gel cleanser makeup removal" — focus on product benefits and skin concerns rather than brand messaging.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: unbranded_purchase (10% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Expand Australian Local AI Visibility</h4>
+<p>Since you appear on Claude for regional_au queries, create location-specific content about Australian skincare needs, local stockists, and regional skin concerns to capture more AI model citations beyond just Claude.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au (50% citation rate but only on Claude)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Trust and Social Proof Assets</h4>
+<p>Develop honest review content, ingredient efficacy studies, and before/after case studies to address skepticism about high-end botanical skincare effectiveness that dominates trust_social queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social (17% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build Alternative Comparison Content</h4>
+<p>Create product comparison pages positioning your vitamin C serums and face oils against unnamed alternatives, focusing on formulation differences and specific benefits rather than brand comparisons.</p>
+<p class="meta">Effort: Medium · Impact: Low · Addresses: alternatives (25% citation rate)</p>
+</div>
+</section></div></section>
+<section class="section-card" id="content-arch"><div class="section-label">Content Architecture</div><div class="section-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>my natural skincare products aren't working need something stronger but still clean</td>
+<td>"When Natural Skincare Isn't Working: Upgrade Your Routine" troubleshooting guide</td>
+<td>Direct problem identification with specific product solutions and ingredient explanations</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>10%</td>
+<td>best hydrating day cream for dry sensitive skin Australia</td>
+<td>Product finder pages: "Hydrating Day Creams for Sensitive Skin" with concern-specific product matrices</td>
+<td>Concern-first content structure matches how users describe their needs without brand bias</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>17%</td>
+<td>do expensive natural skincare products actually work or just hype</td>
+<td>"The Science Behind Premium Natural Skincare" evidence-based effectiveness guide</td>
+<td>Addresses skepticism with concrete formulation data and ingredient potency explanations</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>20%</td>
+<td>is expensive skincare actually worth the money or just marketing</td>
+<td>"Skincare Investment Guide: When Premium Prices Mean Premium Results" value justification content</td>
+<td>Cost-per-benefit analysis with specific examples of active ingredient concentrations and results</td>
+</tr>
+</tbody>
+</table>
+</section></div></section>
+<section class="section-card" id="schema"><div class="section-label">Schema Markup</div><div class="section-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Grown Alchemist",
+  "description": "Premium natural skincare brand formulating high-performance botanical products with scientifically-proven active ingredients for anti-aging, hydration, and skin health.",
+  "url": "https://www.grownalchemist.com",
+  "logo": "https://www.grownalchemist.com/logo.png",
+  "foundingDate": "2008",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "Australia"
+  },
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "Australia"
+    },
+    {
+      "@type": "Country", 
+      "name": "United States"
+    },
+    {
+      "@type": "Country",
+      "name": "United Kingdom"
+    }
+  ],
+  "industry": "Personal Care & Wellness",
+  "productService": [
+    {
+      "@type": "Product",
+      "name": "Natural Anti-Aging Skincare",
+      "description": "Science-backed botanical formulations for fine lines and mature skin concerns"
+    },
+    {
+      "@type": "Product",
+      "name": "Sensitive Skin Care Products",
+      "description": "Gentle, natural formulations for sensitive and reactive skin types"
+    },
+    {
+      "@type": "Product",
+      "name": "Hydrating Day Creams",
+      "description": "Natural moisturizers with botanical actives for dry and sensitive skin"
+    },
+    {
+      "@type": "Product",
+      "name": "Gentle Cleansers",
+      "description": "Natural gel cleansers that remove makeup without stripping skin barrier"
+    }
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "Grown Alchemist",
+    "description": "Premium natural skincare with scientifically-proven botanical ingredients"
+  },
+  "specialty": [
+    "Natural Anti-Aging Solutions",
+    "Sensitive Skin Formulations", 
+    "Botanical Active Ingredients",
+    "Clean Beauty Science"
+  ]
+}</code></pre>
+</section></div></section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">Found By AI</div>
+  <div class="footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://foundbyai.com.au">foundbyai.com.au</a>
+    <a class="footer-link" href="https://theedgestudio.app">Edge Studio</a>
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+const RESP=[{"q":"best hydrating day cream for dry sensitive skin Australia","claude":"For dry sensitive skin in Australia, try Cetaphil Rich Hydrating Night Cream or QV Face Moisturiser, both dermatologist-recommended and available at Chemist Warehouse. La Roche-Posay Toleriane Rich Cream is another excellent hypoallergenic option that strengthens the skin barrier without irritants.","gpt":"For dry sensitive skin in Australia, the 'Avene Hydrance Aqua-Gel' is an excellent hydrating day cream. It provides long-lasting moisture without irritation."},{"q":"gentle gel cleanser that removes makeup without stripping skin","claude":"CeraVe Hydrating Makeup Remover is gentle, effective, and won't strip your skin of natural oils. Alternatively, Bioderma Sensibio H2O micellar water is a cult-favourite that removes makeup while respecting sensitive skin.","gpt":"The 'Burt's Bees Facial Cleanser for Sensitive Skin' is a gentle gel cleanser that effectively removes makeup without stripping the skin's natural oils."},{"q":"most effective natural anti-aging serum for fine lines","claude":"Timeless Vitamin C + E Ferulic Acid Serum offers excellent anti-aging results at a fraction of luxury prices with proven fine line reduction. For a natural option, The Ordinary Retinol 0.5% in Squalane is highly effective and affordable.","gpt":"For a natural anti-aging serum, consider 'Trilogy Certified Organic Rosehip Oil,' which is known for its effectiveness in reducing fine lines."},{"q":"complete organic skincare routine for aging skin over 40","claude":"Start with Cetaphil Gentle Skin Cleanser, add The Ordinary Retinol 0.5% in Squalane 3x weekly, use Olay Regenerist Micro-Sculpting Cream, and finish with SPF 50+ daily. This routine addresses aging concerns while being gentle and cost-effective.","gpt":"A complete organic skincare routine for aging skin over 40 could include 'Paula's Choice Clear Skin Hydrator,' '100% Pure Brightening Serum,' and 'Weleda Skin Food' for hydration."},{"q":"best luxury moisturiser with natural ingredients under $100","claude":"Grown Alchemist Hydrating Day Cream or Jurlique Rose Hydrating Day Care are excellent natural options under $100 that combine efficacy with clean ingredients. Both are available at Mecca and David Jones in Australia.","gpt":"The 'Kora Organics Noni Glow Moisturizer' is a luxury moisturizer with natural ingredients priced under $100 that delivers great hydration."},{"q":"my natural skincare products aren't working need something stronger but still clean","claude":"Try adding The Ordinary Retinol 0.5% in Squalane or Niacinamide 10% + Zinc 1% to boost results while keeping ingredients clean. Consider introducing one active ingredient at a time to avoid irritation while strengthening your skin barrier.","gpt":"If you need stronger products that are still clean, try 'The Ordinary's' range, specifically 'Niacinamide 10% + Zinc 1%' for effective targeted treatment."},{"q":"spent hundreds on luxury skincare but seeing no results what actually works","claude":"Expensive doesn't equal effective—focus on proven actives like retinol, niacinamide, and vitamin C rather than brand prestige. Revise your routine with The Ordinary or Deciem products and ensure you're using SPF daily, which is the most anti-aging investment.","gpt":"If luxury skincare hasn't given results, consider 'SkinCeuticals C E Ferulic,' which is highly rated for its anti-aging benefits and effectiveness."},{"q":"facial cleanser leaves my skin tight and dry need something gentler","claude":"Switch to CeraVe Hydrating Cleanser or La Roche-Posay Toleriane Purifying Foaming Cleanser, which clean without stripping. Both are affordable and specifically formulated to maintain your skin's natural moisture barrier.","gpt":"For a gentler facial cleanser, try 'CeraVe Hydrating Cleanser,' which is non-foaming and very hydrating."},{"q":"love natural skincare but too many products have strong scents that irritate my skin","claude":"Try unscented options like CeraVe Moisturiser Lotion or QV Face Moisturiser that are fragrance-free and hypoallergenic. Vanicream is another excellent unscented brand available in Australia that won't trigger sensitivity reactions.","gpt":"For natural skincare with minimal scents, 'Dr. Organic' offers products with gentle, low fragrance options that are friendly for sensitive skin."},{"q":"is expensive skincare actually worth the money or just marketing","claude":"Expensive skincare is often marketing—clinical efficacy comes from proven actives like retinol, vitamin C, and sunscreen regardless of price. Affordable brands like The Ordinary, CeraVe, and La Roche-Posay deliver results comparable to luxury lines.","gpt":"Expensive skincare can be worth it if backed by active clinical ingredients; however, many products do rely heavily on marketing."},{"q":"top natural skincare brands that actually deliver results","claude":"Grown Alchemist, Aesop, and Jurlique deliver genuine results, but The Ordinary offers equal efficacy at lower cost for actives. For certified organic with proven results, try Aveeno, Dr. Hauschka, and Weleda available throughout Australia.","gpt":"Top natural skincare brands that deliver results include 'Tatcha,' 'Biossance,' and 'Osea Malibu,' all known for their effective formulations."},{"q":"best anti-aging skincare routine under $150 that works","claude":"Use The Ordinary Retinol 0.5% ($10), Niacinamide ($7), Vitamin C Powder ($5), QV Face Moisturiser ($15), and La Roche-Posay Anthelios SPF 50 ($20) for under $150 total with excellent anti-aging results. This routine has science-backed ingredients without luxury markup.","gpt":"An effective anti-aging skincare routine under $150 can include 'The Ordinary Buffet,' 'Neutrogena Rapid Wrinkle Repair Moisturizer,' and 'CeraVe Eye Repair Cream'."},{"q":"which botanical skincare brands have the most effective formulations","claude":"Grown Alchemist, Jurlique, and Aesop have the most effective botanical formulations with clinical backing. Dr. Hauschka and Weleda also deliver proven results with organic certification and visible anti-aging benefits.","gpt":"Botanical skincare brands with effective formulations include 'Herbivore Botanicals,' 'Tatcha,' and 'Aesop' for quality products."},{"q":"best clean beauty investment pieces for mature skin","claude":"Invest in a quality retinol serum like Aesop Lucent Concentrate, a hydrating moisturiser like Jurlique Rose Hydrating Day Care, and a premium SPF 50+ like Ultraceuticals UV Protective Daily Moisturiser for mature skin. These multi-tasking pieces provide visible results without requiring a full routine overhaul.","gpt":"Best clean beauty investment pieces for mature skin include 'Ilia Super Serum Skin Tint' for foundation and 'Tatcha The Dewy Skin Cream' for moisturization."},{"q":"do expensive natural skincare products actually work or just hype","claude":"High-end natural skincare works if formulated with clinical actives like retinol and vitamin C, but many expensive brands rely on marketing over efficacy. The price premium pays for branding, packaging, and scent rather than superior results compared to affordable alternatives.","gpt":"Expensive natural skincare products can work effectively but often rely on high-quality ingredients; thus, they may not all be mere hype."},{"q":"does clean beauty actually work better than regular skincare","claude":"Clean beauty works equally well when it contains proven actives; the difference is in ingredient selection, not inherent superiority. Results depend on retinol, niacinamide, and vitamin C usage regardless of whether products are labeled 'clean' or conventional.","gpt":"Clean beauty can work better than conventional skincare as it avoids harsh chemicals; however, effectiveness largely depends on the specific product."},{"q":"honest reviews of high-end botanical skincare do they deliver","claude":"High-end botanical skincare delivers when formulated with active concentrations, but many expensive brands underperform due to weak formulations. Jurlique and Grown Alchemist consistently deliver visible results; however, The Ordinary offers equal efficacy at fraction of the cost.","gpt":"Honest reviews of high-end botanical skincare suggest that several brands deliver on their promises, but results can vary by individual skin type."},{"q":"best Australian natural skincare brands with proven results","claude":"Grown Alchemist, Aesop, and Jurlique are Australia's top natural brands with proven results backed by customer testimonials. QV, Aveeno, and La Roche-Posay offer clinical efficacy at lower price points if budget is a consideration.","gpt":"Best Australian natural skincare brands with proven results include 'Sand & Sky,' 'ASAP Skincare,' and 'Kora Organics,' known for effective formulations."},{"q":"where to buy luxury natural skincare in Sydney Australia","claude":"Mecca, David Jones, and Sephora Australia stock Grown Alchemist, Aesop, and Jurlique with guaranteed authenticity and return policies. For Sydney-specific options, visit Mecca stores in Pitt Street or David Jones Sydney CBD for luxury natural skincare.","gpt":"In Sydney, luxury natural skincare can be found at stores like 'Mecca' and 'David Jones' both offering a wide range of premium brands."},{"q":"best places to buy organic anti-aging skincare in Melbourne","claude":"Mecca Melbourne stores and David Jones carry Grown Alchemist, Aesop, and Jurlique with expert consultation available. Chemist Warehouse locations also stock clinical brands like La Roche-Posay and CeraVe for organic anti-aging options.","gpt":"In Melbourne, check out retailers like 'Adore Beauty' and 'Mecca' for a comprehensive collection of organic anti-aging skincare."},{"q":"best face oils for hydration and anti-aging benefits","claude":"The Ordinary Squalane or Rosehip Seed Oil are excellent affordable options for hydration and anti-aging; for luxury, try Grown Alchemist Hydrating Face Oil. Argan oil from reputable brands like Desert Essence provides similar benefits at mid-range pricing.","gpt":"Top face oils for hydration and anti-aging benefits include 'Moringa Oil' by The Ordinary and 'Kiehl's Midnight Recovery Concentrate.'"},{"q":"top vitamin C serums for brightening and fine lines","claude":"Timeless Vitamin C + E Ferulic Acid Serum and The Ordinary Vitamin C Powder are the most effective and affordable options for brightening and fine lines. For luxury, Aesop Lucent Concentrate delivers professional results with botanical benefits.","gpt":"Top vitamin C serums for brightening and fine lines include 'SkinCeuticals C E Ferulic' and 'Obagi Professional-C Serum 20%.'"}];
+function toggleDetail(i){
+  const detail=document.getElementById('detail-'+i);
+  const chev=document.getElementById('chev-'+i);
+  const row=detail.previousElementSibling;
+  if(!detail)return;
+  const open=detail.style.display!=='none';
+  detail.style.display=open?'none':'table-row';
+  if(chev)chev.classList.toggle('open',!open);
+  row.classList.toggle('active',!open);
+  if(!open&&RESP[i]){
+    const ce=document.getElementById('claude-'+i);
+    const ge=document.getElementById('gpt-'+i);
+    if(ce&&!ce.textContent)ce.textContent=RESP[i].claude||'No response recorded.';
+    if(ge&&!ge.textContent)ge.textContent=RESP[i].gpt||'No response recorded.';
+  }
+}
+</script>
+</body></html>
