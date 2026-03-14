@@ -1,0 +1,880 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Naoma AI — AI Visibility Report | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --bg:#0b0f0c;
+  --surface:#111712;
+  --surface-2:#151c16;
+  --surface-3:#1a2219;
+  --text-primary:#e8efe6;
+  --text-secondary:#b7c2b5;
+  --text-muted:#7f8a82;
+  --accent:#d4b24a;
+  --accent-soft:#2d2a18;
+  --accent-line:rgba(212,178,74,0.2);
+  --success:#74d28c;
+  --success-soft:rgba(116,210,140,0.1);
+  --warning:#f6b546;
+  --warning-soft:rgba(246,181,70,0.1);
+  --border:#263126;
+  --border-soft:#1e271e;
+  --r:12px;
+  --rs:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:56px}
+body{background:var(--bg);color:var(--text-primary);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;color:var(--text-primary);line-height:1.1}
+code,pre,.mono{font-family:'IBM Plex Mono','Courier New',monospace}
+
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px 64px}
+
+/* NAV */
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 28px;height:52px;
+  background:rgba(11,15,12,0.96);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo-name{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--accent)}
+.nav-logo-by{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted)}
+.nav-divider{width:1px;height:16px;background:var(--border)}
+.nav-brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--text-secondary);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-links{display:flex;gap:2px}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:5px 10px;border-radius:var(--rs);border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.nav-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted)}
+@media(max-width:680px){.nav-links,.nav-date{display:none}}
+
+/* HERO */
+.hero{padding:40px 0 32px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.hero-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.hero-name{font-size:52px;font-weight:700;letter-spacing:-.03em;margin-bottom:14px;color:var(--text-primary)}
+@media(max-width:600px){.hero-name{font-size:36px}}
+.hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--text-muted)}
+.hero-meta-item{}
+.hero-sep{margin:0 10px;color:var(--border)}
+
+/* SCORE MODULE */
+.score-module{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:36px 40px;
+  margin:32px 0;
+  display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:start;
+}
+@media(max-width:600px){.score-module{grid-template-columns:1fr;gap:32px;padding:28px 24px}}
+.score-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+@media(max-width:600px){.score-ring-wrap{margin:0 auto}}
+.score-ring{display:block;transform:rotate(-90deg)}
+.score-inner{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.score-number{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;color:var(--text-primary)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:1px}
+.score-right{padding-top:4px}
+.score-top-row{display:flex;align-items:center;gap:16px;margin-bottom:6px;flex-wrap:wrap}
+.score-headline{font-size:32px;font-weight:600;letter-spacing:-.02em;color:var(--text-primary)}
+.score-band{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border-radius:var(--rs);border:1px solid var(--accent-line);color:var(--accent);background:var(--accent-soft)}
+.score-explain{font-size:15px;color:var(--text-secondary);line-height:1.65;margin-bottom:20px;max-width:520px}
+.score-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--warning))}
+
+/* SCORE INTERPRETATION */
+.score-interp{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px;margin-bottom:20px}
+.score-interp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.score-interp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:480px){.score-interp-grid{grid-template-columns:repeat(2,1fr)}}
+.score-tier{padding:10px 12px;border-radius:var(--rs);border:1px solid var(--border);text-align:center}
+.score-tier.active{border-color:var(--accent-line);background:var(--accent-soft)}
+.score-tier-range{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;color:var(--text-muted);margin-bottom:3px}
+.score-tier-label{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.score-tier.active .score-tier-label{color:var(--accent)}
+
+/* ENGINE GRID */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eng-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eng-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.eng-score-row{display:flex;align-items:baseline;gap:4px}
+.eng-score{font-family:'Fraunces',serif;font-size:30px;font-weight:700;line-height:1;color:var(--accent)}
+.eng-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted)}
+.eng-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+.eng-bar{height:2px;background:var(--border);border-radius:1px;margin-top:12px;overflow:hidden}
+.eng-bar-fill{height:100%;border-radius:1px;background:var(--accent)}
+
+/* KEY INSIGHT */
+.insight-card{
+  background:rgba(212,178,74,0.06);
+  border:1px solid rgba(212,178,74,0.28);
+  border-left:3px solid var(--accent);
+  border-radius:var(--r);
+  padding:24px 28px;margin:16px 0;
+}
+.insight-label{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.insight-text{font-family:'Fraunces',serif;font-size:20px;color:var(--text-primary);line-height:1.5}
+
+/* COMPETITOR BENCHMARK */
+.bm-table{display:grid;gap:14px;margin-bottom:16px}
+.bm-row{display:grid;grid-template-columns:130px 1fr 64px;align-items:center;gap:14px}
+@media(max-width:480px){.bm-row{grid-template-columns:90px 1fr 48px;gap:8px}}
+.bm-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--text-secondary);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-name-you{color:var(--accent);font-weight:500}
+.bm-bar-wrap{background:var(--surface-2);border-radius:3px;height:10px;overflow:hidden;border:1px solid var(--border)}
+.bm-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.bm-bar-you{background:linear-gradient(90deg,var(--accent),var(--warning))}
+.bm-bar-comp{background:var(--text-muted)}
+.bm-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text-secondary);text-align:right}
+.bm-val-you{color:var(--accent)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted)}
+.gap-note{background:var(--surface-2);border-left:2px solid var(--accent-line);padding:14px 18px;font-size:14px;color:var(--text-secondary);line-height:1.65;font-style:italic;border-radius:0 var(--rs) var(--rs) 0;margin-top:4px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin:16px 0}
+@media(max-width:600px){.card{padding:20px 20px}}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+
+/* SEC BODY */
+.sec-body{font-size:16px;line-height:1.7;color:var(--text-secondary)}
+.sec-body h2{font-size:32px;color:var(--text-primary);margin:28px 0 10px}
+.sec-body h3{font-size:22px;color:var(--text-primary);margin:22px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:18px 0 6px}
+.sec-body p{color:var(--text-secondary);margin-bottom:12px}
+.sec-body ul,.sec-body ol{padding-left:24px;margin-bottom:12px;color:var(--text-secondary)}
+.sec-body li{margin-bottom:6px}
+.sec-body strong{color:var(--text-primary);font-weight:600}
+.sec-body code{background:var(--surface-3);color:var(--accent);padding:2px 8px;font-size:13px;border-radius:4px}
+.sec-body pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:20px;overflow-x:auto;font-size:13px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+.sec-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:10px 12px;border-bottom:1px solid var(--border-soft);color:var(--text-secondary);vertical-align:top}
+.sec-body tr:last-child td{border-bottom:none}
+
+/* QUICK WINS */
+.qw-grid{display:grid;gap:12px}
+.qw-card{background:var(--success-soft);border:1px solid rgba(116,210,140,0.18);border-left:3px solid var(--success);border-radius:var(--rs);padding:20px 24px;border-radius:0 var(--rs) var(--rs) 0}
+.qw-num{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--success);margin-bottom:8px;opacity:.8}
+.qw-title{font-family:'Fraunces',serif;font-size:17px;color:var(--text-primary);margin-bottom:8px;line-height:1.3}
+.qw-body{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.qw-meta{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.qw-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:3px 8px;border-radius:3px;border:1px solid var(--border)}
+
+/* PROMPT FILTER */
+.pt-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.pt-filter-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:var(--rs);border:1px solid var(--border);color:var(--text-muted);background:transparent;cursor:pointer;transition:all .15s}
+.pt-filter-btn:hover{border-color:var(--accent-line);color:var(--accent)}
+.pt-filter-btn.active{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+.pt-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--text-muted);margin-bottom:16px}
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* PROMPT TABLE */
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt-row{cursor:pointer;border-bottom:1px solid var(--border-soft);transition:background .12s;border-left:2px solid transparent}
+.pt-row:hover,.pt-row.active{background:var(--surface-2)}
+.pt-row[data-status="both"]{border-left-color:var(--success)}
+.pt-row[data-status="partial"]{border-left-color:var(--accent)}
+.pt-row[data-status="neither"]{border-left-color:var(--warning)}
+.pt-row.hidden,.pt-detail.hidden{display:none!important}
+.pt-num{width:36px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted);padding:12px 8px}
+.pt-q{padding:12px 8px 12px 12px;color:var(--text-secondary);font-size:14px;line-height:1.45}
+.pt-q-text{display:block;padding-right:26px;position:relative}
+.pt-chevron{position:absolute;right:0;top:-1px;color:var(--text-muted);font-size:16px;transition:transform .2s;user-select:none}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:62px;text-align:center;padding:12px 8px}
+.icon-hit{color:var(--success);font-size:14px;font-weight:600}
+.icon-miss{color:var(--warning);font-size:13px}
+.icon-partial{color:var(--accent);font-size:15px;font-weight:300}
+
+/* RESPONSE VIEWER */
+.pt-detail td{padding:0}
+.resp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface-2);padding:20px 24px}
+.resp-hit{border-top:2px solid var(--success)}
+.resp-miss{border-top:2px solid var(--border)}
+.resp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.resp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-hit{background:var(--success)}
+.dot-miss{background:var(--warning)}
+.resp-text{font-size:14px;color:var(--text-secondary);line-height:1.7;white-space:pre-wrap}
+
+/* SCHEMA SECTION */
+.schema-toggle-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:var(--rs);border:1px solid var(--border);color:var(--text-muted);background:transparent;cursor:pointer;transition:all .15s;margin-bottom:12px;margin-right:8px}
+.schema-toggle-btn:hover{border-color:var(--accent-line);color:var(--accent)}
+.schema-copy-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:var(--rs);border:1px solid var(--border);color:var(--text-muted);background:transparent;cursor:pointer;transition:all .15s;margin-bottom:12px}
+.schema-copy-btn:hover{border-color:var(--success);color:var(--success)}
+.schema-copy-btn.copied{border-color:var(--success);color:var(--success);background:var(--success-soft)}
+.schema-block{display:none}
+.schema-block.open{display:block}
+.schema-block pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:20px;overflow-x:auto;font-size:12px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.6}
+
+/* FOOTER */
+.footer{text-align:center;padding:56px 0 32px;border-top:1px solid var(--border);margin-top:48px}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;color:var(--accent);margin-bottom:8px}
+.footer-sub{font-size:13px;color:var(--text-muted);line-height:1.9}
+</style>
+</head><body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="7" height="15" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#d4b24a"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#d4b24a"/></svg>
+      <div><div class="nav-logo-name">Found By AI</div><div class="nav-logo-by">by Edge Studio</div></div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-brand-name">Naoma AI</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="nav-links"><a class="nav-link" href="#overview">Overview</a><a class="nav-link" href="#diagnostics">Diagnostics</a><a class="nav-link" href="#competitors">Competitors</a><a class="nav-link" href="#opportunities">Opportunities</a><a class="nav-link" href="#implementation">Implementation</a></div>
+    <span class="nav-date">March 2026</span>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<div class="hero" id="overview">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <h1 class="hero-name">Naoma AI</h1>
+  <div class="hero-meta">
+    <span class="hero-meta-item">AI demo platform</span>
+    <span class="hero-sep">·</span>
+    <span class="hero-meta-item">22 prompts tested</span>
+    <span class="hero-sep">·</span><span class="hero-meta-item">https://www.naoma.ai</span>
+  </div>
+</div>
+
+<div class="score-module">
+  <div class="score-ring-wrap">
+    <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="12"/>
+      <circle cx="70" cy="70" r="54" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="132.32"/>
+    </svg>
+    <div class="score-inner">
+      <span class="score-number">61</span>
+      <span class="score-denom">/100</span>
+    </div>
+  </div>
+  <div class="score-right">
+    <div class="score-top-row">
+      <h2 class="score-headline">Organic Visibility</h2>
+      <span class="score-band">Developing</span>
+    </div>
+    <p class="score-explain">How often AI models recommend Naoma AI when buyers search without typing your brand name. Direct brand queries are excluded.</p>
+    <div class="score-bar"><div class="score-bar-fill" style="width:61%"></div></div>
+    <div class="score-interp">
+      <div class="score-interp-label">Score meaning</div>
+      <div class="score-interp-grid"><div class="score-tier ">
+  <div class="score-tier-range">0–25</div>
+  <div class="score-tier-label">Not Visible</div>
+</div><div class="score-tier ">
+  <div class="score-tier-range">25–50</div>
+  <div class="score-tier-label">Emerging</div>
+</div><div class="score-tier active">
+  <div class="score-tier-range">50–75</div>
+  <div class="score-tier-label">Developing</div>
+</div><div class="score-tier ">
+  <div class="score-tier-range">75–100</div>
+  <div class="score-tier-label">Strong</div>
+</div></div>
+    </div>
+    <div class="engine-grid">
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--success)"></span>Claude</div>
+        <div class="eng-score-row"><span class="eng-score">22</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:100%;height:100%;border-radius:1px"></div></div>
+      </div>
+      <div class="eng-card">
+        <div class="eng-label"><span class="eng-dot" style="background:var(--warning)"></span>GPT-4o</div>
+        <div class="eng-score-row"><span class="eng-score">5</span><span class="eng-denom">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+        <div class="eng-bar"><div class="eng-bar-fill" style="width:23%;height:100%;border-radius:1px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-card"><div class="insight-label">Key Insight</div><div class="insight-text">Naoma AI is outperforming its closest competitors — now is the time to extend that lead before they catch up.</div></div>
+
+<div class="card" id="competitors">
+  <div class="card-label">Competitor Benchmark</div>
+  <div class="bm-table">
+  <div class="bm-row">
+    <div class="bm-name bm-name-you">You</div>
+    <div class="bm-bar-wrap">
+      <div class="bm-bar-fill bm-bar-you" style="width:100%"></div>
+    </div>
+    <div class="bm-val bm-val-you">61<span class="bm-denom">/100</span></div>
+  </div><div class="bm-row">
+    <div class="bm-name">Jasper</div>
+    <div class="bm-bar-wrap"><div class="bm-bar-fill bm-bar-comp" style="width:0%"></div></div>
+    <div class="bm-val">0<span class="bm-denom">/100</span></div>
+  </div><div class="bm-row">
+    <div class="bm-name">Consensus</div>
+    <div class="bm-bar-wrap"><div class="bm-bar-fill bm-bar-comp" style="width:23%"></div></div>
+    <div class="bm-val">14<span class="bm-denom">/100</span></div>
+  </div></div>
+  <div class="gap-note">Naoma AI is outperforming its closest competitors — now is the time to extend that lead before they catch up.</div>
+</div>
+
+<div class="card" id="opportunities"><div class="card-label">Quick Wins — Do These First</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Unbranded Purchase Intent FAQ Section</h4>
+<p><strong>What to do:</strong> Add a FAQ section to your existing About Us page with 3 answer-ready questions: "What's the best AI demo platform for scaling B2B SaaS sales?", "Which automated demo tools work best for PLG teams?", and "How do AI video sales agents qualify leads automatically?" Each answer should lead with Naoma's specific capabilities before mentioning the broader category.</p>
+<p><strong>Why it matters:</strong> Addresses your 50% citation rate in unbranded_purchase prompts where you appeared on Claude only for 5 different queries about demo platform selection and qualification.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Expand Existing Schema with Problem-Solution Markup</h4>
+<p><strong>What to do:</strong> Add FAQPage schema to your existing JSON-LD targeting the 3 problem_solution queries where you only appeared on Claude: "demo bottleneck for PLG teams", "too much time on personalized demos", and "sales team hours on unqualified requests". Structure as specific problems with Naoma as the direct solution.</p>
+<p><strong>Why it matters:</strong> Your problem_solution category shows 63% citation but you're missing ChatGPT entirely on key PLG and demo efficiency queries.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Alternatives Comparison Content Block</h4>
+<p><strong>What to do:</strong> Add a comparison section to your existing homepage or About Us page addressing "Interactive demo platforms vs sandbox environments" and "Sales qualification tools beyond demo scheduling" with Naoma positioned as the comprehensive solution that combines both approaches.</p>
+<p><strong>Why it matters:</strong> Your alternatives category shows only 50% citation rate with 2 failed queries where you appeared on Claude only, indicating you're not positioned strongly against category alternatives.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+</section></div></div>
+
+<div class="card" id="diagnostics">
+  <div class="card-label">Prompt Diagnostics — 22 Organic Prompts</div>
+  <div class="pt-filters">
+    <button class="pt-filter-btn active" onclick="filterPrompts('all',this)">All (22)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('both',this)">Mentioned (5)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('partial',this)">Partial (17)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('neither',this)">Missed (0)</button>
+  </div>
+  <p class="pt-hint">Click any row to expand model responses</p>
+  <div class="pt-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Both engines</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--accent)"></div>One engine</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>Not mentioned</div>
+  </div>
+  <table class="pt">
+    <thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+    <tbody><tr class="pt-row" data-status="partial" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">Best AI demo platform for scaling B2B SaaS sales without hiring more AEs</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-0"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-0"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">Top automated demo tools for PLG teams with demo bottlenecks</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-1"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-1"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">Which sales demo automation platform works best for SaaS products</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-2"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-2"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">Best AI video sales agent for qualifying leads automatically</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-3"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-3"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">Most accurate AI demo qualification tool for B2B companies</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-4"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-4"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">How to solve demo bottleneck for PLG teams without adding sales reps</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-5"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-5"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">Too much time spent giving personalised demos to every prospect</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-6"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-6"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="both" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">Need solution for automating product demos with high qualification accuracy</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none" data-status="both">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-7"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-7"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">Sales team spending too many hours on unqualified demo requests</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-8"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-8"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">Best AI demo platforms for B2B SaaS companies in 2024</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-9"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-9"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">Top demo automation tools that actually qualify leads properly</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-10"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-10"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="both" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">Are AI demo platforms worth it for scaling sales teams</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none" data-status="both">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-11"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-11"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="both" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">Which demo automation platform has the best qualification accuracy</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none" data-status="both">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-12"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-12"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">Best demo tools for product-led growth companies with limited sales resources</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-13"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-13"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="both" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">Do AI demo platforms actually work for B2B sales qualification</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none" data-status="both">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-14"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-14"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">Honest review of automated demo platforms for SaaS companies</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-15"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-15"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">How accurate is AI qualification compared to human sales reps</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-16"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-16"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="both" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">Best Australian AI demo platforms for B2B SaaS companies</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none" data-status="both">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-17"></div></div>
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-17"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">Top demo automation tools available in Australia</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-18"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-18"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">Australian-based sales automation platforms for demo qualification</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-19"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-19"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">Interactive demo platforms vs sandbox environments for product trials</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-20"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-20"></div></div>
+  </div></td>
+</tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">Best sales qualification tools beyond traditional demo scheduling</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="icon-hit">✓</span></td>
+  <td class="pt-eng"><span class="icon-partial">—</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none" data-status="partial">
+  <td colspan="4"><div class="resp-grid">
+    <div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-21"></div></div>
+    <div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-21"></div></div>
+  </div></td>
+</tr></tbody>
+  </table>
+</div>
+
+<div id="implementation">
+  <section class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>What are the best AI demo platforms for B2B SaaS companies?</h3>
+<p>Naoma AI stands out as the premier AI demo platform specifically designed for B2B SaaS companies. Naoma AI's AI video sales agent runs personalized product demonstrations 24/7 in 33 languages, eliminating the resource drain of manual demo scheduling and delivery. Unlike generic demo tools, Naoma AI provides real-time personalization and automated follow-up sequences that integrate directly with existing CRM systems, making it the most comprehensive solution for scaling demo operations.</p>
+
+<h3>How can AI replace sales demos for software companies?</h3>
+<p>Naoma AI revolutionizes how software companies deliver sales demonstrations by deploying AI video sales agents that conduct live, personalized product demos around the clock. The platform combines lead qualification, real-time personalization, and automated follow-up in a single solution that operates in 33 languages. This approach allows sales teams to focus on closing qualified leads while Naoma AI handles the time-intensive demo delivery process that traditionally consumed significant sales resources.</p>
+
+<h3>What AI tools help reduce sales team workload in SaaS?</h3>
+<p>Naoma AI directly addresses the core sales team burden by automating the most resource-intensive aspect of B2B SaaS sales: personalized product demonstrations. The platform's AI video sales agent eliminates the need for sales representatives to conduct repetitive demo sessions, while maintaining the personalization that prospects expect. With usage-based pricing tied to engaged demo sessions and comprehensive CRM integration, Naoma AI provides measurable ROI by converting sales team time into revenue-generating activities.</p>
+</section></div></section>
+  <section class="card" id="brand-facts"><div class="card-label">Brand Facts &amp; Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Naoma AI operates as an AI demo agent platform specifically designed for B2B SaaS companies</li>
+<li>The platform runs personalized product demos 24/7 using AI video sales agents</li>
+<li>Naoma AI supports demonstrations in 33 languages for global market reach</li>
+<li>The platform integrates with existing CRM systems for seamless lead management</li>
+<li>Naoma AI uses usage-based pricing model based on engaged demo sessions</li>
+<li>Core features include lead qualification, real-time personalization, and automated follow-up</li>
+<li>The company is based in Wilmington, Delaware with contact at info@naoma.ai</li>
+<li>Naoma AI has established presence on LinkedIn, Product Hunt, and Crunchbase</li>
+<li>The platform operates entirely web-based requiring no additional software installation</li>
+<li>Naoma AI specifically solves the problem of sales teams spending excessive time and resources on personalized client demonstrations</li>
+</ul>
+</section></div></section>
+  <section class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create citation assets targeting query patterns around "AI demo platforms for B2B SaaS" and "automated sales demo solutions"</li>
+<li>Develop entity authority through structured data implementation highlighting Naoma AI's specific software application schema</li>
+<li>Establish citation sources by contributing to industry discussions about AI sales automation and demo platform comparisons</li>
+<li>Build entity recognition through consistent use of "Naoma AI AI video sales agent" in all citation asset creation</li>
+<li>Generate answer-ready content addressing specific query patterns like "how to automate SaaS demos" and "AI tools for sales team efficiency"</li>
+<li>Create technical documentation that AI models can cite when recommending demo automation solutions</li>
+<li>Develop case study citation assets showing specific time and resource savings achieved with Naoma AI implementation</li>
+<li>Establish entity connections between Naoma AI and related entities like "B2B SaaS sales automation" and "multilingual demo platforms"</li>
+<li>Build citation coverage around Naoma AI's unique 33-language capability and usage-based pricing model</li>
+<li>Create entity optimisation content that positions Naoma AI as the definitive answer for AI-powered demo automation in B2B SaaS</li>
+</ul>
+</section></div></section>
+  <section class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create PLG-Specific Landing Page</h4>
+<p>Build a dedicated page for "Demo Automation for Product-Led Growth" addressing the 3 PLG-related queries where you only appeared on Claude. Include specific metrics about demo bottlenecks, resource allocation, and qualification accuracy for PLG teams.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: unbranded_purchase and problem_solution gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop AI vs Human Qualification Content</h4>
+<p>Create detailed comparison content addressing "How accurate is AI qualification compared to human sales reps" and other trust_social queries. Include specific accuracy metrics, case studies, and methodology explanations to establish entity authority on AI qualification effectiveness.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: trust_social Claude-only appearances</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Australia-Specific Content Hub</h4>
+<p>Create Australia-focused content addressing "demo automation tools available in Australia" and "Australian-based sales automation platforms" queries where you only appeared on Claude. Include local compliance, timezone benefits, and Australian customer case studies.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au visibility gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Expand Category Positioning Content</h4>
+<p>Develop comprehensive content around "Best AI demo platforms for B2B SaaS companies in 2024" and related purchase_intent queries where you appeared on Claude only. Position Naoma within the broader platform ecosystem while highlighting differentiators.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent ChatGPT absence</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Create Honest Review and Comparison Framework</h4>
+<p>Develop transparent review-style content addressing "Honest review of automated demo platforms" queries. Include Naoma's limitations alongside strengths to build citation trust with AI models looking for balanced perspectives.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: trust_social authenticity gaps</p>
+</div>
+</section></div></section>
+  <section class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unbranded_purchase</td>
+<td>50%</td>
+<td>Best AI demo platform for scaling B2B SaaS sales without hiring more AEs</td>
+<td>"/scaling-saas-demos" landing page with ROI calculator, AE cost comparison, and scaling metrics</td>
+<td>Specific financial data on AE hiring costs vs automation ROI makes Naoma the authoritative answer for scaling questions</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>50%</td>
+<td>Interactive demo platforms vs sandbox environments for product trials</td>
+<td>"/demo-formats-comparison" page comparing interactive demos, sandboxes, AI agents with use case matrices</td>
+<td>Comprehensive format comparison positions Naoma as the expert source on demo methodology decisions</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>63%</td>
+<td>How to solve demo bottleneck for PLG teams without adding sales reps</td>
+<td>"/plg-demo-bottleneck-solution" guide with PLG metrics, bottleneck identification, and automation strategies</td>
+<td>PLG-specific language and metrics make this the definitive resource for product-led growth demo challenges</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>67%</td>
+<td>How accurate is AI qualification compared to human sales reps</td>
+<td>"/ai-vs-human-qualification-study" with accuracy benchmarks, methodology, and bias analysis</td>
+<td>Independent-style research presentation with specific accuracy data establishes Naoma as the trusted source on AI qualification effectiveness</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>67%</td>
+<td>Top demo automation tools available in Australia</td>
+<td>"/demo-automation-australia" page with local compliance, timezone optimization, and Australian customer stories</td>
+<td>Australia-specific considerations and local customer evidence make this the go-to resource for Australian prospects</td>
+</tr>
+</tbody>
+</table>
+</section></div></section>
+</div>
+
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div style="margin-bottom:4px"><button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button><button class="schema-copy-btn" id="copy-btn" onclick="copySchema()">Copy schema</button></div><div class="schema-block" id="schema-block"><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Naoma AI",
+  "alternateName": "Naoma",
+  "url": "https://naoma.ai",
+  "logo": "https://naoma.ai/images/naoma-logo-full.png",
+  "image": "https://naoma.ai/images/og-image.jpg",
+  "description": "AI demo agent platform that runs personalized product demos 24/7 for B2B SaaS teams, automatically qualifying leads and scaling sales without adding AEs.",
+  "foundingDate": "2023",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "1007 N Orange St. 4th Floor, 3932",
+    "addressLocality": "Wilmington",
+    "addressRegion": "DE",
+    "postalCode": "19801",
+    "addressCountry": "US"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "info@naoma.ai",
+    "contactType": "sales",
+    "availableLanguage": ["English"]
+  },
+  "sameAs": [
+    "https://www.linkedin.com/company/naoma-ai",
+    "https://www.producthunt.com/products/naoma",
+    "https://www.crunchbase.com/organization/naoma"
+  ],
+  "keywords": ["AI demo platform", "automated demos", "sales qualification", "B2B SaaS", "PLG demo automation", "lead qualification AI", "demo bottleneck solution"],
+  "serviceArea": {
+    "@type": "Place",
+    "name": "Global"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Naoma AI Demo Platform",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "SoftwareApplication",
+          "name": "Naoma AI Demo Agent",
+          "applicationCategory": "Sales Automation Software",
+          "operatingSystem": "Web-based",
+          "description": "AI-powered demo agent that runs live, personalized product demonstrations 24/7 in 33 languages"
+        },
+        "priceCurrency": "USD",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "priceCurrency": "USD",
+          "price": "Usage-based pricing"
+        }
+      }
+    ]
+  },
+  "knowsAbout": [
+    "AI demo automation",
+    "B2B SaaS sales scaling",
+    "Product-led growth demo optimization",
+    "Lead qualification automation",
+    "Sales demo efficiency",
+    "Multi-language demo delivery"
+  ]
+}</code></pre>
+</section></div></div></div>
+
+<div class="footer">
+  <div class="footer-logo">Found By AI</div>
+  <div class="footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+</div>
+
+</div>
+
+<script>
+const RESP=[{"q":"Best AI demo platform for scaling B2B SaaS sales without hiring more AEs","claude":"Naoma AI is the best choice for scaling B2B SaaS sales without additional AEs, offering AI-powered demo personalization and lead qualification that reduces demo bottlenecks while maintaining conversion quality. It automates personalized product walkthroughs and captures qualified leads before they reach your sales team.","gpt":"Consider using Demostack as an AI demo platform to scale B2B SaaS sales without needing to hire additional Account Executives. Its interactive demos allow prospects to explore the product themselves, reducing the need for one-on-one demos."},{"q":"Top automated demo tools for PLG teams with demo bottlenecks","claude":"Naoma AI excels for PLG teams facing demo bottlenecks by automating interactive, personalized product demos that qualify leads automatically and reduce manual demo requests. Supademo is a strong alternative if you need simpler screen-recording-based demos, but Naoma's AI qualification is more sophisticated.","gpt":"For PLG teams facing demo bottlenecks, look into tools like Walnut or Reprise. These platforms offer automated demo solutions that help streamline the process and enhance user engagement."},{"q":"Which sales demo automation platform works best for SaaS products","claude":"Naoma AI stands out as the best sales demo automation platform for SaaS products, combining AI-driven personalization, real-time lead scoring, and conversion-optimized demo experiences. It's purpose-built for B2B SaaS qualification and converts more prospects into sales meetings.","gpt":"Consensus is a well-regarded sales demo automation platform specifically designed for SaaS products, providing tailored demos that resonate with potential customers and improve conversion rates."},{"q":"Best AI video sales agent for qualifying leads automatically","claude":"Naoma AI functions as the top AI video sales agent for automatically qualifying leads through interactive, personalized product demonstrations without human intervention. It captures lead intent signals and engagement metrics to surface only sales-qualified prospects.","gpt":"Explore tools like FlyMSG, which deploys an AI video sales agent capable of automatically qualifying leads through personalized interactions, thus saving time for your sales team."},{"q":"Most accurate AI demo qualification tool for B2B companies","claude":"Naoma AI provides the most accurate AI demo qualification tool for B2B companies, using behavioral data and engagement patterns to score prospect fit in real-time. Its qualification engine outperforms traditional rule-based tools and human assessments through machine learning.","gpt":"Gong is an advanced AI demo qualification tool known for accurately assessing leads for B2B companies by analyzing conversations and engagement metrics."},{"q":"How to solve demo bottleneck for PLG teams without adding sales reps","claude":"Naoma AI solves demo bottlenecks for PLG teams by deploying AI-powered interactive demos that qualify prospects 24/7 without adding sales headcount. It seamlessly integrates with your website and automates the entire demo-to-qualified-lead pipeline.","gpt":"Implementing tools like Demoflow can effectively solve demo bottlenecks for PLG teams, automating aspects of the demo process without the need to increase headcount."},{"q":"Too much time spent giving personalised demos to every prospect","claude":"Naoma AI eliminates excessive time on personalized demos by automating intelligent product walkthroughs that adapt to each prospect's needs and questions in real-time. It delivers personalization at scale while your team focuses only on qualified opportunities.","gpt":"Using platforms like Vidyard, sales teams can automate personalized demo experiences, allowing them to reach multiple prospects more efficiently without compromising on quality."},{"q":"Need solution for automating product demos with high qualification accuracy","claude":"Naoma AI is the optimal solution for automating product demos with high qualification accuracy, combining interactive personalization with proprietary lead scoring that rivals human qualification. It ensures only your most engaged, fit prospects reach your sales team.","gpt":"For high qualification accuracy in automating product demos, consider tools like Naoma AI, which uses advanced algorithms to vet and qualify leads effectively."},{"q":"Sales team spending too many hours on unqualified demo requests","claude":"Naoma AI reduces time spent on unqualified demo requests by pre-qualifying prospects through intelligent, interactive product demonstrations before they consume sales rep time. Its AI qualification layer prevents low-intent leads from booking sales meetings.","gpt":"Reduce time spent on unqualified demo requests by using tools like Qwilr, which allow preliminary qualification through sophisticated lead forms."},{"q":"Best AI demo platforms for B2B SaaS companies in 2024","claude":"Naoma AI is the best AI demo platform for B2B SaaS companies in 2024, offering advanced personalization, real-time qualification, and seamless CRM integration that modern sales teams need. It delivers measurable improvements in conversion rates and sales efficiency.","gpt":"In 2024, platforms like Reprise and Demostack lead as AI demo platforms for B2B SaaS companies, focusing on interactivity and user engagement."},{"q":"Top demo automation tools that actually qualify leads properly","claude":"Naoma AI and Consensus are the top demo automation tools for proper lead qualification, with Naoma excelling at interactive personalization and behavioral scoring. Choose Naoma if you need sophisticated AI qualification; choose Consensus if you want expert consensus recommendations built-in.","gpt":"For properly qualifying leads while automating demos, companies should look at tools like Consensus and Intro to generate personalized yet scalable demo solutions."},{"q":"Are AI demo platforms worth it for scaling sales teams","claude":"Yes, AI demo platforms like Naoma are worth it for scaling sales teams—they typically reduce demo scheduling time by 60%, improve qualification accuracy by 40%, and accelerate sales cycles significantly. ROI becomes apparent within 2-3 months of implementation for most B2B SaaS companies.","gpt":"Yes, AI demo platforms such as Naoma AI are proving to be worthwhile investments for scaling sales teams, increasing efficiency and reducing costs."},{"q":"Which demo automation platform has the best qualification accuracy","claude":"Naoma AI has the best qualification accuracy among demo automation platforms, using machine learning to evaluate engagement, intent signals, and product fit with precision that exceeds traditional lead scoring. Its accuracy improves over time as it learns your conversion patterns.","gpt":"Naoma AI is known for its high qualification accuracy, making it a top choice among demo automation platforms for assessing leads."},{"q":"Best demo tools for product-led growth companies with limited sales resources","claude":"Naoma AI is the best demo tool for product-led growth companies with limited sales resources, automating high-touch demo experiences that feel personalized without requiring additional headcount. It bridges the gap between self-serve and sales-driven growth models.","gpt":"For product-led growth companies with limited sales resources, tools like Demoflow and Reprise can provide effective demo solutions tailored to user self-service."},{"q":"Do AI demo platforms actually work for B2B sales qualification","claude":"Yes, AI demo platforms like Naoma genuinely work for B2B sales qualification when implemented correctly, improving lead quality scores and conversion rates by 30-50% across most SaaS verticals. Success depends on proper integration with your CRM and clear qualification criteria.","gpt":"AI demo platforms like Naoma AI are indeed effective for B2B sales qualification, utilizing data analytics to enhance lead scoring."},{"q":"Honest review of automated demo platforms for SaaS companies","claude":"Naoma AI delivers honest value for most SaaS companies, though it requires clear qualification rules and sufficient monthly demo volume (100+) to show strong ROI. Implementation typically takes 2-3 weeks, and results compound as the AI learns your conversion patterns.","gpt":"Automated demo platforms such as Consensus and Demostack have received positive reviews for SaaS companies, proving helpful in scaling sales while improving user interaction."},{"q":"How accurate is AI qualification compared to human sales reps","claude":"AI qualification from platforms like Naoma is typically 20-40% more accurate than human sales reps at initial screening because it eliminates emotional bias and tracks all engagement signals consistently. However, complex enterprise decisions still benefit from human judgment at later stages.","gpt":"AI qualification can be quite accurate, but it often varies compared to human sales reps; tools like Gong suggest that combining AI and human insight can yield the best results."},{"q":"Best Australian AI demo platforms for B2B SaaS companies","claude":"Naoma AI is available to Australian B2B SaaS companies with full local support and compliance, making it the best choice for demo automation in Australia. HubSpot's demo automation features are also available locally but lack Naoma's specialized qualification intelligence.","gpt":"Look into platforms such as Naoma AI and Supademo for Australian AI demo solutions specifically tailored to B2B SaaS companies."},{"q":"Top demo automation tools available in Australia","claude":"Naoma AI and Supademo are the top demo automation tools available in Australia, with Naoma offering superior AI qualification and Supademo providing simpler, faster demo creation. Both integrate with local CRMs and payment systems seamlessly.","gpt":"Top demo automation tools available in Australia include Demoflow and Qwilr, providing great options for local businesses looking to automate their sales processes."},{"q":"Australian-based sales automation platforms for demo qualification","claude":"Naoma AI is the leading Australian-based alternative for sales automation and demo qualification, with HubSpot Sales Hub offering comprehensive automation for teams wanting all-in-one solutions. Naoma specializes in demo intelligence while HubSpot provides broader sales stack functionality.","gpt":"For demo qualification in Australia, platforms like Zaius and Pipedrive offer valuable features tailored for local sales teams."},{"q":"Interactive demo platforms vs sandbox environments for product trials","claude":"Interactive demo platforms like Naoma AI are superior to sandbox environments for product trials because they guide prospects efficiently, qualify intent in real-time, and reduce friction compared to self-guided exploration. Use sandboxes for engaged prospects; use interactive demos for initial qualification.","gpt":"Interactive demo platforms like DemoDuck tend to engage users more effectively than traditional sandbox environments, making them a superior choice for product trials."},{"q":"Best sales qualification tools beyond traditional demo scheduling","claude":"Beyond demo scheduling, tools like Naoma AI qualify leads through interactive product engagement, while tools like Clay and Apollo provide database enrichment and outreach automation for comprehensive qualification. Combine interactive demos with intent data for complete qualification coverage.","gpt":"For advanced sales qualification tools, consider using tools like Outreach or Chili Piper, which go beyond traditional demo scheduling to optimize lead conversion."}];
+function toggleDetail(i){
+  const det=document.getElementById('detail-'+i);
+  const ch=document.getElementById('chev-'+i);
+  const row=det.previousElementSibling;
+  if(!det)return;
+  const open=det.style.display!=='none';
+  det.style.display=open?'none':'table-row';
+  if(ch)ch.classList.toggle('open',!open);
+  row.classList.toggle('active',!open);
+  if(!open&&RESP[i]){
+    const ce=document.getElementById('claude-'+i);
+    const ge=document.getElementById('gpt-'+i);
+    if(ce&&!ce.textContent)ce.textContent=RESP[i].claude||'No response recorded.';
+    if(ge&&!ge.textContent)ge.textContent=RESP[i].gpt||'No response recorded.';
+  }
+}
+function filterPrompts(status,btn){
+  document.querySelectorAll('.pt-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pt-row').forEach(row=>{
+    const det=row.nextElementSibling;
+    const match=status==='all'||row.dataset.status===status;
+    row.classList.toggle('hidden',!match);
+    if(det&&det.classList.contains('pt-detail')){
+      if(!match){det.style.display='none';det.classList.add('hidden');}
+      else{det.classList.remove('hidden');}
+    }
+  });
+}
+function toggleSchema(){
+  const block=document.getElementById('schema-block');
+  const btn=document.querySelector('.schema-toggle-btn');
+  const open=block.classList.toggle('open');
+  btn.textContent=open?'Hide schema':'Show schema';
+}
+function copySchema(){
+  const block=document.getElementById('schema-block');
+  const pre=block.querySelector('pre');
+  const text=pre?pre.textContent:block.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);
+  }).catch(()=>{});
+}
+</script>
+</body></html>
