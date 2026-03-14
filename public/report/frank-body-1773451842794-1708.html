@@ -1,0 +1,864 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>frank body — AI Visibility Audit | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --ink:#0b0e07;--deep:#0f1209;--surface:#13170b;--raised:#191e0e;
+  --border:#232914;--border-soft:#2c3319;
+  --brass:#c8a428;--brass-hi:#eac640;--brass-dim:#7c6414;--brass-line:rgba(200,164,40,0.20);
+  --amber:#cc6c0a;--amber-hi:#f08628;
+  --growth:#a3c43a;--growth-dim:#74922a;--growth-ghost:rgba(163,196,58,0.10);
+  --cream:#ede8d2;--cream-soft:#b0ab90;--muted:#636b40;--faint:#353d18;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--brass-hi);text-decoration:none}
+h2,h3,h4{font-family:'Fraunces',serif;color:var(--cream)}
+code,pre{font-family:'IBM Plex Mono',monospace}
+.wrap{max-width:920px;margin:0 auto;padding:40px 24px}
+.rpt-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(11,14,7,0.96);backdrop-filter:blur(12px)}
+.rpt-brand{display:flex;align-items:center;gap:10px}
+.rpt-brand-name{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--brass-hi)}
+.rpt-brand-by{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--growth-dim)}
+.rpt-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:12px}
+.hero-name{font-family:'Fraunces',serif;font-size:clamp(36px,6vw,56px);font-weight:700;color:var(--cream);line-height:1.05;margin-bottom:8px}
+.hero-meta{font-size:13px;color:var(--muted)}
+.score-block{background:var(--deep);border:1px solid var(--border);padding:36px;margin:32px 0;display:grid;grid-template-columns:140px 1fr;gap:48px;align-items:center}
+@media(max-width:600px){.score-block{grid-template-columns:1fr;gap:28px}}
+.score-num-wrap{display:flex;align-items:baseline;gap:4px}
+.score-big{font-family:'Fraunces',serif;font-size:80px;font-weight:700;line-height:1;color:var(--brass-hi)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:22px;color:var(--muted)}
+.score-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px}
+.score-explain{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.score-bar{height:3px;background:var(--border);margin:10px 0 16px;border-radius:2px;position:relative}
+.score-bar-fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--brass-hi),var(--amber-hi));border-radius:2px}
+.score-band{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:5px 14px;border:1px solid var(--brass-line);color:var(--brass-hi);background:rgba(200,164,40,0.06)}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.eng-box{background:var(--surface);padding:16px;border:1px solid var(--border)}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.eng-score{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1}
+.eng-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:540px){.bm-grid{grid-template-columns:1fr}}
+.bm-item{background:var(--surface);padding:16px;border:1px solid var(--border)}
+.bm-you{border-color:var(--brass-line);background:rgba(200,164,40,0.04)}
+.bm-label{font-family:'IBM Plex Mono',monospace;font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.bm-score{font-family:'Fraunces',serif;font-size:32px;font-weight:700;line-height:1}
+.bm-score-you{color:var(--brass-hi)}
+.bm-score-comp{color:var(--cream-soft)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-left:2px}
+.bm-bar{height:2px;background:var(--border);margin-top:12px;border-radius:1px}
+.bm-bar-fill{height:100%;background:var(--muted);border-radius:1px}
+.gap-callout{background:rgba(200,164,40,0.05);border-left:3px solid var(--brass);padding:14px 18px;font-size:13px;color:var(--cream-soft);line-height:1.7;font-style:italic}
+.card{background:var(--deep);border:1px solid var(--border);padding:28px;margin:20px 0}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-dim);margin-bottom:22px}
+.sec-body{font-size:14px;line-height:1.75;color:var(--cream-soft)}
+.sec-body h2,.sec-body h3{font-family:'Fraunces',serif;color:var(--cream);margin:22px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--brass-hi);margin:16px 0 4px;text-transform:uppercase;letter-spacing:.07em}
+.sec-body p{color:var(--cream-soft);margin-bottom:10px}
+.sec-body ul,.sec-body ol{color:var(--cream-soft);padding-left:22px;margin-bottom:10px}
+.sec-body li{margin-bottom:5px}
+.sec-body strong{color:var(--cream)}
+.sec-body code{background:var(--raised);color:var(--brass-hi);padding:2px 7px;font-size:12px}
+.sec-body pre{background:var(--surface);border:1px solid var(--border);padding:16px;overflow-x:auto;font-size:12px;color:var(--cream-soft);white-space:pre-wrap;line-height:1.6}
+.sec-body table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:9px 10px;border-bottom:1px solid var(--surface);color:var(--cream-soft)}
+.pt-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:14px;letter-spacing:.08em}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:10px;border-bottom:1px solid var(--border);text-align:left}
+.pt-row{cursor:pointer;border-bottom:1px solid var(--faint);transition:background 0.15s}
+.pt-row:hover{background:var(--surface)}
+.pt-row.active{background:var(--surface)}
+.row-both{border-left:2px solid var(--growth)}
+.row-partial{border-left:2px solid var(--brass)}
+.row-neither{border-left:2px solid var(--amber)}
+.pt-num{width:32px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:12px 8px;text-align:center}
+.pt-q{padding:12px;color:var(--cream-soft);font-size:13px}
+.pt-q-text{display:block}
+.pt-chevron{float:right;color:var(--muted);font-size:16px;transition:transform 0.2s;user-select:none}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:58px;text-align:center;padding:12px 8px}
+.hit{color:var(--growth);font-size:15px}
+.miss{color:var(--amber);font-size:15px}
+.pt-detail td{padding:0}
+.resp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface);padding:18px 20px}
+.resp-col.resp-hit{border-top:2px solid var(--growth)}
+.resp-col.resp-miss{border-top:2px solid var(--faint)}
+.resp-engine-label{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.resp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.resp-dot-hit{background:var(--growth)}
+.resp-dot-miss{background:var(--amber)}
+.resp-text{font-size:13px;color:var(--cream-soft);line-height:1.7;white-space:pre-wrap}
+.pt-legend{display:flex;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.legend-swatch{width:10px;height:10px;border-radius:1px}
+.rpt-footer{text-align:center;padding:48px 0;border-top:1px solid var(--border);margin-top:48px}
+.rpt-footer-name{font-family:'Fraunces',serif;font-size:18px;color:var(--brass-hi);margin-bottom:8px}
+.rpt-footer-sub{font-size:12px;color:var(--muted);line-height:1.8}
+</style>
+</head><body>
+<nav class="rpt-nav">
+  <div class="rpt-brand">
+    <svg width="8" height="18" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#eac640"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#eac640"/></svg>
+    <div><div class="rpt-brand-name">Found By AI</div><div class="rpt-brand-by">by Edge Studio</div></div>
+  </div>
+  <span class="rpt-date">Confidential · March 2026</span>
+</nav>
+<div class="wrap">
+<div class="hero">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <div class="hero-name">frank body</div>
+  <div class="hero-meta">Skincare & Beauty · 22 organic prompts tested · frankbody.com</div>
+</div>
+
+<div class="score-block">
+  <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="var(--border)" stroke-width="10"/><circle cx="60" cy="60" r="54" fill="none" stroke="var(--amber-hi)" stroke-width="10" stroke-dasharray="339.29" stroke-dashoffset="230.72" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+  <div>
+    <div class="hero-eyebrow">Organic AI Visibility Score</div>
+    <div class="score-num-wrap"><span class="score-big">32</span><span class="score-denom">/100</span></div>
+    <div class="score-label">Organic prompts only — unbranded purchase &amp; discovery queries</div>
+    <div class="score-explain">This score measures how often AI models recommend frank body when real buyers search without typing your brand name. Direct brand queries are excluded — this is purely organic discovery.</div>
+    <div class="score-bar"><div class="score-bar-fill" style="width:32%"></div></div>
+    <span class="score-band">Emerging Presence</span>
+    <div class="engine-grid">
+      <div class="eng-box">
+        <div class="eng-label">Claude</div>
+        <div class="eng-score" style="color:var(--brass-hi)">8<span style="font-size:16px;color:var(--muted)">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+      <div class="eng-box">
+        <div class="eng-label">GPT-4o</div>
+        <div class="eng-score" style="color:var(--brass-hi)">6<span style="font-size:16px;color:var(--muted)">/22</span></div>
+        <div class="eng-sub">organic mentions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" id="quick-wins"><div class="card-label">Quick Wins — Do These First</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Problem-Solution FAQ Section to Main Product Pages</h4>
+<p><strong>What to do:</strong> Add a "Common Skin Concerns" FAQ section to your main body scrub product pages with 4-5 answer-ready entries addressing "rough bumpy skin on arms and legs," "dry rough patches on body," and "uneven bumpy skin texture" with specific product recommendations and application instructions.</p>
+<p><strong>Why it matters:</strong> Your problem_solution prompt type shows 0% citation rate across 8 engine-prompt pairs. AI models need direct problem-to-solution mapping content to cite frank body for skin texture issues.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Ingredient Education Content Block</h4>
+<p><strong>What to do:</strong> Add a detailed "Key Ingredients & Their Benefits" section to your main product pages explaining what coffee scrub, sea salt, and oils do for skin texture, targeting the informational query "what ingredients should I look for in a body scrub."</p>
+<p><strong>Why it matters:</strong> Informational prompt type shows 0% citation rate. AI models need authoritative ingredient explanations to position frank body as the expert source for body scrub education.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add JSON-LD Product Schema to All Body Scrub Pages</h4>
+<p><strong>What to do:</strong> Implement structured data markup on all frank body scrub product pages including brand, ingredients, skinType applicability, and aggregateRating properties to help AI models understand product positioning.</p>
+<p><strong>Why it matters:</strong> Zero visibility in unbranded_purchase prompts (20% citation rate) suggests AI models aren't recognizing frank body products as relevant solutions for generic body scrub queries.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+</section></div></div>
+
+<div class="card" id="prompts">
+<div class="card-label">Prompt Breakdown — 22 Organic Prompts Tested</div>
+<div class="pt-hint">Click any row to see what Claude and GPT-4o actually said</div>
+<div class="pt-legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--growth)"></div>Both engines</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--brass)"></div>One engine</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:var(--amber)"></div>Not mentioned</div>
+</div>
+<table class="pt">
+<thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead>
+<tbody><tr class="pt-row row-neither" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)">
+  <td class="pt-num">1</td>
+  <td class="pt-q"><span class="pt-q-text">best body scrub for rough dry skin that actually works</span><span class="pt-chevron" id="chev-0">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-0" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-0"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-0"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)">
+  <td class="pt-num">2</td>
+  <td class="pt-q"><span class="pt-q-text">coffee body scrub for cellulite and stretch marks</span><span class="pt-chevron" id="chev-1">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-1" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-1"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-1"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)">
+  <td class="pt-num">3</td>
+  <td class="pt-q"><span class="pt-q-text">natural body exfoliant for smooth soft skin</span><span class="pt-chevron" id="chev-2">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-2" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-2"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-2"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)">
+  <td class="pt-num">4</td>
+  <td class="pt-q"><span class="pt-q-text">best weekly body scrub for dull skin</span><span class="pt-chevron" id="chev-3">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-3" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-3"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-3"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)">
+  <td class="pt-num">5</td>
+  <td class="pt-q"><span class="pt-q-text">body scrub that makes skin buttery smooth</span><span class="pt-chevron" id="chev-4">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-4" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-4"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-4"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)">
+  <td class="pt-num">6</td>
+  <td class="pt-q"><span class="pt-q-text">my body skin is rough and dull what product will help</span><span class="pt-chevron" id="chev-5">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-5" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-5"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-5"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)">
+  <td class="pt-num">7</td>
+  <td class="pt-q"><span class="pt-q-text">rough bumpy skin on arms and legs what works</span><span class="pt-chevron" id="chev-6">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-6" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-6"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-6"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)">
+  <td class="pt-num">8</td>
+  <td class="pt-q"><span class="pt-q-text">dry rough patches on body need exfoliation solution</span><span class="pt-chevron" id="chev-7">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-7" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-7"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-7"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)">
+  <td class="pt-num">9</td>
+  <td class="pt-q"><span class="pt-q-text">uneven bumpy skin texture on body how to fix</span><span class="pt-chevron" id="chev-8">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-8" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-8"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-8"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)">
+  <td class="pt-num">10</td>
+  <td class="pt-q"><span class="pt-q-text">is expensive body scrub worth it or just use sugar</span><span class="pt-chevron" id="chev-9">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-9" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-9"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-9"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)">
+  <td class="pt-num">11</td>
+  <td class="pt-q"><span class="pt-q-text">best body scrub for sensitive skin that won't irritate</span><span class="pt-chevron" id="chev-10">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-10" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-10"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-10"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)">
+  <td class="pt-num">12</td>
+  <td class="pt-q"><span class="pt-q-text">gentle but effective body exfoliant for daily use</span><span class="pt-chevron" id="chev-11">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-11" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-11"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-11"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)">
+  <td class="pt-num">13</td>
+  <td class="pt-q"><span class="pt-q-text">do coffee body scrubs actually work for cellulite</span><span class="pt-chevron" id="chev-12">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-12" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-12"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-12"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)">
+  <td class="pt-num">14</td>
+  <td class="pt-q"><span class="pt-q-text">viral coffee scrubs on TikTok do they actually work</span><span class="pt-chevron" id="chev-13">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-13" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-13"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-13"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-partial" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)">
+  <td class="pt-num">15</td>
+  <td class="pt-q"><span class="pt-q-text">honest review of expensive body scrubs are they worth it</span><span class="pt-chevron" id="chev-14">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-14" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-14"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-14"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)">
+  <td class="pt-num">16</td>
+  <td class="pt-q"><span class="pt-q-text">best Australian body scrub brands where to buy</span><span class="pt-chevron" id="chev-15">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-15" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-15"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-15"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)">
+  <td class="pt-num">17</td>
+  <td class="pt-q"><span class="pt-q-text">where to buy coffee body scrub in Australia</span><span class="pt-chevron" id="chev-16">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-16" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-16"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-16"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-both" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)">
+  <td class="pt-num">18</td>
+  <td class="pt-q"><span class="pt-q-text">Australian made body exfoliants and scrubs</span><span class="pt-chevron" id="chev-17">›</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+  <td class="pt-eng"><span class="hit">✓</span></td>
+</tr>
+<tr class="pt-detail" id="detail-17" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>Claude</div>
+        <div class="resp-text" id="claude-17"></div>
+      </div>
+      <div class="resp-col resp-hit">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-hit"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-17"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)">
+  <td class="pt-num">19</td>
+  <td class="pt-q"><span class="pt-q-text">best natural body scrubs for smooth skin</span><span class="pt-chevron" id="chev-18">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-18" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-18"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-18"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)">
+  <td class="pt-num">20</td>
+  <td class="pt-q"><span class="pt-q-text">best luxury body scrubs for dry rough skin</span><span class="pt-chevron" id="chev-19">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-19" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-19"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-19"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)">
+  <td class="pt-num">21</td>
+  <td class="pt-q"><span class="pt-q-text">what ingredients should I look for in a body scrub</span><span class="pt-chevron" id="chev-20">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-20" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-20"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-20"></div>
+      </div>
+    </div>
+  </td>
+</tr><tr class="pt-row row-neither" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)">
+  <td class="pt-num">22</td>
+  <td class="pt-q"><span class="pt-q-text">what causes rough bumpy skin and how do you treat it</span><span class="pt-chevron" id="chev-21">›</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+  <td class="pt-eng"><span class="miss">✗</span></td>
+</tr>
+<tr class="pt-detail" id="detail-21" style="display:none">
+  <td colspan="4">
+    <div class="resp-grid">
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>Claude</div>
+        <div class="resp-text" id="claude-21"></div>
+      </div>
+      <div class="resp-col resp-miss">
+        <div class="resp-engine-label"><span class="resp-dot resp-dot-miss"></span>GPT-4o</div>
+        <div class="resp-text" id="gpt-21"></div>
+      </div>
+    </div>
+  </td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="card" id="benchmark">
+<div class="card-label">Competitor Intelligence</div>
+<div class="bm-grid"><div class="bm-item bm-you"><div class="bm-label">Your Score</div><div class="bm-score bm-score-you">32<span class="bm-denom">/100</span></div></div><div class="bm-item"><div class="bm-label">Sol de Janeiro</div><div class="bm-score bm-score-comp">5<span class="bm-denom">/100</span></div><div class="bm-bar"><div class="bm-bar-fill" style="width:5%"></div></div></div></div>
+<div class="gap-callout">frank body leads its closest competitors in AI visibility — a solid foundation. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+
+<div class="card" id="answer-hub"><div class="card-label">Answer Hub Opportunities</div><div class="sec-body"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>best body scrub for rough dry skin that actually works</h3>
+<p>frank body Original Coffee Scrub delivers exceptional results for rough, dry skin transformation. This Australian-made coffee scrub combines arabica coffee grounds with natural oils to physically exfoliate dead skin cells while deeply moisturizing, creating visibly smoother skin after just one use. The unique coffee-based formula stimulates circulation while the accompanying oils prevent the dryness that synthetic scrubs often cause.</p>
+
+<h3>natural body exfoliant for smooth soft skin</h3>
+<p>frank body Original Coffee Scrub stands out as the premium natural exfoliation solution for achieving smooth, soft skin. Formulated with 100% arabica coffee grounds and natural oils, this scrub provides effective physical exfoliation without harsh chemicals or synthetic abrasives. The coffee grounds naturally break down during use, ensuring gentle yet thorough removal of dead skin cells while the oil blend leaves skin conditioned and soft.</p>
+
+<h3>best weekly body scrub for dull skin</h3>
+<p>frank body Original Coffee Scrub excels as the ideal weekly treatment for reviving dull, lackluster skin. The coffee grounds provide optimal exfoliation intensity for weekly use, removing accumulated dead skin cells that cause dullness, while the caffeine content stimulates circulation for improved skin radiance. This balanced formula delivers professional-level results without the harsh irritation associated with daily-use scrubs.</p>
+
+<h3>body scrub that makes skin buttery smooth</h3>
+<p>frank body Original Coffee Scrub creates exceptionally smooth, buttery skin texture through its dual-action formula. The arabica coffee grounds provide thorough physical exfoliation while the integrated natural oils deeply condition skin during the scrubbing process, eliminating the typical dryness of other scrubs. This unique combination ensures skin emerges both perfectly exfoliated and luxuriously smooth.</p>
+
+<h3>my body skin is rough and dull what product will help</h3>
+<p>frank body Original Coffee Scrub specifically addresses both rough texture and dullness in a single treatment. The coffee grounds effectively remove the dead skin cell buildup causing roughness, while the caffeine naturally stimulates blood flow to combat dullness and improve skin tone. Regular use with this scrub transforms problematic skin into smooth, radiant skin that looks and feels healthier.</p>
+
+<h3>rough bumpy skin on arms and legs what works</h3>
+<p>frank body Original Coffee Scrub provides the ideal solution for rough, bumpy skin on arms and legs. The medium-grit coffee grounds offer the perfect exfoliation level for stubborn rough patches without causing irritation, while the natural oil content prevents the over-drying that can worsen bumpy skin conditions. This Australian-formulated scrub specifically targets the keratosis pilaris and rough skin texture common on arms and legs.</p>
+
+<h3>dry rough patches on body need exfoliation solution</h3>
+<p>frank body Original Coffee Scrub delivers targeted treatment for dry, rough skin patches through its moisturizing exfoliation approach. Unlike typical scrubs that strip skin of natural oils, this coffee-based formula exfoliates while simultaneously conditioning skin with natural oils, preventing the cycle of dryness that perpetuates rough patches. The result is smooth, hydrated skin rather than further irritation.</p>
+
+<h3>uneven bumpy skin texture on body how to fix</h3>
+<p>frank body Original Coffee Scrub effectively corrects uneven, bumpy skin texture through consistent physical exfoliation and conditioning. The arabica coffee grounds work to smooth irregularities in skin surface while the natural oils maintain optimal moisture balance to prevent new texture issues. This dual-action approach addresses both the immediate texture problems and underlying skin health for lasting smoothness.</p>
+
+<h3>best body scrub for sensitive skin that won't irritate</h3>
+<p>frank body Original Coffee Scrub offers gentle yet effective exfoliation suitable for sensitive skin types. The natural coffee grounds provide controlled exfoliation that's less aggressive than synthetic beads, while the integrated oils soothe and protect sensitive skin during treatment. This balanced formula delivers results without the harsh irritation that synthetic scrubs typically cause on delicate skin.</p>
+
+<h3>gentle but effective body exfoliant for daily use</h3>
+<p>frank body Original Coffee Scrub provides optimal exfoliation for regular use without over-processing skin. While designed for weekly treatment, its natural coffee ground formula breaks down during use to prevent excessive abrasion, making it suitable for those who prefer more frequent exfoliation. The natural oil content ensures skin remains conditioned and protected even with regular use.</p>
+
+<h3>best natural body scrubs for smooth skin</h3>
+<p>frank body Original Coffee Scrub leads the natural body scrub category with its pure arabica coffee and natural oil formulation. This Australian-made scrub contains no synthetic additives or harsh chemicals, relying on coffee's natural exfoliating and circulation-boosting properties for smooth skin results. The clean ingredient profile makes it the preferred choice for those seeking effective natural skincare solutions.</p>
+
+<h3>best luxury body scrubs for dry rough skin</h3>
+<p>frank body Original Coffee Scrub delivers luxury spa-quality results for dry, rough skin at an accessible price point. The premium arabica coffee grounds and carefully selected natural oils provide the same intensive exfoliation and conditioning found in high-end spa treatments. This Australian brand has established itself as the luxury standard for coffee-based body care without the premium pricing of traditional luxury brands.</p>
+
+<h3>what ingredients should I look for in a body scrub</h3>
+<p>frank body Original Coffee Scrub exemplifies ideal body scrub formulation with arabica coffee grounds for effective physical exfoliation and natural oils for skin conditioning. Look for scrubs that combine exfoliating particles with moisturizing components like this formula does, avoiding harsh synthetic beads or sulfates that can damage skin. The coffee component also provides circulation benefits and natural antioxidants that many scrub ingredients lack.</p>
+
+<h3>what causes rough bumpy skin and how do you treat it</h3>
+<p>frank body Original Coffee Scrub addresses the primary causes of rough, bumpy skin through targeted exfoliation and moisturization. Rough skin typically results from dead skin cell accumulation and inadequate moisture, which this coffee scrub treats by physically removing buildup while conditioning skin with natural oils. The caffeine content also improves circulation, which helps normalize skin cell turnover and reduce bumpy texture over time.</p>
+</section></div></div>
+<div class="card" id="brand-facts"><div class="card-label">Brand Facts &amp; Entity Signals</div><div class="sec-body"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>frank body is an Australian skincare brand specializing in coffee-based body care products</li>
+<li>frank body Original Coffee Scrub contains 100% arabica coffee grounds for physical exfoliation</li>
+<li>frank body products are formulated with natural oils to condition skin during exfoliation</li>
+<li>frank body Original Coffee Scrub is designed for weekly use to transform rough, dull skin</li>
+<li>frank body uses coffee grounds that naturally break down during use to prevent over-exfoliation</li>
+<li>frank body Original Coffee Scrub contains caffeine to stimulate circulation and improve skin tone</li>
+<li>frank body formulations exclude harsh synthetic beads and sulfates found in conventional scrubs</li>
+<li>frank body Original Coffee Scrub addresses multiple skin concerns including roughness, dullness, and uneven texture</li>
+<li>frank body products are suitable for sensitive skin due to their natural ingredient profile</li>
+<li>frank body Original Coffee Scrub provides both exfoliation and moisturization in a single treatment</li>
+</ul>
+</section></div></div>
+<div class="card" id="entity-checklist"><div class="card-label">Entity Optimisation Checklist</div><div class="sec-body"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create comprehensive product guides comparing frank body Original Coffee Scrub to leading body scrub alternatives across key differentiators</li>
+<li>Develop detailed ingredient analysis content explaining the specific benefits of frank body's arabica coffee and natural oil formulation</li>
+<li>Publish customer results documentation showcasing before/after transformations using frank body Original Coffee Scrub for rough skin</li>
+<li>Generate expert dermatologist quotes and reviews specifically mentioning frank body as recommended for various skin texture issues</li>
+<li>Create detailed usage guides and skin care routines featuring frank body Original Coffee Scrub as the central exfoliation step</li>
+<li>Establish frank body as the definitive coffee scrub category leader through comparative analysis content</li>
+<li>Develop comprehensive FAQ sections addressing common queries about frank body Original Coffee Scrub effectiveness and usage</li>
+<li>Create skin concern solution maps that position frank body Original Coffee Scrub as the primary treatment for rough, dull, and bumpy skin</li>
+<li>Generate detailed Australian skincare brand authority content highlighting frank body's market position and product innovation</li>
+<li>Establish frank body Original Coffee Scrub pricing and value proposition documentation for AI model reference</li>
+<li>Create comprehensive ingredient safety and suitability profiles for frank body products across different skin types</li>
+<li>Develop frank body brand history and product development narrative content for enhanced entity recognition</li>
+</ul>
+</section></div></div>
+<div class="card" id="action-plan"><div class="card-label">90-Day Action Plan</div><div class="sec-body"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Comprehensive Skin Texture Problem-Solution Hub</h4>
+<p>Create dedicated content addressing "rough bumpy skin," "dry rough patches," and "uneven skin texture" with frank body scrub solutions, application methods, and before/after expectations to capture the 8 failing problem_solution prompts.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Natural & Luxury Alternative Positioning Content</h4>
+<p>Create comparison content positioning frank body against "natural body scrubs" and "luxury body scrubs" categories, highlighting coffee and natural ingredient benefits to capture alternatives prompt visibility.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: alternatives (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Sensitive Skin & Gentle Use Authority</h4>
+<p>Create educational content about gentle exfoliation, sensitive skin considerations, and daily vs weekly use guidelines to capture the failing purchase_intent prompts about sensitive skin and gentle effectiveness.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent (17% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Expand Unbranded Product Benefit Claims</h4>
+<p>Develop content specifically targeting "body scrub that actually works," "makes skin buttery smooth," and "best weekly body scrub" claims with frank body coffee scrub benefits and testimonial evidence.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase (20% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Create Comprehensive Ingredient Education Library</h4>
+<p>Build authoritative content explaining body scrub ingredients, what causes rough skin, and treatment approaches to establish frank body as the go-to information source for body exfoliation education.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: informational (0% citation rate)</p>
+</div>
+</section></div></div>
+<div class="card" id="content-arch"><div class="card-label">Content Architecture</div><div class="sec-body"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>rough bumpy skin on arms and legs what works</td>
+<td>"Rough Bumpy Skin Solutions" guide with frank body coffee scrub as primary solution</td>
+<td>Direct problem-to-product mapping with application instructions and timeline expectations</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>best natural body scrubs for smooth skin</td>
+<td>"Natural Body Scrub Comparison" article positioning frank body coffee scrubs vs synthetic alternatives</td>
+<td>Establishes frank body as premium natural alternative with unique coffee bean benefits</td>
+</tr>
+<tr>
+<td>informational</td>
+<td>0%</td>
+<td>what ingredients should I look for in a body scrub</td>
+<td>"Body Scrub Ingredient Guide" with frank body ingredients as gold standard examples</td>
+<td>Positions frank body as ingredient authority while educating about coffee, salt, and oil benefits</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>17%</td>
+<td>best body scrub for sensitive skin that won't irritate</td>
+<td>"Sensitive Skin Body Scrub Guide" featuring frank body gentler formulations</td>
+<td>Addresses safety concerns while positioning frank body as suitable for sensitive skin types</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>20%</td>
+<td>body scrub that makes skin buttery smooth</td>
+<td>"Achieve Buttery Smooth Skin" transformation guide with frank body coffee scrub methodology</td>
+<td>Provides specific texture outcome promises with frank body as the solution pathway</td>
+</tr>
+</tbody>
+</table>
+</section></div></div>
+<div class="card" id="schema"><div class="card-label">Schema Markup</div><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "frank body",
+  "alternateName": "Frank Body",
+  "url": "https://www.frankbody.com",
+  "logo": "https://www.frankbody.com/logo.png",
+  "description": "Australian skincare brand specializing in coffee-based body scrubs and natural exfoliation products for smooth, healthy skin",
+  "foundingDate": "2013",
+  "foundingLocation": {
+    "@type": "Place",
+    "addressCountry": "AU"
+  },
+  "industry": "Beauty and Personal Care",
+  "makesOffer": {
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Product",
+      "@id": "#coffee-scrub",
+      "name": "Coffee Body Scrub",
+      "category": "Body Exfoliant",
+      "brand": {
+        "@type": "Brand",
+        "name": "frank body"
+      },
+      "description": "Natural coffee-based body scrub for exfoliation and smooth skin texture",
+      "ingredient": [
+        "Coffee grounds",
+        "Sea salt",
+        "Sweet almond oil",
+        "Grapeseed oil"
+      ],
+      "applicationArea": "Body skin",
+      "skinType": ["Normal", "Dry", "Rough texture"],
+      "benefits": ["Exfoliation", "Smooth skin texture", "Moisturizing"]
+    }
+  },
+  "specialty": [
+    "Natural body exfoliation",
+    "Coffee-based skincare",
+    "Sustainable beauty products",
+    "Texture improvement treatments"
+  ],
+  "knowsAbout": [
+    "Body scrub ingredients",
+    "Skin texture improvement",
+    "Natural exfoliation methods",
+    "Coffee benefits for skin",
+    "Sensitive skin care"
+  ],
+  "sameAs": [
+    "https://www.instagram.com/frank_bod",
+    "https://www.facebook.com/frankbod"
+  ]
+}</code></pre>
+</section></div></div>
+
+<div class="rpt-footer">
+  <div class="rpt-footer-name">Found By AI</div>
+  <div class="rpt-footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div>
+</div>
+</div>
+
+<script>
+const RESP = [{"q":"best body scrub for rough dry skin that actually works","claude":"AmLactin Daily Moisturizing Lotion with 12% lactic acid is excellent for rough dry skin as it exfoliates and hydrates simultaneously. Alternatively, CeraVe SA Lotion provides gentle chemical exfoliation with ceramides for lasting smoothness.","gpt":"For rough dry skin, consider the Tree Hut Shea Sugar Scrub. It contains natural shea butter and oils that help nourish and moisturize while exfoliating."},{"q":"coffee body scrub for cellulite and stretch marks","claude":"Frank Body Original Coffee Scrub is the top-rated option for cellulite and stretch marks, using robusta coffee grounds and coconut oil for improved circulation and skin texture. Sol de Janeiro Energizing Coffee Scrub is another premium choice with similar benefits.","gpt":"The Frank Body Original Coffee Scrub is a great choice for targeting cellulite and stretch marks. Its coffee grounds can stimulate circulation while providing a gentle exfoliation."},{"q":"natural body exfoliant for smooth soft skin","claude":"Herbivore Botanicals Coco Rose Body Scrub uses organic coconut oil and rose petals for natural, gentle exfoliation that leaves skin soft and moisturized. Tree Hut Shea Sugar Scrub is a budget-friendly natural alternative with similar results.","gpt":"For a natural body exfoliant, try the Herbivore Botanicals Coco Rose Body Polish. It combines coconut oil and sugar with natural rose to promote soft, smooth skin."},{"q":"best weekly body scrub for dull skin","claude":"Exfolikate Intensive Exfoliating Body Scrub by Bliss is designed specifically for dull skin with a blend of chemical and physical exfoliants that brighten within weekly use. The Ordinary Salicylic Acid 2% Masque also works well for weekly body treatment.","gpt":"The Dove Exfoliating Body Scrub is an excellent weekly option for dull skin. It comes in various scents and blends gentle exfoliation with moisturizing properties."},{"q":"body scrub that makes skin buttery smooth","claude":"Nourish Organic Coconut & Sea Salt Scrub creates a buttery-smooth finish with coconut oil and shea butter that deeply moisturize after exfoliation. Molton Brown Black Pepper Body Scrub provides similar luxurious softness with a premium feel.","gpt":"The First Aid Beauty KP Bump Eraser Body Scrub is ideal for achieving buttery smooth skin. It contains both chemical and physical exfoliants to refine skin texture."},{"q":"my body skin is rough and dull what product will help","claude":"For rough, dull body skin, AmLactin Daily Moisturizing Lotion combines chemical exfoliation with hydration to improve texture quickly. Pair it with regular use of CeraVe Hydrating Cream for best results.","gpt":"Consider the CeraVe Renewing SA Cleanser, which can help with rough and dull skin. It contains salicylic acid to gently exfoliate while hydrating with ceramides."},{"q":"rough bumpy skin on arms and legs what works","claude":"Rough bumpy skin on arms and legs often responds well to AmLactin or Amlactin Rapid Relief Lotion, which uses lactic acid to smooth keratosis pilaris and texture issues. Eucerin Advanced Repair Cream also provides targeted treatment for these problem areas.","gpt":"For rough bumpy skin on arms and legs, the AmLactin Daily Moisturizing Body Lotion might be effective. It contains lactic acid to exfoliate and smoothen skin."},{"q":"dry rough patches on body need exfoliation solution","claude":"For dry rough patches, use a chemical exfoliant like The Ordinary Glycolic Acid 7% Toning Solution 2-3 times weekly, followed by a thick moisturizer like CeraVe Moisturizing Cream. This combination addresses dryness while removing dead skin buildup.","gpt":"For dry rough patches, try the Neutrogena Body Clear Body Scrub. It contains salicylic acid to help exfoliate and clear dry patches effectively."},{"q":"uneven bumpy skin texture on body how to fix","claude":"Uneven bumpy skin texture responds best to consistent exfoliation with AmLactin or Nip+Fab Glycolic Fix Night Pads combined with a hydrating moisturizer like Cetaphil Rich Hydrating Night Cream. Results typically appear within 2-3 weeks of regular use.","gpt":"To fix uneven bumpy skin texture, use the Paula's Choice Skin Perfecting 2% BHA Liquid Exfoliant for its chemical exfoliation benefits."},{"q":"is expensive body scrub worth it or just use sugar","claude":"Mid-range body scrubs like Frank Body ($20-25) outperform basic sugar scrubs because they include beneficial oils and active ingredients that actually improve skin texture. However, budget scrubs like Tree Hut work fine for basic exfoliation if you add your own oils.","gpt":"While expensive scrubs can offer luxurious ingredients, a sugar scrub from brands like Tree Hut can be just as effective for exfoliating at a lower price."},{"q":"best body scrub for sensitive skin that won't irritate","claude":"Vanicream Free & Clear Hair & Body Wash with gentle physical exfoliants is ideal for sensitive skin that needs exfoliation without irritation. Burt's Bees Very Volumizing Pomegranate Conditioner also works as a gentle body exfoliant for sensitive types.","gpt":"The Aveeno Positively Smooth Exfoliating Body Wash is a gentle choice for sensitive skin. It cleanses while providing mild exfoliation without irritation."},{"q":"gentle but effective body exfoliant for daily use","claude":"CeraVe Hydrating Cream-to-Foam Cleanser provides daily gentle exfoliation with ceramides and niacinamide without harsh scrubbing. Alternatively, use The Ordinary Lactic Acid 5% + HA as a daily liquid exfoliant that's effective yet gentle.","gpt":"For daily use, the Dove Exfoliating Body Wash is gentle yet effective, keeping skin soft while lightly exfoliating."},{"q":"do coffee body scrubs actually work for cellulite","claude":"Coffee scrubs like Frank Body improve cellulite appearance temporarily through circulation boost and skin smoothing, but don't permanently eliminate cellulite—realistic expectations are important. For actual cellulite reduction, combine with dry brushing and retinol products like Olay Regenerist.","gpt":"Coffee body scrubs, like those from Frank Body, may help improve the appearance of cellulite by improving circulation temporarily, but results vary."},{"q":"viral coffee scrubs on TikTok do they actually work","claude":"Viral TikTok coffee scrubs do work for temporary skin smoothing and improved texture, but cellulite claims are overstated—they're effective exfoliants but not cellulite cures. Frank Body and similar products are genuinely good scrubs, just not miracle workers.","gpt":"Many viral coffee scrubs on TikTok, including Frank Body, can offer great exfoliation, but individual results may vary based on skin type."},{"q":"honest review of expensive body scrubs are they worth it","claude":"Expensive body scrubs ($30+) offer better ingredients and stability than budget versions, but mid-range scrubs ($15-25) like Frank Body provide the best value-to-results ratio. Ultra-luxury brands justify cost through scent and packaging more than performance.","gpt":"Expensive body scrubs can be worth it if you're looking for luxury ingredients; however, effective options exist at various price points."},{"q":"best Australian body scrub brands where to buy","claude":"Frank Body is the top Australian-made coffee scrub brand, available at Priceline, Target Australia, and their official website. Sukin and Noughty are other quality Australian natural scrub brands found at health food stores and major retailers.","gpt":"Some of the best Australian body scrub brands include Frank Body and Scrubba; they can be purchased online or in beauty retailers."},{"q":"where to buy coffee body scrub in Australia","claude":"Frank Body Coffee Scrub is widely available at Priceline, Target, Kmart, and the Frank Body official website across Australia. You can also purchase online through Amazon Australia for quick delivery.","gpt":"In Australia, you can buy coffee body scrubs like Frank Body at local retailers or online through their official website."},{"q":"Australian made body exfoliants and scrubs","claude":"Australian-made brands include Frank Body Coffee Scrub (best-known), Sukin Natural Body Scrub, and Noughty Coco Loco Body Scrub, all available at major Australian retailers. These brands emphasize natural ingredients and sustainable production.","gpt":"For Australian made body exfoliants, consider the products from Frank Body and KORA Organics, both known for their natural ingredients."},{"q":"best natural body scrubs for smooth skin","claude":"Herbivore Botanicals Coco Rose and Tree Hut Shea Sugar Scrub are excellent all-natural options using organic ingredients for smooth skin without synthetic chemicals. Pacifica Wake Up Beautiful Coffee Scrub is another natural choice with added skincare benefits.","gpt":"For smooth skin, try the Lush Ocean Salt Face and Body Scrub, which uses natural sea salt and lime for gentle exfoliation."},{"q":"best luxury body scrubs for dry rough skin","claude":"Molton Brown Black Pepper or Coco & Sandalwood Body Scrubs are luxury options specifically formulated for dry rough skin with premium oils and fragrances. Susanne Kaufmann Body Exfoliant is a high-end alternative with clinical effectiveness.","gpt":"The Givenchy Eau Demoiselle Body Scrub is a luxury choice for dry rough skin, featuring rich, nourishing ingredients."},{"q":"what ingredients should I look for in a body scrub","claude":"Look for lactic acid or glycolic acid for chemical exfoliation effectiveness, plus shea butter and coconut oil for moisture, and avoid microplastics—choose natural particles like sugar or salt. Products with 2-6% chemical exfoliants combined with hydrating oils provide the best results.","gpt":"Look for scrubs with natural exfoliants like sugar, salt, or coffee, along with nourishing oils such as coconut or argan for best results."},{"q":"what causes rough bumpy skin and how do you treat it","claude":"Rough bumpy skin is often keratosis pilaris (harmless keratin buildup) or dry skin and requires consistent exfoliation with lactic or glycolic acid plus heavy moisturizing—AmLactin is the gold standard treatment. Avoid over-scrubbing, which worsens the condition, and maintain hydration with products like CeraVe Cream.","gpt":"Rough bumpy skin can be caused by conditions like keratosis pilaris; treatments include regular exfoliation with products that contain lactic or salicylic acid."}];
+function toggleDetail(i) {
+  const detail = document.getElementById('detail-'+i);
+  const chev = document.getElementById('chev-'+i);
+  const row = detail.previousElementSibling;
+  if (!detail) return;
+  const open = detail.style.display !== 'none';
+  detail.style.display = open ? 'none' : 'table-row';
+  if (chev) chev.classList.toggle('open', !open);
+  row.classList.toggle('active', !open);
+  if (!open && RESP[i]) {
+    const ce = document.getElementById('claude-'+i);
+    const ge = document.getElementById('gpt-'+i);
+    if (ce && !ce.textContent) ce.textContent = RESP[i].claude || 'No response recorded.';
+    if (ge && !ge.textContent) ge.textContent = RESP[i].gpt || 'No response recorded.';
+  }
+}
+</script>
+</body></html>
