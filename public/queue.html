@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your AI Visibility Audit Is Running — Found By AI</title>
+  <style>
+    :root{
+      --bg:#0b0f0c;--surface:#111712;--surface-2:#151c16;--border:#263126;
+      --text-primary:#e8efe6;--text-secondary:#b7c2b5;--text-muted:#7f8a82;
+      --accent:#d4b24a;--accent-2:#7c5cff;--success:#74d28c;
+      --shadow:0 24px 80px rgba(0,0,0,0.45);
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;padding:32px 20px;
+      background:
+        radial-gradient(circle at top right, rgba(124,92,255,0.12), transparent 28%),
+        radial-gradient(circle at top left, rgba(212,178,74,0.10), transparent 24%),
+        linear-gradient(180deg, #0b0f0c 0%, #090d0a 100%);
+      color:var(--text-primary);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    .shell{width:100%;max-width:720px}
+    .card{
+      position:relative;overflow:hidden;
+      background:linear-gradient(180deg, rgba(21,28,22,0.98), rgba(17,23,18,0.98));
+      border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);
+      padding:28px 28px 24px;
+    }
+    .brandbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,0.05)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand-mark{width:10px;height:22px;border-radius:999px;background:linear-gradient(180deg,var(--accent),#f2d26c);box-shadow:0 0 24px rgba(212,178,74,0.35);flex-shrink:0}
+    .brand-name{font-size:16px;font-weight:700;letter-spacing:-0.02em;color:var(--accent);line-height:1.1}
+    .brand-sub{margin-top:4px;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted)}
+    .audit-name{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;text-align:right}
+    .body{padding-top:28px}
+    .status{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(116,210,140,0.08);border:1px solid rgba(116,210,140,0.18);color:var(--text-secondary);font-size:12px;font-weight:600}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 0 0 rgba(116,210,140,.6);animation:pulse 1.8s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(116,210,140,.55)}70%{box-shadow:0 0 0 10px rgba(116,210,140,0)}100%{box-shadow:0 0 0 0 rgba(116,210,140,0)}}
+    .eyebrow{margin-top:20px;font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-muted)}
+    h1{margin:14px 0 12px;font-size:46px;line-height:1.04;letter-spacing:-0.04em;color:var(--text-primary)}
+    .lede{max-width:600px;font-size:18px;line-height:1.55;color:var(--text-secondary);margin:0}
+    .lede strong{color:var(--text-primary)}
+    .bullet-list{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+    .bullet-list li{position:relative;padding-left:18px;color:var(--text-secondary);font-size:16px;line-height:1.5}
+    .bullet-list li::before{content:"";position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+    .stats{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .stat{background:var(--surface-2);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:18px 16px}
+    .stat-value{font-size:34px;line-height:1;letter-spacing:-0.04em;color:var(--text-primary);font-weight:800}
+    .stat-label{margin-top:8px;font-size:12px;line-height:1.45;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em}
+    .delivery{margin-top:24px;padding:18px 20px;border-radius:16px;background:linear-gradient(180deg,rgba(124,92,255,0.08),rgba(124,92,255,0.04));border:1px solid rgba(124,92,255,0.16)}
+    .delivery-kicker,.section-title{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+    .delivery-copy{font-size:16px;line-height:1.55;color:var(--text-secondary);margin:0}
+    .delivery-copy strong{color:var(--text-primary);word-break:break-all}
+    .delivery-note{margin-top:10px;font-size:14px;line-height:1.5;color:var(--text-muted)}
+    .report-contents{margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.05)}
+    .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{display:inline-flex;align-items:center;padding:10px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--text-secondary);font-size:14px;line-height:1.2}
+    .footer{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .footer-left{font-size:13px;color:var(--text-muted);line-height:1.5}
+    .footer-left strong{color:var(--text-secondary)}
+    .footer-right{font-size:12px;color:var(--text-muted)}
+    @media(max-width:640px){
+      body{padding:18px 14px}
+      .card{padding:20px 18px 18px}
+      .brandbar{align-items:flex-start;flex-direction:column}
+      .audit-name{max-width:none;text-align:left}
+      h1{font-size:34px}
+      .lede{font-size:16px}
+      .stats{grid-template-columns:1fr}
+      .stat-value{font-size:30px}
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="brandbar">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div>
+            <div class="brand-name">Found By AI</div>
+            <div class="brand-sub">by Edge Studio</div>
+          </div>
+        </div>
+        <div class="audit-name" id="brand-label"></div>
+      </div>
+      <div class="body">
+        <div class="status"><span class="status-dot"></span><span>Running prompts across Claude and GPT</span></div>
+        <div class="eyebrow">AI Visibility Audit</div>
+        <h1>Your AI Visibility Audit Is Running</h1>
+        <p class="lede">We're testing how AI systems understand and recommend <strong id="brand-lede">your brand</strong>.</p>
+        <ul class="bullet-list">
+          <li>where AI already recommends you</li>
+          <li>where competitors dominate</li>
+          <li>where visibility opportunities exist</li>
+        </ul>
+        <div class="stats">
+          <div class="stat"><div class="stat-value" id="stat-prompts">28</div><div class="stat-label">Queries tested</div></div>
+          <div class="stat"><div class="stat-value" id="stat-models">2</div><div class="stat-label">AI models</div></div>
+          <div class="stat"><div class="stat-value" id="stat-eta">~6m</div><div class="stat-label">Estimated runtime</div></div>
+        </div>
+        <div class="delivery">
+          <div class="delivery-kicker">Delivery</div>
+          <p class="delivery-copy" id="delivery-copy">Your full report will be delivered to your email shortly.</p>
+          <div class="delivery-note">You can safely close this tab. We'll email you when the report is ready.</div>
+        </div>
+        <div class="report-contents">
+          <div class="section-title">What's inside your report</div>
+          <div class="chips">
+            <span class="chip">Organic visibility score</span>
+            <span class="chip">Competitor benchmark</span>
+            <span class="chip">Prompt diagnostics</span>
+            <span class="chip">Quick wins</span>
+            <span class="chip">90-day optimisation plan</span>
+            <span class="chip">Schema markup</span>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="footer-left"><strong>Found By AI</strong><br />AI visibility intelligence by Edge Studio</div>
+          <div class="footer-right">foundbyai.com.au</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      function esc(str) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(str));
+        return d.innerHTML;
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var brand   = (params.get('brand')   || '').trim();
+      var email   = (params.get('email')   || '').trim();
+      var prompts = (params.get('prompts') || '28').trim();
+      var models  = (params.get('models')  || '2').trim();
+      var eta     = (params.get('eta')     || '~6m').trim();
+
+      if (brand) {
+        document.getElementById('brand-label').textContent = brand;
+        document.getElementById('brand-lede').textContent  = brand;
+        document.title = 'Audit Running — ' + brand + ' — Found By AI';
+      }
+
+      document.getElementById('stat-prompts').textContent = prompts;
+      document.getElementById('stat-models').textContent  = models;
+      document.getElementById('stat-eta').textContent     = eta;
+
+      var deliveryCopy = document.getElementById('delivery-copy');
+      if (email) {
+        deliveryCopy.innerHTML = 'Your full report will be delivered to <strong>' + esc(email) + '</strong>.';
+      }
+    })();
+  </script>
+</body>
+</html>
