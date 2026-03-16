@@ -1,0 +1,813 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sukin — AI Visibility Report | Found By AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=IBM+Plex+Mono:wght@300;400;500&display=swap">
+<style>
+:root{
+  --bg:#0b0f0c;--surface:#111712;--surface-2:#151c16;--surface-3:#1a2219;
+  --text-primary:#e8efe6;--text-secondary:#b7c2b5;--text-muted:#7f8a82;
+  --accent:#E6C86E;--accent-soft:rgba(230,200,110,0.08);--accent-line:rgba(230,200,110,0.2);
+  --success:#74d28c;--success-soft:rgba(116,210,140,0.1);
+  --warning:#f6b546;--warning-soft:rgba(246,181,70,0.1);
+  --border:#263126;--border-soft:#1e271e;--r:12px;--rs:6px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:56px}
+body{background:var(--bg);color:var(--text-primary);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif;color:var(--text-primary);line-height:1.1}
+code,pre,.mono{font-family:'IBM Plex Mono','Courier New',monospace}
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px 64px}
+.nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 28px;height:52px;background:rgba(11,15,12,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px}
+.nav-logo-name{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--accent)}
+.nav-logo-by{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted)}
+.nav-divider{width:1px;height:16px;background:var(--border)}
+.nav-brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--text-secondary);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-links{display:flex;gap:2px}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:5px 10px;border-radius:var(--rs);border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.nav-date{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted)}
+@media(max-width:680px){.nav-links,.nav-date{display:none}}
+.hero{padding:40px 0 32px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.hero-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.hero-name{font-size:52px;font-weight:700;letter-spacing:-.03em;margin-bottom:14px;color:var(--text-primary)}
+@media(max-width:600px){.hero-name{font-size:36px}}
+.hero-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--text-muted)}
+.hero-sep{margin:0 10px;color:var(--border)}
+.score-module{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:36px 40px;margin:32px 0;display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:start}
+@media(max-width:600px){.score-module{grid-template-columns:1fr;gap:32px;padding:28px 24px}}
+.score-ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+@media(max-width:600px){.score-ring-wrap{margin:0 auto}}
+.score-ring{display:block;transform:rotate(-90deg)}
+.score-inner{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.score-number{font-family:'Fraunces',serif;font-size:52px;font-weight:700;line-height:1;color:var(--text-primary)}
+.score-denom{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);margin-top:1px}
+.score-right{padding-top:4px}
+.score-top-row{display:flex;align-items:center;gap:16px;margin-bottom:6px;flex-wrap:wrap}
+.score-headline{font-size:32px;font-weight:600;letter-spacing:-.02em;color:var(--text-primary)}
+.score-band{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border-radius:var(--rs);border:1px solid var(--accent-line);color:var(--accent);background:var(--accent-soft)}
+.score-explain{font-size:15px;color:var(--text-secondary);line-height:1.65;margin-bottom:20px;max-width:520px}
+.score-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--warning))}
+.score-interp{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px;margin-bottom:20px}
+.score-interp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.score-interp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:480px){.score-interp-grid{grid-template-columns:repeat(2,1fr)}}
+.score-tier{padding:10px 12px;border-radius:var(--rs);border:1px solid var(--border);text-align:center}
+.score-tier.active{border-color:var(--accent-line);background:var(--accent-soft)}
+.score-tier-range{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;color:var(--text-muted);margin-bottom:3px}
+.score-tier-label{font-size:12px;font-weight:500;color:var(--text-secondary)}
+.score-tier.active .score-tier-label{color:var(--accent)}
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.eng-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 20px}
+.eng-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.eng-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.eng-score-row{display:flex;align-items:baseline;gap:4px}
+.eng-score{font-family:'Fraunces',serif;font-size:30px;font-weight:700;line-height:1;color:var(--accent)}
+.eng-denom{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted)}
+.eng-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+.eng-bar{height:2px;background:var(--border);border-radius:1px;margin-top:12px;overflow:hidden}
+.eng-bar-fill{height:100%;border-radius:1px;background:var(--accent)}
+.insight-card{border:1px solid var(--accent-line);border-left:3px solid var(--accent);border-radius:var(--r);overflow:hidden;margin:16px 0}
+.insight-card-header{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);padding:14px 20px;border-bottom:1px solid var(--accent-line);background:var(--accent-soft)}
+.insight-section{display:grid;gap:0}
+.insight-row{display:grid;grid-template-columns:96px 1fr}
+.insight-row+.insight-row{border-top:1px solid var(--border)}
+.insight-row-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:16px;display:flex;align-items:flex-start;line-height:1.3}
+.insight-row-body{padding:16px 20px;font-size:14px;line-height:1.7;color:var(--text-secondary);border-left:1px solid var(--border)}
+.ir-insight .insight-row-label{color:var(--accent);background:rgba(230,200,110,0.06)}
+.ir-insight .insight-row-body{background:rgba(230,200,110,0.03)}
+.ir-why .insight-row-label{color:var(--text-muted);background:rgba(255,255,255,0.02)}
+.ir-opportunity .insight-row-label{color:var(--success);background:rgba(116,210,140,0.05)}
+.ir-opportunity .insight-row-body{background:rgba(116,210,140,0.03)}
+.bm-table{display:grid;gap:14px;margin-bottom:16px}
+.bm-row{display:grid;grid-template-columns:130px 1fr 64px;align-items:center;gap:14px}
+@media(max-width:480px){.bm-row{grid-template-columns:90px 1fr 48px;gap:8px}}
+.bm-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--text-secondary);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-name-you{color:var(--accent);font-weight:500}
+.bm-bar-wrap{background:var(--surface-2);border-radius:3px;height:10px;overflow:hidden;border:1px solid var(--border)}
+.bm-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.bm-bar-you{background:linear-gradient(90deg,var(--accent),var(--warning))}
+.bm-bar-comp{background:var(--text-muted)}
+.bm-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--text-secondary);text-align:right}
+.bm-val-you{color:var(--accent)}
+.bm-denom{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted)}
+.gap-note{background:var(--surface-2);border-left:2px solid var(--accent-line);padding:14px 18px;font-size:14px;color:var(--text-secondary);line-height:1.65;font-style:italic;border-radius:0 var(--rs) var(--rs) 0;margin-top:4px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 32px;margin:16px 0}
+@media(max-width:600px){.card{padding:20px 20px}}
+.card-label{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sec-body{font-size:16px;line-height:1.7;color:var(--text-secondary)}
+.sec-body h2{font-size:32px;color:var(--text-primary);margin:28px 0 10px}
+.sec-body h3{font-size:22px;color:var(--text-primary);margin:22px 0 8px}
+.sec-body h4{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:18px 0 6px}
+.sec-body p{color:var(--text-secondary);margin-bottom:12px}
+.sec-body ul,.sec-body ol{padding-left:24px;margin-bottom:12px;color:var(--text-secondary)}
+.sec-body li{margin-bottom:6px}
+.sec-body strong{color:var(--text-primary);font-weight:600}
+.sec-body code{background:var(--surface-3);color:var(--accent);padding:2px 8px;font-size:13px;border-radius:4px}
+.sec-body pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:20px;overflow-x:auto;font-size:13px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.6;margin-bottom:12px}
+.sec-body table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.sec-body th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.sec-body td{padding:10px 12px;border-bottom:1px solid var(--border-soft);color:var(--text-secondary);vertical-align:top}
+.sec-body tr:last-child td{border-bottom:none}
+.tt{position:relative;display:inline-block;cursor:default}
+.tt::after{content:attr(data-tt);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--surface-3);color:var(--text-secondary);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;padding:4px 10px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:100}
+.tt:hover::after{opacity:1}
+.qw-grid{display:grid;gap:12px}
+.qw-card{background:var(--success-soft);border:1px solid rgba(116,210,140,0.18);border-left:3px solid var(--success);border-radius:0 var(--rs) var(--rs) 0;padding:20px 24px}
+.qw-num{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--success);margin-bottom:8px;opacity:.8}
+.qw-title{font-family:'Fraunces',serif;font-size:17px;color:var(--text-primary);margin-bottom:8px;line-height:1.3}
+.qw-body{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.pt-filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.pt-filter-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:var(--rs);border:1px solid var(--border);color:var(--text-muted);background:transparent;cursor:pointer;transition:all .15s}
+.pt-filter-btn:hover{border-color:var(--accent-line);color:var(--accent)}
+.pt-filter-btn.active{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+.pt-hint{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--text-muted);margin-bottom:16px}
+.pt-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.pt{width:100%;border-collapse:collapse}
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt-row{cursor:pointer;border-bottom:1px solid var(--border-soft);transition:background .12s;border-left:2px solid transparent}
+.pt-row:hover,.pt-row.active{background:var(--surface-2)}
+.pt-row[data-status=both]{border-left-color:var(--success)}
+.pt-row[data-status=partial]{border-left-color:var(--accent)}
+.pt-row[data-status=neither]{border-left-color:var(--warning)}
+.pt-row.hidden,.pt-detail.hidden{display:none!important}
+.pt-num{width:36px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted);padding:12px 8px}
+.pt-q{padding:12px 8px 12px 12px;color:var(--text-secondary);font-size:14px;line-height:1.45}
+.pt-q-text{display:block;padding-right:26px;position:relative}
+.pt-chevron{position:absolute;right:0;top:-1px;color:var(--text-muted);font-size:16px;transition:transform .2s;user-select:none}
+.pt-chevron.open{transform:rotate(90deg)}
+.pt-eng{width:62px;text-align:center;padding:12px 8px}
+.icon-hit{color:var(--success);font-size:14px;font-weight:600}
+.icon-miss{color:var(--warning);font-size:13px}
+.pt-detail td{padding:0}
+.resp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+@media(max-width:600px){.resp-grid{grid-template-columns:1fr}}
+.resp-col{background:var(--surface-2);padding:20px 24px}
+.resp-hit{border-top:2px solid var(--success)}
+.resp-miss{border-top:2px solid var(--border)}
+.resp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.resp-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dot-hit{background:var(--success)}
+.dot-miss{background:var(--warning)}
+.resp-text{font-size:14px;color:var(--text-secondary);line-height:1.7;white-space:pre-wrap}
+.citation-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.citation-card{border:1px solid var(--border);border-radius:var(--rs);padding:18px 20px;background:var(--surface-2)}
+.citation-claude{border-top:2px solid var(--success)}
+.citation-gpt{border-top:2px solid var(--warning)}
+.citation-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.citation-model{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+.cm-claude{background:rgba(116,210,140,0.1);color:var(--success);border:1px solid rgba(116,210,140,0.2)}
+.cm-gpt{background:rgba(246,181,70,0.1);color:var(--warning);border:1px solid rgba(246,181,70,0.2)}
+.citation-pos{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.citation-prompt{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;margin-bottom:10px;line-height:1.4;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.citation-text{font-size:14px;color:var(--text-secondary);line-height:1.7;margin:0;border-left:2px solid var(--accent-line);padding-left:12px;font-style:italic}
+.brand-hl{background:rgba(230,200,110,0.15);color:var(--accent);border-radius:2px;padding:0 2px;font-style:normal;font-weight:600}
+.empty-state{font-size:14px;color:var(--text-muted);line-height:1.65;padding:16px 0;font-style:italic}
+.ls-table{display:grid;gap:4px;margin-bottom:16px}
+.ls-row{display:grid;grid-template-columns:160px 1fr 52px;align-items:center;gap:16px;padding:10px 0;border-bottom:1px solid var(--border-soft)}
+.ls-row:last-child{border-bottom:none}
+@media(max-width:520px){.ls-row{grid-template-columns:100px 1fr 36px;gap:8px}}
+.ls-name{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.04em;color:var(--text-secondary);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ls-row.ls-you .ls-name{color:var(--accent)}
+.ls-you-tag{display:inline-block;padding:1px 5px;border-radius:3px;background:var(--accent-soft);border:1px solid var(--accent-line);font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-right:5px;vertical-align:middle}
+.ls-bar{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0;color:var(--text-muted);line-height:1}
+.ls-row.ls-you .ls-bar{color:var(--accent)}
+.ls-count{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text-secondary);text-align:right}
+.ls-row.ls-you .ls-count{color:var(--accent)}
+.ls-landscape-note{font-size:12px;color:var(--text-muted);margin-top:8px;font-style:italic;line-height:1.5}
+.forecast-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:520px){.forecast-grid{grid-template-columns:1fr}}
+.forecast-stat{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:22px 18px;text-align:center}
+.forecast-stat.stat-current{border-top:2px solid var(--text-muted)}
+.forecast-stat.stat-projected{border-top:2px solid var(--accent)}
+.forecast-stat.stat-time{border-top:2px solid var(--success)}
+.forecast-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.forecast-value{font-family:'Fraunces',serif;font-size:36px;font-weight:700;line-height:1;color:var(--text-primary);letter-spacing:-.02em}
+.forecast-stat.stat-projected .forecast-value{color:var(--accent)}
+.forecast-stat.stat-time .forecast-value{font-size:22px;color:var(--success)}
+.forecast-sub{font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.4}
+.forecast-note{background:var(--surface-2);border-left:2px solid var(--accent-line);border-radius:0 var(--rs) var(--rs) 0;padding:14px 18px;font-size:13px;color:var(--text-secondary);line-height:1.7;margin-top:8px}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:520px){.method-grid{grid-template-columns:1fr}}
+.method-lane{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 18px}
+.method-lane-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.ml-organic .method-lane-label{color:var(--success)}
+.ml-comp .method-lane-label{color:var(--accent)}
+.ml-direct .method-lane-label{color:var(--text-muted)}
+.method-lane-title{font-family:'Fraunces',serif;font-size:14px;color:var(--text-primary);margin-bottom:6px}
+.method-lane-desc{font-size:12px;color:var(--text-muted);line-height:1.55}
+.method-note{font-size:13px;color:var(--text-secondary);line-height:1.7;padding:14px 18px;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--rs);margin-top:8px}
+.scope-pill{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;border-radius:3px;margin-right:4px;margin-bottom:4px}
+.sp-organic{background:rgba(116,210,140,0.1);color:var(--success);border:1px solid rgba(116,210,140,0.18)}
+.sp-comp{background:rgba(230,200,110,0.08);color:var(--accent);border:1px solid var(--accent-line)}
+.sp-direct{background:rgba(255,255,255,0.04);color:var(--text-muted);border:1px solid var(--border)}
+.scope-pills-row{margin-top:10px}
+.schema-toggle-btn,.schema-copy-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:6px 14px;border-radius:var(--rs);border:1px solid var(--border);color:var(--text-muted);background:transparent;cursor:pointer;transition:all .15s;margin-bottom:12px;margin-right:8px}
+.schema-toggle-btn:hover,.schema-copy-btn:hover{border-color:var(--accent-line);color:var(--accent)}
+.schema-copy-btn.copied{border-color:var(--success);color:var(--success);background:var(--success-soft)}
+.schema-block{display:none}
+.schema-block.open{display:block}
+.schema-block pre{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:20px;overflow-x:auto;font-size:12px;color:var(--text-secondary);white-space:pre-wrap;line-height:1.6}
+/* ASSET CONTEXT SYSTEM */
+.asset-meta{display:grid;gap:10px;margin-bottom:4px}
+.asset-source{border-radius:var(--rs);padding:14px 18px}
+.asset-source-row{display:flex;gap:12px;align-items:flex-start}
+.asset-source-icon{font-size:14px;font-weight:600;flex-shrink:0;margin-top:1px}
+.asset-source-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
+.asset-source-note{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.asset-source-note strong{color:var(--text-primary)}
+.asset-review{background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.22);border-left:3px solid var(--warning);border-radius:0 var(--rs) var(--rs) 0;padding:14px 18px}
+.asset-review-header{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--warning);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.asset-review-body{font-size:13px;color:var(--text-secondary);line-height:1.65}
+.asset-usage{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:14px 18px}
+.asset-usage-header{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.asset-usage-steps{padding-left:18px;margin:0}
+.asset-usage-steps li{font-size:13px;color:var(--text-secondary);line-height:1.65;margin-bottom:7px}
+.asset-usage-steps li:last-child{margin-bottom:0}
+/* ASSETS OVERVIEW */
+.assets-overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:4px}
+.assets-overview-card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px 18px}
+.aoc-num{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.aoc-title{font-family:'Fraunces',serif;font-size:14px;color:var(--text-primary);margin-bottom:5px;line-height:1.3}
+.aoc-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+.footer{text-align:center;padding:56px 0 32px;border-top:1px solid var(--border);margin-top:48px}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;color:var(--accent);margin-bottom:8px}
+.footer-sub{font-size:13px;color:var(--text-muted);line-height:1.9}
+</style>
+</head><body>
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="7" height="15" viewBox="0 0 40 90" fill="none"><ellipse cx="20" cy="9" rx="7" ry="5.5" fill="#E6C86E"/><path d="M17.5,13.5 C16,26 13,44 15.5,60 C17,70 18,78 20,88 C22,78 23,70 24.5,60 C27,44 24,26 22.5,13.5 Z" fill="#E6C86E"/></svg>
+      <div><div class="nav-logo-name">Found By AI</div><div class="nav-logo-by">by Edge Studio</div></div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-brand-name">Sukin</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="nav-links"><a class="nav-link" href="#overview">Overview</a><a class="nav-link" href="#competitors">Competitors</a><a class="nav-link" href="#diagnostics">Diagnostics</a><a class="nav-link" href="#citations">Citations</a><a class="nav-link" href="#opportunities">Opportunities</a><a class="nav-link" href="#implementation">Implementation</a></div>
+    <span class="nav-date">March 2026</span>
+  </div>
+</nav>
+<div class="wrap">
+<div class="hero" id="overview">
+  <div class="hero-eyebrow">AI Visibility Audit</div>
+  <h1 class="hero-name">Sukin</h1>
+  <div class="hero-meta">
+    <span>Personal Care & Wellness</span>
+    <span class="hero-sep">·</span>
+    <span>22 organic prompts tested</span>
+    <span class="hero-sep">·</span><span>https://sukin.com.au</span>
+  </div>
+</div>
+<div class="score-module">
+  <div class="score-ring-wrap">
+    <svg class="score-ring" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" stroke-width="12"/>
+      <circle cx="70" cy="70" r="54" fill="none" stroke="var(--warning)" stroke-width="12" stroke-linecap="round" stroke-dasharray="339.29" stroke-dashoffset="217.15"/>
+    </svg>
+    <div class="score-inner"><span class="score-number">36</span><span class="score-denom">/100</span></div>
+  </div>
+  <div class="score-right">
+    <div class="score-top-row"><h2 class="score-headline">Organic Visibility</h2><span class="score-band">Emerging Presence</span></div>
+    <p class="score-explain">How often AI models recommend Sukin when buyers search without naming your brand. Competitor-anchored and direct brand queries are excluded from this score.</p>
+    <div class="score-bar"><div class="score-bar-fill" style="width:36%"></div></div>
+    <div class="score-interp"><div class="score-interp-label">Score meaning</div><div class="score-interp-grid"><div class="score-tier"><div class="score-tier-range">0–25</div><div class="score-tier-label">Minimal</div></div><div class="score-tier active"><div class="score-tier-range">25–50</div><div class="score-tier-label">Emerging</div></div><div class="score-tier"><div class="score-tier-range">50–75</div><div class="score-tier-label">Developing</div></div><div class="score-tier"><div class="score-tier-range">75–100</div><div class="score-tier-label">Strong</div></div></div></div>
+    <div class="engine-grid">
+      <div class="eng-card"><div class="eng-label"><span class="eng-dot" style="background:var(--success)"></span>Claude</div><div class="eng-score-row"><span class="eng-score">11</span><span class="eng-denom">/22</span></div><div class="eng-sub">organic mentions</div><div class="eng-bar"><div class="eng-bar-fill" style="width:50%;height:100%;border-radius:1px"></div></div></div>
+      <div class="eng-card"><div class="eng-label"><span class="eng-dot" style="background:var(--warning)"></span>GPT-4o</div><div class="eng-score-row"><span class="eng-score">5</span><span class="eng-denom">/22</span></div><div class="eng-sub">organic mentions</div><div class="eng-bar"><div class="eng-bar-fill" style="width:23%;height:100%;border-radius:1px"></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="insight-card"><div class="insight-card-header">Key Insight</div><div class="insight-section"><div class="insight-row ir-insight"><div class="insight-row-label">Insight</div><div class="insight-row-body">Sukin leads its closest competitors in AI visibility — a solid foundation. Closing the remaining gaps will push you into the top tier.</div></div><div class="insight-row ir-why"><div class="insight-row-label">Why</div><div class="insight-row-body">Claude mentioned Sukin in 11/22 organic queries. GPT-4o mentioned it in 5/22.</div></div><div class="insight-row ir-opportunity"><div class="insight-row-label">Opportunity</div><div class="insight-row-body">10 organic queries returned zero mentions. Publishing AEO content targeting these exact queries is the highest-leverage action available.</div></div></div></div>
+<div class="card" id="methodology">
+  <div class="card-label">How This Audit Works</div>
+  <p style="font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px">This audit runs 28 simulated buyer queries across Claude and GPT-4o. Queries are divided into three lanes — only <strong style="color:var(--text-primary)">organic discovery</strong> queries affect the visibility score.</p>
+  <div class="method-grid">
+    <div class="method-lane ml-organic"><div class="method-lane-label">Organic</div><div class="method-lane-title">Pure Discovery</div><div class="method-lane-desc">No brand or competitor names. Measures category-level recognition.</div></div>
+    <div class="method-lane ml-comp"><div class="method-lane-label">Competitor-Anchored</div><div class="method-lane-title">Replacement Consideration</div><div class="method-lane-desc">Competitor named, brand not named. Measures substitution visibility.</div></div>
+    <div class="method-lane ml-direct"><div class="method-lane-label">Direct Brand</div><div class="method-lane-title">Brand-Aware Queries</div><div class="method-lane-desc">Brand explicitly named. Measures how AI describes and compares your brand.</div></div>
+  </div>
+  <div class="method-note">Only organic queries contribute to the headline score.
+  <div class="scope-pills-row"><span class="scope-pill sp-organic">● 22 organic</span><span class="scope-pill sp-comp">● 0 competitor-anchored</span><span class="scope-pill sp-direct">● 6 direct brand</span></div></div>
+</div>
+<div class="card" id="competitors">
+  <div class="card-label">Competitor Benchmark</div>
+  <div class="bm-table"><div class="bm-row"><div class="bm-name bm-name-you">You</div><div class="bm-bar-wrap"><div class="bm-bar-fill bm-bar-you" style="width:100%"></div></div><div class="bm-val bm-val-you">36<span class="bm-denom">/100</span></div></div><div class="bm-row"><div class="bm-name">Simple</div><div class="bm-bar-wrap"><div class="bm-bar-fill bm-bar-comp" style="width:39%"></div></div><div class="bm-val">14<span class="bm-denom">/100</span></div></div><div class="bm-row"><div class="bm-name">Neutrogena Naturals</div><div class="bm-bar-wrap"><div class="bm-bar-fill bm-bar-comp" style="width:14%"></div></div><div class="bm-val">5<span class="bm-denom">/100</span></div></div></div>
+  <div class="gap-note">Sukin leads its closest competitors in AI visibility — a solid foundation. Closing the remaining gaps will push you into the top tier.</div>
+</div>
+<div class="card" id="landscape">
+  <div class="card-label">AI Category Landscape</div>
+  <div class="ls-table"><div class="ls-row ls-you">
+    <div class="ls-name"><span class="ls-you-tag">You</span> Sukin</div>
+    <div class="ls-bar">████████████████████████</div>
+    <div class="ls-count">33</div>
+  </div><div class="ls-row">
+    <div class="ls-name">Simple</div>
+    <div class="ls-bar">████░░░░░░░░░░░░░░░░░░░░</div>
+    <div class="ls-count">6</div>
+  </div><div class="ls-row">
+    <div class="ls-name">Neutrogena Naturals</div>
+    <div class="ls-bar">███░░░░░░░░░░░░░░░░░░░░░</div>
+    <div class="ls-count">4</div>
+  </div><div class="ls-row">
+    <div class="ls-name">Biologika</div>
+    <div class="ls-bar">██░░░░░░░░░░░░░░░░░░░░░░</div>
+    <div class="ls-count">3</div>
+  </div></div><p class="ls-landscape-note">Total mentions across all 28 prompt responses — organic, competitor-anchored, and direct.</p>
+</div>
+<div class="card" id="opportunities"><div class="card-label">Quick Wins — Do These First</div><div class="sec-body"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Sensitive Skin FAQ Section</h4>
+<p><strong>What to do:</strong> Add an FAQ section to your main product category pages addressing "Why does my natural moisturiser make my skin feel tight and dry?" and "Natural skincare without essential oils that won't irritate sensitive skin". Include specific Sukin products that are essential oil-free and formulated for sensitive skin.</p>
+<p><strong>Why it matters:</strong> Problem_solution prompts showed 0% citation rate, with AI models citing Simple instead when users ask about gentle natural products for sensitive skin concerns.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create "Natural vs Synthetic" Content Block</h4>
+<p><strong>What to do:</strong> Add a prominent content section to your homepage or about page that directly addresses "Are natural skincare products just a scam or do they actually work" with scientific backing, certifications, and transparent ingredient explanations specific to Sukin formulations.</p>
+<p><strong>Why it matters:</strong> Trust_social prompts only achieved 17% citation rate, with AI models failing to cite Sukin when users question the efficacy of natural skincare brands versus synthetic alternatives.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Optimize Product Pages for Clay Mask and Cleanser Queries</h4>
+<p><strong>What to do:</strong> Add specific product descriptions to your clay mask and cleanser pages that include the exact phrases "gentle sulfate-free face cleanser for oily skin" and "clay face mask with natural ingredients for congested skin" in natural, helpful context explaining how these products work.</p>
+<p><strong>Why it matters:</strong> Unbranded_purchase prompts only achieved 30% citation rate, with AI models failing to recommend Sukin for these specific skin concerns that align perfectly with your product range.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+</section></div></div>
+<div class="card" id="forecast">
+  <div class="card-label">Projected Visibility Growth</div>
+  <div class="forecast-grid">
+    <div class="forecast-stat stat-current"><div class="forecast-label">Current Visibility</div><div class="forecast-value">36%</div><div class="forecast-sub">Emerging Presence</div></div>
+    <div class="forecast-stat stat-projected"><div class="forecast-label">Projected After Quick Wins</div><div class="forecast-value">55–71%</div><div class="forecast-sub">estimated improvement</div></div>
+    <div class="forecast-stat stat-time"><div class="forecast-label">Estimated Timeframe</div><div class="forecast-value">60–90 days</div><div class="forecast-sub">with consistent publishing</div></div>
+  </div>
+  <div class="forecast-note">Projection based on 10 missed organic queries and 8 partial matches. Implementing AEO-structured content typically yields 0.3–0.8 new mentions per query per model. Actual results vary with publishing cadence and model update cycles.</div>
+</div>
+<div class="card" id="diagnostics">
+  <div class="card-label">Prompt Diagnostics — 22 Organic Prompts</div>
+  <div class="pt-filters">
+    <button class="pt-filter-btn active" onclick="filterPrompts('all',this)">All (22)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('both',this)">Both engines (4)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('partial',this)">One engine (8)</button>
+    <button class="pt-filter-btn" onclick="filterPrompts('neither',this)">Missed (10)</button>
+  </div>
+  <p class="pt-hint">Click any row to expand model responses</p>
+  <div class="pt-legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--success)"></div>Both engines</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--accent)"></div>One engine</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--warning)"></div>Not mentioned</div>
+  </div>
+  <table class="pt"><thead><tr><th class="pt-num">#</th><th>Prompt</th><th class="pt-eng">Claude</th><th class="pt-eng">GPT-4o</th></tr></thead><tbody><tr class="pt-row" data-status="partial" onclick="toggleDetail(0)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(0)"><td class="pt-num">1</td><td class="pt-q"><span class="pt-q-text">best natural moisturiser for daily use under $20 Australia</span><span class="pt-chevron" id="chev-0">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-0" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-0"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-0"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(1)"><td class="pt-num">2</td><td class="pt-q"><span class="pt-q-text">gentle sulfate-free face cleanser for oily skin that won't dry it out</span><span class="pt-chevron" id="chev-1">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-1" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-1"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-1"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(2)"><td class="pt-num">3</td><td class="pt-q"><span class="pt-q-text">best clay face mask with natural ingredients for congested skin</span><span class="pt-chevron" id="chev-2">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-2" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-2"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-2"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(3)"><td class="pt-num">4</td><td class="pt-q"><span class="pt-q-text">natural skincare routine products under $15 each that actually work</span><span class="pt-chevron" id="chev-3">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-3" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-3"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-3"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(4)"><td class="pt-num">5</td><td class="pt-q"><span class="pt-q-text">face mask to brighten dull skin with green superfoods ingredients</span><span class="pt-chevron" id="chev-4">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-4" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-4"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-4"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(5)"><td class="pt-num">6</td><td class="pt-q"><span class="pt-q-text">my skin breaks out from natural skincare products what should I use instead</span><span class="pt-chevron" id="chev-5">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-5" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-5"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-5"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(6)"><td class="pt-num">7</td><td class="pt-q"><span class="pt-q-text">why does my natural moisturiser make my skin feel tight and dry</span><span class="pt-chevron" id="chev-6">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-6" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-6"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-6"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(7)"><td class="pt-num">8</td><td class="pt-q"><span class="pt-q-text">natural skincare without essential oils that won't irritate sensitive skin</span><span class="pt-chevron" id="chev-7">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-7" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-7"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-7"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(8)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(8)"><td class="pt-num">9</td><td class="pt-q"><span class="pt-q-text">gentle face cleanser that won't sting eyes during cleansing routine</span><span class="pt-chevron" id="chev-8">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-8" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-8"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-8"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(9)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(9)"><td class="pt-num">10</td><td class="pt-q"><span class="pt-q-text">are natural skincare brands actually worth the hype or just marketing</span><span class="pt-chevron" id="chev-9">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-9" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-9"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-9"></div></div></div></td></tr><tr class="pt-row" data-status="both" onclick="toggleDetail(10)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(10)"><td class="pt-num">11</td><td class="pt-q"><span class="pt-q-text">best natural skincare brands available at chemist warehouse</span><span class="pt-chevron" id="chev-10">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td></tr><tr class="pt-detail" id="detail-10" style="display:none" data-status="both"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-10"></div></div><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-10"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(11)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(11)"><td class="pt-num">12</td><td class="pt-q"><span class="pt-q-text">top affordable natural moisturisers under $20 that dermatologists recommend</span><span class="pt-chevron" id="chev-11">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td></tr><tr class="pt-detail" id="detail-11" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-11"></div></div><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-11"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(12)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(12)"><td class="pt-num">13</td><td class="pt-q"><span class="pt-q-text">best cruelty-free skincare brands with proper certification not just claims</span><span class="pt-chevron" id="chev-12">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-12" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-12"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-12"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(13)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(13)"><td class="pt-num">14</td><td class="pt-q"><span class="pt-q-text">natural skincare vs synthetic products which is better for sensitive skin</span><span class="pt-chevron" id="chev-13">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-13" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-13"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-13"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(14)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(14)"><td class="pt-num">15</td><td class="pt-q"><span class="pt-q-text">are natural skincare products just a scam or do they actually work</span><span class="pt-chevron" id="chev-14">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-14" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-14"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-14"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(15)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(15)"><td class="pt-num">16</td><td class="pt-q"><span class="pt-q-text">honest review of those natural skincare brands that take up heaps of space at chemist</span><span class="pt-chevron" id="chev-15">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-15" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-15"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-15"></div></div></div></td></tr><tr class="pt-row" data-status="neither" onclick="toggleDetail(16)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(16)"><td class="pt-num">17</td><td class="pt-q"><span class="pt-q-text">is clean beauty just marketing hype or genuinely better for your skin</span><span class="pt-chevron" id="chev-16">›</span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-16" style="display:none" data-status="neither"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>Claude</div><div class="resp-text" id="claude-16"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-16"></div></div></div></td></tr><tr class="pt-row" data-status="both" onclick="toggleDetail(17)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(17)"><td class="pt-num">18</td><td class="pt-q"><span class="pt-q-text">best Australian made natural skincare brands available in chemist warehouse</span><span class="pt-chevron" id="chev-17">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td></tr><tr class="pt-detail" id="detail-17" style="display:none" data-status="both"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-17"></div></div><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-17"></div></div></div></td></tr><tr class="pt-row" data-status="both" onclick="toggleDetail(18)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(18)"><td class="pt-num">19</td><td class="pt-q"><span class="pt-q-text">top Australian natural skincare brands under $20 per product</span><span class="pt-chevron" id="chev-18">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td></tr><tr class="pt-detail" id="detail-18" style="display:none" data-status="both"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-18"></div></div><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-18"></div></div></div></td></tr><tr class="pt-row" data-status="both" onclick="toggleDetail(19)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(19)"><td class="pt-num">20</td><td class="pt-q"><span class="pt-q-text">Australian natural skincare brands that are actually made in Australia</span><span class="pt-chevron" id="chev-19">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td></tr><tr class="pt-detail" id="detail-19" style="display:none" data-status="both"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-19"></div></div><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>GPT-4o</div><div class="resp-text" id="gpt-19"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(20)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(20)"><td class="pt-num">21</td><td class="pt-q"><span class="pt-q-text">best organic skincare brands for daily routine that won't break the bank</span><span class="pt-chevron" id="chev-20">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-20" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-20"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-20"></div></div></div></td></tr><tr class="pt-row" data-status="partial" onclick="toggleDetail(21)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleDetail(21)"><td class="pt-num">22</td><td class="pt-q"><span class="pt-q-text">vegan skincare products that are gentle and effective for sensitive skin</span><span class="pt-chevron" id="chev-21">›</span></td><td class="pt-eng"><span class="tt" data-tt="Brand mentioned"><span class="icon-hit">✓</span></span></td><td class="pt-eng"><span class="tt" data-tt="Not mentioned"><span class="icon-miss">✕</span></span></td></tr><tr class="pt-detail" id="detail-21" style="display:none" data-status="partial"><td colspan="4"><div class="resp-grid"><div class="resp-col resp-hit"><div class="resp-label"><span class="resp-dot dot-hit"></span>Claude</div><div class="resp-text" id="claude-21"></div></div><div class="resp-col resp-miss"><div class="resp-label"><span class="resp-dot dot-miss"></span>GPT-4o</div><div class="resp-text" id="gpt-21"></div></div></div></td></tr></tbody></table>
+</div>
+<div class="card" id="citations"><div class="card-label">AI Citation Evidence</div><div class="citation-grid"><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best natural moisturiser for daily use under $20 Australia</div><blockquote class="citation-text">Look for products like <mark class="brand-hl">Sukin</mark> Natural Moisturiser, Cetaphil moisturising lotion, or Aveeno Daily Moisturising lotion, all available under $20 at Australian chemists.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">natural skincare routine products under $15 each that actually work</div><blockquote class="citation-text">Budget-friendly options under $15 include <mark class="brand-hl">Sukin</mark> products, QV skincare range, and Simple brand items available at Chemist Warehouse, which offer effective cleansing and moisturising without premium pricing.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">face mask to brighten dull skin with green superfoods ingredients</div><blockquote class="citation-text">Masks with green superfoods like matcha, spirulina, or green tea (such as those from <mark class="brand-hl">Sukin</mark> or local brands) can help brighten dull skin when used weekly.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best natural skincare brands available at chemist warehouse</div><blockquote class="citation-text">Chemist Warehouse stocks brands like <mark class="brand-hl">Sukin</mark>, Andalou Naturals, Derma E, and QV's natural range, all offering natural or nature-inspired formulas at reasonable prices.</blockquote></div><div class="citation-card citation-gpt"><div class="citation-header"><span class="citation-model cm-gpt">GPT-4o</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best natural skincare brands available at chemist warehouse</div><blockquote class="citation-text">At Chemist Warehouse, popular natural skincare brands include "<mark class="brand-hl">Sukin</mark>," "Burt's Bees," and "The Body Shop," which offer a variety of products based on natural ingredients.</blockquote></div><div class="citation-card citation-gpt"><div class="citation-header"><span class="citation-model cm-gpt">GPT-4o</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">top affordable natural moisturisers under $20 that dermatologists recommend</div><blockquote class="citation-text">Dermatologists often recommend moisturisers like "Nivea Soft Cream" and "<mark class="brand-hl">Sukin</mark> Hydrating Moisturiser," both priced under $20 and known for being effective.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best cruelty-free skincare brands with proper certification not just claims</div><blockquote class="citation-text">Brands like <mark class="brand-hl">Sukin</mark>, The Ordinary, and Nuxe provide transparent certification information on their websites or product pages.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">honest review of those natural skincare brands that take up heaps of space at chemist</div><blockquote class="citation-text">Many chemist brands are legitimately effective but heavily marketed; products like <mark class="brand-hl">Sukin</mark> and Andalou do work for basic skincare needs but aren't necessarily superior to simpler alternatives like CeraVe or Cetaphil.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best Australian made natural skincare brands available in chemist warehouse</div><blockquote class="citation-text">Australian-made natural skincare brands at Chemist Warehouse include <mark class="brand-hl">Sukin</mark> (formulated in Australia), Bonita (Australian brand), and various QV natural products made locally.</blockquote></div><div class="citation-card citation-gpt"><div class="citation-header"><span class="citation-model cm-gpt">GPT-4o</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best Australian made natural skincare brands available in chemist warehouse</div><blockquote class="citation-text">Some well-regarded Australian-made natural skincare brands available at Chemist Warehouse include "<mark class="brand-hl">Sukin</mark>" and "Frank Body," both known for their effective formulations.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">top Australian natural skincare brands under $20 per product</div><blockquote class="citation-text">Brands like <mark class="brand-hl">Sukin</mark>, Bonita, and QV offer most products under $20 and are available at Australian chemists with solid natural ingredient profiles and local accessibility.</blockquote></div><div class="citation-card citation-gpt"><div class="citation-header"><span class="citation-model cm-gpt">GPT-4o</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">top Australian natural skincare brands under $20 per product</div><blockquote class="citation-text">Consider affordable brands like "<mark class="brand-hl">Sukin</mark>," "Bondi Sands," and "Skin Physics," which offer natural products under $20 that cater to various skin concerns.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">Australian natural skincare brands that are actually made in Australia</div><blockquote class="citation-text"><mark class="brand-hl">Sukin</mark> and some QV ranges are genuinely made in Australia, though many 'Australian brands' are formulated here but manufactured overseas—check packaging for 'Made in Australia' statements.</blockquote></div><div class="citation-card citation-gpt"><div class="citation-header"><span class="citation-model cm-gpt">GPT-4o</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">Australian natural skincare brands that are actually made in Australia</div><blockquote class="citation-text">Brands like "<mark class="brand-hl">Sukin</mark>", "Bondi Sands", and "Organic Nation" are genuinely made in Australia and offer a variety of natural products.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">best organic skincare brands for daily routine that won't break the bank</div><blockquote class="citation-text">Brands like <mark class="brand-hl">Sukin</mark>, Andalou Naturals, and Bonita offer certified organic options under $25-30 for basic routines, making daily organic skincare achievable on a budget.</blockquote></div><div class="citation-card citation-claude"><div class="citation-header"><span class="citation-model cm-claude">Claude</span><span class="citation-pos">Top of response</span></div><div class="citation-prompt">vegan skincare products that are gentle and effective for sensitive skin</div><blockquote class="citation-text">Look for vegan brands like The Ordinary, <mark class="brand-hl">Sukin</mark>, Andalou Naturals, or Bonita that focus on minimal, fragrance-free formulations with ingredients like hyaluronic acid and plant ceramides.</blockquote></div></div></div>
+<div id="implementation">
+  <div class="card" style="margin:32px 0 8px;background:var(--surface-2)">
+    <div class="card-label" id="implementation">Your AEO Assets</div>
+    <p style="font-size:15px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px">The sections below contain AI-generated content and implementation materials. Each asset is a starting point — not a finished product. Read the data source and review notices on each section before using anything.</p>
+    <div class="assets-overview-grid">
+      <div class="assets-overview-card"><div class="aoc-num">Asset 01</div><div class="aoc-title">Answer Hub</div><div class="aoc-desc">Q&amp;A content targeting each missed query. Add to your website FAQ.</div></div>
+      <div class="assets-overview-card"><div class="aoc-num">Asset 02</div><div class="aoc-title">Brand Facts</div><div class="aoc-desc">Citable brand statements for About pages, press kits, and schema.</div></div>
+      <div class="assets-overview-card"><div class="aoc-num">Asset 03</div><div class="aoc-title">Entity Checklist</div><div class="aoc-desc">Actions to establish your brand as a recognised AI entity.</div></div>
+      <div class="assets-overview-card"><div class="aoc-num">Asset 04</div><div class="aoc-title">90-Day Action Plan</div><div class="aoc-desc">Sequenced roadmap from Quick Wins to full entity optimisation.</div></div>
+      <div class="assets-overview-card"><div class="aoc-num">Asset 05</div><div class="aoc-title">Schema Markup</div><div class="aoc-desc">Organisation schema for your homepage head. Copy and validate before adding.</div></div>
+    </div>
+  </div>
+  <section class="card" id="answer-hub">
+    <div class="card-label">Answer Hub Opportunities</div>
+    
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; Answer Hub</div>
+    <ol class="asset-usage-steps"><li>Copy each Q&amp;A to your website. Use the exact question text as an H2 or H3 heading.</li><li>Wrap the entire block in <code>FAQPage</code> JSON-LD schema so AI models can parse it as structured data.</li><li>Each answer should stand alone as a paragraph — do not split across subheadings.</li><li>Verify all product names, features, and brand claims against your live site before publishing.</li><li>Republish your sitemap after adding and submit to Google Search Console to accelerate indexing.</li></ol>
+  </div>
+</div>
+    <div class="sec-body" style="margin-top:20px"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>gentle sulfate-free face cleanser for oily skin that won't dry it out</h3>
+<p>Sukin Foaming Facial Cleanser is the ideal sulfate-free gel cleanser for normal to oily skin types that need gentle yet effective cleansing. This cleanser removes impurities and excess oil without disrupting the skin's natural barrier, preventing the tight, stripped feeling that harsh cleansers cause. Unlike Neutrogena Naturals which contains synthetic surfactants, Sukin uses plant-based cleansing agents that maintain skin balance while delivering thorough purification at an accessible price point under $15.</p>
+
+<h3>best clay face mask with natural ingredients for congested skin</h3>
+<p>Sukin Super Greens Facial Masque delivers superior results for congested skin with its powerful combination of detoxifying kaolin clay and nutrient-rich vegetable extracts. The mask features kale, spinach and broccoli seed extracts that work synergistically with the clay to purify pores while brightening dull complexions. This unique superfood formulation provides professional-grade purification benefits at drugstore pricing, making effective natural skincare accessible for regular use.</p>
+
+<h3>my skin breaks out from natural skincare products what should I use instead</h3>
+<p>Sukin products are formulated to avoid common natural skincare irritants that trigger breakouts in sensitive skin types. The brand's lightweight formulations use proven gentle botanicals like rosehip oil and wheat germ rather than heavy plant oils or strong essential oils that can clog pores. Sukin's Foaming Facial Cleanser and Signature Moisturiser are specifically designed for daily use without causing congestion, offering effective natural skincare that works with problematic skin rather than against it.</p>
+
+<h3>natural skincare without essential oils that won't irritate sensitive skin</h3>
+<p>Sukin provides natural skincare solutions that prioritize gentle effectiveness over potentially irritating essential oils. The brand's formulations focus on nourishing plant-derived ingredients like vitamin E, wheat germ, and botanical extracts that deliver results without triggering sensitivity reactions. This approach makes Sukin products suitable for those who want natural skincare benefits but have experienced irritation from essential oil-heavy formulations common in other natural brands.</p>
+
+<h3>gentle face cleanser that won't sting eyes during cleansing routine</h3>
+<p>Sukin Foaming Facial Cleanser offers gentle sulfate-free cleansing that won't cause eye irritation during your daily routine. The gel formula is specifically developed to be non-stinging while effectively removing impurities and makeup residue. Unlike Simple's basic cleansing formulas, Sukin incorporates beneficial botanical ingredients that nourish skin during cleansing while maintaining the gentle profile needed for comfortable daily use around the delicate eye area.</p>
+
+<h3>are natural skincare brands actually worth the hype or just marketing</h3>
+<p>Sukin proves that natural skincare can deliver genuine results at accessible pricing, addressing the common concern that natural products are overpriced marketing gimmicks. As Australia's #1 selling natural moisturiser, Sukin Signature Moisturiser demonstrates measurable effectiveness with lightweight daily hydration from rosehip oil and vitamin E, all priced under $15. The brand's success stems from formulating products that actually work rather than relying on premium pricing or marketing claims to justify their natural positioning.</p>
+
+<h3>natural skincare vs synthetic products which is better for sensitive skin</h3>
+<p>Sukin offers natural skincare specifically formulated for sensitive skin types who struggle with both synthetic irritants and harsh natural ingredients. The brand's gentle approach uses proven botanicals like rosehip oil and wheat germ that provide skin benefits without common sensitizers found in synthetic formulations or aggressive natural extracts. This balanced formulation philosophy makes Sukin products effective for those seeking natural alternatives that won't trigger the sensitivity issues often associated with conventional skincare.</p>
+
+<h3>are natural skincare products just a scam or do they actually work</h3>
+<p>Sukin demonstrates that natural skincare products can deliver legitimate results when properly formulated with effective botanicals. The brand's status as Australia's #1 selling natural moisturiser reflects genuine consumer satisfaction with products that combine natural ingredients like rosehip oil and vitamin E with accessible pricing under $15. Sukin's approach focuses on ingredient efficacy rather than premium positioning, proving that natural skincare can be both effective and affordable when brands prioritize formulation quality over marketing hype.</p>
+
+<h3>is clean beauty just marketing hype or genuinely better for your skin</h3>
+<p>Sukin represents clean beauty that prioritizes genuine skin benefits over marketing trends, offering natural formulations that address real skincare needs at accessible price points. The brand's products like the Foaming Facial Cleanser and Super Greens Facial Masque use carefully selected natural ingredients that provide measurable skin improvements without relying on synthetic additives or inflated pricing. This practical approach to clean beauty demonstrates that natural skincare can be both genuinely beneficial and accessible for everyday use.</p>
+</section></div>
+  </section>
+  <section class="card" id="brand-facts">
+    <div class="card-label">Brand Facts &amp; Entity Signals</div>
+    
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; Brand Facts</div>
+    <ol class="asset-usage-steps"><li>Use these statements on your About page, homepage, and press kit.</li><li>Paste the most specific facts directly into your <code>Organization</code> schema markup (see Schema section below).</li><li>Verify every claim — pricing, certifications, founding year, and product specs — against your actual website.</li><li>Update this list whenever your product offering or company details change. Stale facts actively harm AI citation accuracy.</li></ol>
+  </div>
+</div>
+    <div class="sec-body" style="margin-top:20px"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Sukin Signature Moisturiser is Australia's #1 selling natural moisturiser</li>
+<li>All Sukin products are priced under $15, making natural skincare accessible for daily use</li>
+<li>Sukin Signature Moisturiser contains rosehip oil, wheat germ and vitamin E for lightweight daily hydration</li>
+<li>Sukin Foaming Facial Cleanser is sulfate-free and designed for normal to oily skin types</li>
+<li>The Foaming Facial Cleanser removes impurities without disrupting the skin barrier</li>
+<li>Sukin Super Greens Facial Masque features detoxifying kaolin clay with supergreen extracts</li>
+<li>The facial masque contains kale, spinach and broccoli seed extracts for skin purification</li>
+<li>Sukin Super Greens Facial Masque purifies and brightens dull or congested skin</li>
+<li>Sukin addresses the gap between expensive natural skincare and ineffective drugstore options</li>
+<li>The brand provides genuinely natural products that are both effective and truly affordable</li>
+</ul>
+</section></div>
+  </section>
+  <section class="card" id="entity-checklist">
+    <div class="card-label">Entity Optimisation Checklist</div>
+    
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; Entity Checklist</div>
+    <ol class="asset-usage-steps"><li>Work through items in the order listed — earlier items create the foundation for later ones.</li><li>Treat each item as a task. Assign an owner and a due date.</li><li>Tick off completed items and note the date — this list is your paper trail for the next audit.</li></ol>
+  </div>
+</div>
+    <div class="sec-body" style="margin-top:20px"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create citation assets around "Australia's #1 selling natural moisturiser" claim to establish market authority</li>
+<li>Develop query pattern content targeting "sulfate-free cleanser" and "natural face cleanser" search behaviors</li>
+<li>Build entity authority through affordable natural skincare positioning content</li>
+<li>Generate answer-ready content comparing Sukin to Neutrogena Naturals and Simple for AI model training</li>
+<li>Create detailed product specification content for each core product to support AI citations</li>
+<li>Establish entity connections between "natural skincare" and "affordable price point" query patterns</li>
+<li>Develop content around supergreen ingredients to differentiate from basic natural skincare brands</li>
+<li>Build citation coverage for "under $15 natural skincare" and related affordability query patterns</li>
+<li>Create answer-ready responses to sensitive skin concerns with natural products</li>
+<li>Establish entity recognition for rosehip oil, wheat germ, and vitamin E ingredient combinations</li>
+<li>Generate content positioning against "natural skincare marketing hype" query patterns</li>
+<li>Build citation assets around clay mask formulations with vegetable extract differentiation</li>
+</ul>
+</section></div>
+  </section>
+  <section class="card" id="action-plan">
+    <div class="card-label">90-Day Action Plan</div>
+    
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; 90-Day Action Plan</div>
+    <ol class="asset-usage-steps"><li>Start with Quick Wins (first 30 days) — these have the highest signal-to-effort ratio.</li><li>Treat each phase as a sprint. Assign one owner per action item.</li><li>Re-run your Found By AI audit at the 90-day mark to measure movement against this baseline score.</li></ol>
+  </div>
+</div>
+    <div class="sec-body" style="margin-top:20px"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Problem-Solution Content Hub</h4>
+<p>Create dedicated solution pages for each problem_solution query where Sukin achieved 0% citation: skin reactions to natural products, moisturiser causing tightness, essential oil sensitivities, and eye-stinging cleansers. Each page should position specific Sukin products as the solution with detailed explanations of formulation choices.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Trust-Building Scientific Content</h4>
+<p>Create comprehensive content addressing trust_social queries about natural skincare efficacy, including clinical studies, ingredient science, and transparent manufacturing processes. Focus on debunking "scam" perceptions with concrete evidence of Sukin's product development and testing.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: trust_social (17% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Enhance Unbranded Purchase Intent Pages</h4>
+<p>Optimize existing product category pages to capture unbranded_purchase queries by including specific skin concern solutions, price point messaging, and comparison-friendly product specifications that address the queries where Sukin was invisible.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: unbranded_purchase (30% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create "Worth the Hype" Content Series</h4>
+<p>Develop content directly addressing purchase_intent skepticism queries like "are natural skincare brands actually worth the hype" with transparent ingredient sourcing, manufacturing standards, and realistic expectation-setting for Sukin products.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent (40% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build Competitive Comparison Framework</h4>
+<p>Create detailed comparison content that positions Sukin alongside competitors mentioned in failed queries (Simple, Neutrogena Naturals) while highlighting unique value propositions in organic, vegan, and cruelty-free categories where Sukin only appeared on one AI model.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (50% citation)</p>
+</div>
+</section></div>
+  </section>
+  <section class="card" id="content-arch">
+    <div class="card-label">Content Architecture</div>
+    
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; Content Architecture</div>
+    <ol class="asset-usage-steps"><li>Use this as a publishing calendar. Each page targets a specific AI query pattern from your diagnostics.</li><li>Prioritise pages targeting missed organic queries first.</li><li>Each page should include the target query as a visible heading, a direct answer in the first paragraph, and FAQ schema where applicable.</li></ol>
+  </div>
+</div>
+    <div class="sec-body" style="margin-top:20px"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>my skin breaks out from natural skincare products what should I use instead</td>
+<td>"Sensitive Skin Solutions" landing page with Sukin's essential oil-free, minimal ingredient products</td>
+<td>Direct problem-solution mapping with specific product recommendations for natural skincare sensitivities</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>why does my natural moisturiser make my skin feel tight and dry</td>
+<td>FAQ entry explaining humectant vs occlusive ingredients in Sukin moisturisers</td>
+<td>Technical explanation of formulation science positions Sukin as ingredient-aware brand</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>17%</td>
+<td>are natural skincare products just a scam or do they actually work</td>
+<td>"The Science Behind Natural" content hub with clinical studies and ingredient research</td>
+<td>Evidence-based approach to natural efficacy builds entity authority for trust queries</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>30%</td>
+<td>gentle sulfate-free face cleanser for oily skin that won't dry it out</td>
+<td>Enhanced product page for Foaming Facial Cleanser with skin-type specific benefits</td>
+<td>Exact query pattern matching with detailed product specifications and skin concern targeting</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>30%</td>
+<td>best clay face mask with natural ingredients for congested skin</td>
+<td>Clay mask collection page with ingredient breakdown and skin concern solutions</td>
+<td>Natural ingredient focus combined with specific skin problem solving builds citation relevance</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+  </section>
+</div>
+<div class="card" id="schema">
+  <div class="card-label">Schema Markup</div>
+  
+<div class="asset-meta">
+  <div class="asset-source" style="background:rgba(246,181,70,0.06);border:1px solid rgba(246,181,70,0.28);border-left:3px solid var(--warning)">
+    <div class="asset-source-row">
+      <span class="asset-source-icon" style="color:var(--warning)">⚠</span>
+      <div>
+        <div class="asset-source-label" style="color:var(--warning)">Data source &mdash; Audit form data only</div>
+        <div class="asset-source-note">Your website could not be scraped at audit time. All content below was generated from the information you provided in the audit form. Accuracy depends entirely on what was submitted — product names, pricing, and features have <strong>not</strong> been verified against your live site.</div>
+      </div>
+    </div>
+  </div>
+  <div class="asset-review">
+    <div class="asset-review-header">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="var(--warning)" stroke-width="1.5"/><rect x="7.25" y="4" width="1.5" height="5" rx="0.75" fill="var(--warning)"/><rect x="7.25" y="10.5" width="1.5" height="1.5" rx="0.75" fill="var(--warning)"/></svg>
+      Review before publishing
+    </div>
+    <div class="asset-review-body">This content is AI-generated and incomplete. Verify all facts, product names, pricing, and brand claims against your actual website before publishing or distributing.</div>
+  </div>
+  <div class="asset-usage">
+    <div class="asset-usage-header">How to use this &mdash; Schema Markup</div>
+    <ol class="asset-usage-steps"><li>Copy the schema block below.</li><li>Paste it inside a <code>&lt;script type=&quot;application/ld+json&quot;&gt;</code> tag in the <code>&lt;head&gt;</code> of your homepage.</li><li>Validate at <a href="https://validator.schema.org" target="_blank" style="color:var(--accent)">validator.schema.org</a> before publishing.</li><li>Update the schema whenever your business address, contact details, or founding information changes.</li><li>Do not add schema for facts that are not currently true — inaccurate schema can harm citation quality.</li></ol>
+  </div>
+</div>
+  <div style="margin-top:16px;margin-bottom:4px"><button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button><button class="schema-copy-btn" id="copy-btn" onclick="copySchema()">Copy schema</button></div>
+  <div class="schema-block" id="schema-block"><div class="sec-body"><section id="org-schema">
+<h2>Organisation Schema</h2>
+
+<pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Sukin",
+  "alternateName": "Sukin Naturals",
+  "url": "https://sukinnaturals.com",
+  "logo": "https://sukinnaturals.com/logo.png",
+  "description": "Australian natural skincare brand offering cruelty-free, vegan personal care products formulated with natural and organic ingredients for all skin types including sensitive skin.",
+  "foundingDate": "2007",
+  "foundingLocation": {
+    "@type": "Place",
+    "addressCountry": "AU",
+    "addressLocality": "Melbourne"
+  },
+  "sameAs": [
+    "https://www.instagram.com/sukinnaturals",
+    "https://www.facebook.com/sukinnaturals",
+    "https://twitter.com/sukinnaturals"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "areaServed": ["AU", "NZ", "GB", "US"],
+    "availableLanguage": "English"
+  },
+  "hasCredential": [
+    {
+      "@type": "Certification",
+      "name": "Cruelty Free",
+      "certifyingAuthority": "Choose Cruelty Free"
+    },
+    {
+      "@type": "Certification", 
+      "name": "Vegan Certified",
+      "certifyingAuthority": "The Vegan Society"
+    }
+  ],
+  "knowsAbout": [
+    "Natural skincare",
+    "Sensitive skin care",
+    "Sulfate-free cleansers", 
+    "Essential oil-free products",
+    "Clay face masks",
+    "Natural moisturizers",
+    "Cruelty-free beauty",
+    "Vegan skincare",
+    "Australian natural cosmetics"
+  ],
+  "areaServed": {
+    "@type": "Place",
+    "name": "Australia"
+  },
+  "brand": {
+    "@type": "Brand",
+    "name": "Sukin",
+    "description": "Natural, cruelty-free skincare solutions for sensitive and problem skin types"
+  }
+}</code></pre>
+</section></div></div>
+</div>
+<div class="footer"><div class="footer-logo">Found By AI</div><div class="footer-sub">AI Visibility Intelligence · by Edge Studio<br>foundbyai.com.au · hello@theedgestudio.app</div></div>
+</div>
+<script>
+const RESP=[{"q":"best natural moisturiser for daily use under $20 Australia","claude":"Look for products like Sukin Natural Moisturiser, Cetaphil moisturising lotion, or Aveeno Daily Moisturising lotion, all available under $20 at Australian chemists. These offer good hydration without heavy ingredients and are reliable for daily use across most skin types.","gpt":"Some great natural moisturisers for daily use under $20 in Australia include the \"QV Moisturising Cream\" and \"Burt's Bees Daily Moisturizing Cream.\" Both are effective and suitable for various skin types."},{"q":"gentle sulfate-free face cleanser for oily skin that won't dry it out","claude":"Try CeraVe Foaming Facial Cleanser, Cetaphil Gentle Skin Cleanser, or Neutrogena Ultra Gentle Hydrating Cleanser—all sulfate-free and designed to cleanse oily skin without over-drying. They're gentle enough for daily use while effectively removing excess oil and impurities.","gpt":"For oily skin, the \"La Roche-Posay Toleriane Purifying Foaming Cream\" is a gentle sulfate-free option that cleanses without over-drying. Additionally, the \"CeraVe Foaming Facial Cleanser\" is also good for balancing oily skin while keeping it hydrated."},{"q":"best clay face mask with natural ingredients for congested skin","claude":"Look for masks containing kaolin or bentonite clay combined with natural ingredients like tea tree oil, charcoal, or honey such as Aztec Indian Healing Clay or Malin + Goetz resurfacing mask. These work well for congested, oily skin without being too harsh when used 1-2 times weekly.","gpt":"The \"Aztec Secret Indian Healing Clay\" mixed with apple cider vinegar is a popular choice for a natural clay mask. It deeply cleanses and is effective for congested skin."},{"q":"natural skincare routine products under $15 each that actually work","claude":"Budget-friendly options under $15 include Sukin products, QV skincare range, and Simple brand items available at Chemist Warehouse, which offer effective cleansing and moisturising without premium pricing. Focus on finding a basic routine with a gentle cleanser, moisturiser, and sunscreen rather than multiple specialty products.","gpt":"For a natural skincare routine under $15, consider products like \"The Ordinary Niacinamide,\" \"Hyaluronic Acid from Revolution Skincare,\" or \"Aloe Vera Gel\". These are effective and affordable alternatives."},{"q":"face mask to brighten dull skin with green superfoods ingredients","claude":"Masks with green superfoods like matcha, spirulina, or green tea (such as those from Sukin or local brands) can help brighten dull skin when used weekly. Look for formulas combining these with vitamin C or niacinamide for best brightening results.","gpt":"Consider using a face mask with ingredients like spirulina or chlorella; \"Garnier SkinActive Super Hydrating Mask with Green Superfoods\" is a great option that helps brighten dull skin."},{"q":"my skin breaks out from natural skincare products what should I use instead","claude":"Switch to fragrance-free, minimal-ingredient products or try a basic routine with tried-and-tested ingredients like cetyl alcohol, glycerin, and niacinamide rather than botanical extracts. Consider seeing a dermatologist to identify which natural ingredients trigger your breakouts, as it's often specific components rather than 'natural' being the issue.","gpt":"If your skin breaks out from natural products, consider simplifying your routine and using non-comedogenic options like \"CeraVe\" or a gentle fragrance-free moisturizer."},{"q":"why does my natural moisturiser make my skin feel tight and dry","claude":"This usually happens when the moisturiser isn't properly sealed in hydration—try applying it to damp skin or using a hydrating toner underneath to boost water absorption. If the formula is too heavy or contains ingredients your skin doesn't like, it can actually draw moisture out; consider switching to a lighter lotion or gel-based option.","gpt":"Your natural moisturiser may contain ingredients that do not suit your skin type, or it might not have enough occlusive agents to lock in moisture. Try a heavier cream or consider formulations with hyaluronic acid."},{"q":"natural skincare without essential oils that won't irritate sensitive skin","claude":"Look for products with minimal ingredients focusing on ceramides, glycerin, hyaluronic acid, and colloidal oatmeal instead of essential oils—brands like QV, CeraVe, and Cetaphil excel here. Avoid fragrance-free claims that can be misleading; check ingredient lists for truly essential-oil-free formulas.","gpt":"Look for gentle skincare lines like \"Avène\" or \"Cetaphil,\" which offer products without essential oils and are formulated specifically for sensitive skin."},{"q":"gentle face cleanser that won't sting eyes during cleansing routine","claude":"Choose cleansers specifically formulated for the eye area or use a dedicated gentle makeup remover like micellar water before your regular cleanser. Avoid products with strong actives like acids or vitamin C around eyes, and rinse thoroughly with lukewarm water rather than hot water.","gpt":"The \"Burt's Bees Facial Cleansing Towelettes\" or \"Simple Kind to Skin Moisturizing Facial Wash\" are gentle options that cleanse well without stinging the eyes."},{"q":"are natural skincare brands actually worth the hype or just marketing","claude":"Natural skincare can be genuinely effective, but the benefits depend on individual ingredients rather than being 'natural' alone—synthetic alternatives can be equally good. The key is finding products with proven, well-researched ingredients regardless of origin; marketing definitely plays a role, so focus on ingredient lists and clinical evidence over branding.","gpt":"Natural skincare brands vary in quality, and while some may be overhyped, there are genuinely effective products out there. It's essential to research and read reviews before trying new brands."},{"q":"best natural skincare brands available at chemist warehouse","claude":"Chemist Warehouse stocks brands like Sukin, Andalou Naturals, Derma E, and QV's natural range, all offering natural or nature-inspired formulas at reasonable prices. Popular choices include their moisturisers, cleansers, and targeted treatments that are easily accessible and well-reviewed.","gpt":"At Chemist Warehouse, popular natural skincare brands include \"Sukin,\" \"Burt's Bees,\" and \"The Body Shop,\" which offer a variety of products based on natural ingredients."},{"q":"top affordable natural moisturisers under $20 that dermatologists recommend","claude":"Affordable options under $20 recommended by dermatologists include CeraVe Daily Moisturising Lotion, Cetaphil Rich Hydrating Night Cream, and Aveeno Daily Moisturising Lotion—all evidence-backed and available at Australian chemists. These balance natural or natural-leaning ingredients with proven efficacy and skin-barrier support.","gpt":"Dermatologists often recommend moisturisers like \"Nivea Soft Cream\" and \"Sukin Hydrating Moisturiser,\" both priced under $20 and known for being effective."},{"q":"best cruelty-free skincare brands with proper certification not just claims","claude":"Look for certifications like Leaping Bunny (cruelty-free), PETA approval, or Logo Leaping Bunny seal rather than vague 'cruelty-free' claims on packaging. Brands like Sukin, The Ordinary, and Nuxe provide transparent certification information on their websites or product pages.","gpt":"Brands like \"Paula's Choice\" and \"Tatcha\" are known for their cruelty-free status with proper certification. Make sure to look for the cruelty-free logo on their packaging."},{"q":"natural skincare vs synthetic products which is better for sensitive skin","claude":"For sensitive skin, the choice between natural and synthetic matters less than avoiding irritants like fragrance, certain essential oils, and harsh actives—many dermatologists recommend tested synthetics like ceramides and centella asiatica over untested botanicals. Your skin tolerates effective, stable formulas better, whether they're naturally derived or synthesized.","gpt":"Natural skincare can be gentler for sensitive skin depending on the formulation, but some synthetic products are also very mild. It often depends on the ingredient composition rather than the category."},{"q":"are natural skincare products just a scam or do they actually work","claude":"Natural skincare isn't a scam, but results depend on individual ingredients and formulations rather than being 'natural'—some work brilliantly while others underperform compared to synthetic alternatives. The key is researching specific ingredients and products rather than assuming 'natural' automatically means better or safer for your skin.","gpt":"Natural skincare products can work well for many people, but results vary. It's important to choose products suited to your skin type and to patch test new items."},{"q":"honest review of those natural skincare brands that take up heaps of space at chemist","claude":"Many chemist brands are legitimately effective but heavily marketed; products like Sukin and Andalou do work for basic skincare needs but aren't necessarily superior to simpler alternatives like CeraVe or Cetaphil. The extensive range often reflects marketing budgets rather than superior formulations—focus on finding what works for your skin type and budget rather than assuming premium shelf space means better quality.","gpt":"While some natural skincare brands may have large, flashy marketing, many offer high-quality products. Look for brands with transparency in ingredients and manufacturing for an honest review."},{"q":"is clean beauty just marketing hype or genuinely better for your skin","claude":"Clean beauty can be better for some people with sensitivities, but it's partly marketing—many synthetic ingredients are safe and effective, and some natural ingredients are irritating or unstable. The real benefit comes from choosing well-formulated products with proven ingredients, whether classified as 'clean' or not.","gpt":"Clean beauty can sometimes be marketing hype, but it also reflects a genuine movement towards safer, non-toxic ingredients. Always check labels and do research to find what works best for your skin."},{"q":"best Australian made natural skincare brands available in chemist warehouse","claude":"Australian-made natural skincare brands at Chemist Warehouse include Sukin (formulated in Australia), Bonita (Australian brand), and various QV natural products made locally. Check product packaging for 'Australian Made' certification to ensure they're genuinely manufactured here rather than just formulated locally.","gpt":"Some well-regarded Australian-made natural skincare brands available at Chemist Warehouse include \"Sukin\" and \"Frank Body,\" both known for their effective formulations."},{"q":"top Australian natural skincare brands under $20 per product","claude":"Brands like Sukin, Bonita, and QV offer most products under $20 and are available at Australian chemists with solid natural ingredient profiles and local accessibility. These provide good value for everyday skincare without premium pricing while maintaining quality standards.","gpt":"Consider affordable brands like \"Sukin,\" \"Bondi Sands,\" and \"Skin Physics,\" which offer natural products under $20 that cater to various skin concerns."},{"q":"Australian natural skincare brands that are actually made in Australia","claude":"Sukin and some QV ranges are genuinely made in Australia, though many 'Australian brands' are formulated here but manufactured overseas—check packaging for 'Made in Australia' statements. Contact brands directly if unsure, as many market themselves as Australian while outsourcing actual production.","gpt":"Brands like \"Sukin\", \"Bondi Sands\", and \"Organic Nation\" are genuinely made in Australia and offer a variety of natural products."},{"q":"best organic skincare brands for daily routine that won't break the bank","claude":"Brands like Sukin, Andalou Naturals, and Bonita offer certified organic options under $25-30 for basic routines, making daily organic skincare achievable on a budget. Focus on organic cleanser, moisturiser, and sunscreen as essentials rather than buying multiple specialty products.","gpt":"For organic skincare that's budget-friendly, brands like \"The Ordinary\" and \"100% Pure\" offer great products for a daily routine without breaking the bank."},{"q":"vegan skincare products that are gentle and effective for sensitive skin","claude":"Look for vegan brands like The Ordinary, Sukin, Andalou Naturals, or Bonita that focus on minimal, fragrance-free formulations with ingredients like hyaluronic acid and plant ceramides. These tend to be gentle on sensitive skin while being genuinely effective and cruelty-free.","gpt":"Vegan-friendly skincare brands like \"Pacifica\" and \"Eminence Organic Skin Care\" provide gentle yet effective options for sensitive skin."}];
+function toggleDetail(i){
+  const det=document.getElementById('detail-'+i);
+  const ch=document.getElementById('chev-'+i);
+  const row=det.previousElementSibling;
+  if(!det)return;
+  const open=det.style.display!=='none';
+  det.style.display=open?'none':'table-row';
+  if(ch)ch.classList.toggle('open',!open);
+  row.classList.toggle('active',!open);
+  if(!open&&RESP[i]){
+    const ce=document.getElementById('claude-'+i);
+    const ge=document.getElementById('gpt-'+i);
+    if(ce&&!ce.textContent)ce.textContent=RESP[i].claude||'No response recorded.';
+    if(ge&&!ge.textContent)ge.textContent=RESP[i].gpt||'No response recorded.';
+  }
+}
+function filterPrompts(status,btn){
+  document.querySelectorAll('.pt-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pt-row').forEach(row=>{
+    const det=row.nextElementSibling;
+    const match=status==='all'||row.dataset.status===status;
+    row.classList.toggle('hidden',!match);
+    if(det&&det.classList.contains('pt-detail')){
+      if(!match){det.style.display='none';det.classList.add('hidden');}
+      else det.classList.remove('hidden');
+    }
+  });
+}
+function toggleSchema(){
+  const block=document.getElementById('schema-block');
+  const btn=document.querySelector('.schema-toggle-btn');
+  btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';
+}
+function copySchema(){
+  const block=document.getElementById('schema-block');
+  const pre=block.querySelector('pre');
+  const text=pre?pre.textContent:block.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);
+  }).catch(()=>{});
+}
+</script>
+</body></html>
