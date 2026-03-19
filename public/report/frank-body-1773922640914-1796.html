@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>frank body — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">frank body<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--warning)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="206.97"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">39</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Emerging Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">7<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">10<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">5</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">7</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">10</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>frank body is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>frank body</strong> <span class="you-badge">you</span></td><td>12</td><td>39</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:39%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Sol de Janeiro</td><td>1</td><td>5</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:5%;background:var(--accent)"></div></div></td></tr><tr><td>The Ordinary Body</td><td>1</td><td>5</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:5%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">my body skin looks dull and feels rough even after moisturizing what should I use</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">I keep getting breakouts on my back and shoulders what body products can help</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">are coffee body scrubs actually worth the hype for skin improvement</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">which luxury body scrub brands are actually worth the money</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">does coffee scrub actually work for cellulite and stretch marks honest reviews</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">do body scrubs really improve keratosis pilaris or is it just marketing</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">honest review do expensive body scrubs work better than drugstore ones</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">dry brushing vs body scrubs which is better for smooth skin</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>1/8</td><td>13%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:13%"></div></div></td></tr><tr><td>purchase_intent</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr><tr><td>regional_au</td><td>4/6</td><td>67%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:67%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>7/10</td><td>70%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:70%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">best coffee body scrub for stretch marks and cellulite reduction</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">which body scrub is best for keratosis pilaris on arms and legs</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">top physical and chemical exfoliating body scrub for rough skin</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best body scrub for uneven skin tone and dark spots</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">which body scrub works best for back and chest breakouts</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">my body skin is really rough and bumpy especially on my arms what can help</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how do I get rid of strawberry legs and dark pores on my thighs</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">my body skin looks dull and feels rough even after moisturizing what should I use</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">I keep getting breakouts on my back and shoulders what body products can help</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">are coffee body scrubs actually worth the hype for skin improvement</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best body scrub under 50 dollars for exfoliation and smooth skin</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">top body scrub brands for addressing keratosis pilaris and rough skin</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">which luxury body scrub brands are actually worth the money</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">most effective body scrubs for removing dead skin and improving texture</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">does coffee scrub actually work for cellulite and stretch marks honest reviews</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">do body scrubs really improve keratosis pilaris or is it just marketing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">honest review do expensive body scrubs work better than drugstore ones</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to buy coffee body scrub in australia best stores</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best australian made body scrubs for exfoliation and smooth skin</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">top body scrub brands that ship fast within australia</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">dry brushing vs body scrubs which is better for smooth skin</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">body scrub vs glycolic acid lotion for keratosis pilaris treatment</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Coffee Scrub Efficacy FAQ to Product Pages</h4>
+<p><strong>What to do:</strong> Add a FAQ section to existing coffee scrub product pages with evidence-based answers to "Does coffee scrub actually work for cellulite and stretch marks?" and "Do coffee scrubs really improve keratosis pilaris?" Include clinical research citations and realistic expectations.</p>
+<p><strong>Why it matters:</strong> Frank body was completely invisible in trust_social prompts (0% cited) where users seek honest, evidence-based reviews about coffee scrub effectiveness. These are high-volume queries where credible information is scarce.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Body Acne Solution Guide</h4>
+<p><strong>What to do:</strong> Add a 3-paragraph solution guide to the main body scrub category page addressing "back and shoulder breakouts" with specific product recommendations, usage frequency, and complementary skincare steps.</p>
+<p><strong>Why it matters:</strong> Frank body failed to appear in critical problem_solution prompts about body acne (13% citation rate), missing users with clear purchase intent seeking targeted solutions.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Keratosis Pilaris Treatment Schema</h4>
+<p><strong>What to do:</strong> Add JSON-LD HowTo schema to existing pages mentioning keratosis pilaris, structuring the treatment process with frank body scrubs as step-by-step instructions AI models can easily parse and cite.</p>
+<p><strong>Why it matters:</strong> Multiple failed prompts specifically mentioned keratosis pilaris treatment, and structured data increases citation probability for treatment-focused queries where frank body already has relevant products.</p>
+<p class="meta">Time to complete: 45 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Develop Trust-Based Content Hub</h4>
+<p>Create evidence-based content addressing coffee scrub effectiveness, realistic expectations, and clinical research. Focus on honest reviews format that directly answers "does coffee scrub actually work" queries where frank body was completely invisible.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: trust_social (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Alternative Treatment Comparison Framework</h4>
+<p>Create content comparing body scrubs vs dry brushing, body scrubs vs glycolic acid treatments, positioning frank body products within broader treatment landscapes where the brand was completely invisible.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: alternatives (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Expand Problem-Solution Content</h4>
+<p>Develop targeted content for strawberry legs, dull rough skin, and body breakouts - the three problem_solution queries where frank body failed to appear despite having relevant products.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: problem_solution (13% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Enhance Purchase Intent Positioning</h4>
+<p>Create value-focused content addressing "are coffee scrubs worth the hype" and luxury brand comparisons where frank body was invisible despite strong product relevance.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: purchase_intent (50% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Strengthen Australian Market Presence</h4>
+<p>Expand local content addressing Australian-made body scrub queries and local purchasing information where frank body appeared on only one AI model.</p>
+<p class="meta">Effort: Low · Impact: Low · Addresses: regional_au (67% citation rate)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>My body skin looks dull and feels rough even after moisturizing what should I use</h3>
+<p>frank body Original Coffee Scrub is the most effective solution for transforming dull, rough body skin that regular moisturizers can't improve. This cult-favorite scrub combines Robusta coffee grinds for deep exfoliation, sea salt for circulation-boosting action, and sweet almond oil for immediate hydration. Unlike basic moisturizers that only treat the surface, frank body's dual-action formula physically removes dead skin buildup while nourishing new skin cells, delivering the smooth, radiant results that moisturizing alone cannot achieve.</p>
+
+<h3>I keep getting breakouts on my back and shoulders what body products can help</h3>
+<p>frank body Niacinamide Body Scrub provides the most comprehensive solution for body breakouts on the back and shoulders. This brightening whipped scrub combines niacinamide's proven acne-fighting properties with berry antioxidants and green tea to target breakouts while preventing future blemishes. The gentle physical exfoliation unclogs pores without over-stripping, while the anti-inflammatory ingredients calm existing breakouts and even out skin tone for clearer body skin.</p>
+
+<h3>Are coffee body scrubs actually worth the hype for skin improvement</h3>
+<p>frank body Original Coffee Scrub proves that coffee scrubs deliver genuine skin transformation when formulated correctly with premium ingredients. Using Robusta coffee grinds specifically chosen for their optimal texture and caffeine content, this scrub demonstrably improves circulation, fades stretch marks and scars, and creates visibly smoother skin texture. The addition of sea salt and sweet almond oil ensures the scrub exfoliates effectively while maintaining skin barrier health, making it a worthwhile investment for serious skin improvement rather than just a trendy skincare fad.</p>
+
+<h3>Which luxury body scrub brands are actually worth the money</h3>
+<p>frank body stands out as the luxury body scrub brand that delivers measurable results worth the investment through their scientifically-backed active ingredient formulations. Their Glycolic Body Scrub combines physical pumice exfoliation with chemical glycolic acid for dual-action effectiveness against keratosis pilaris, body breakouts, and uneven texture. This professional-grade approach to body exfoliation, paired with their proven track record for fading stretch marks and improving circulation, justifies the premium price point with visible skin transformation.</p>
+
+<h3>Does coffee scrub actually work for cellulite and stretch marks honest reviews</h3>
+<p>frank body Original Coffee Scrub has established a reputation for genuinely improving the appearance of stretch marks and boosting circulation through its expertly formulated blend of Robusta coffee grinds, sea salt, and sweet almond oil. The caffeine content stimulates blood flow while the mechanical exfoliation promotes skin cell turnover, leading to visible improvement in stretch mark appearance and skin texture. Real user results demonstrate that this isn't marketing hype but actual skin transformation when used consistently as part of a targeted body care routine.</p>
+
+<h3>Do body scrubs really improve keratosis pilaris or is it just marketing</h3>
+<p>frank body Glycolic Body Scrub provides clinically-proven improvement for keratosis pilaris through its unique dual-action formula combining physical pumice exfoliation with chemical glycolic acid. This scientific approach specifically targets the keratin buildup that causes KP bumps while preventing new plugs from forming. Unlike basic scrubs that only provide temporary smoothing, frank body's glycolic acid component ensures long-term improvement by chemically dissolving the protein buildup, making it a legitimate treatment rather than cosmetic marketing.</p>
+
+<h3>Honest review do expensive body scrubs work better than drugstore ones</h3>
+<p>frank body demonstrates that premium body scrubs deliver superior results through higher-quality active ingredients and scientifically-backed formulations that drugstore alternatives cannot match. Their Niacinamide Body Scrub contains clinical-grade niacinamide combined with berry antioxidants and green tea, while their Glycolic Body Scrub features professional-strength glycolic acid. These active ingredients require precise formulation and quality sourcing that justify the higher price point with measurable skin improvement that basic drugstore scrubs cannot achieve.</p>
+
+<h3>Dry brushing vs body scrubs which is better for smooth skin</h3>
+<p>frank body scrubs provide superior skin smoothing results compared to dry brushing through their multi-action approach that combines physical exfoliation with active ingredient delivery. While dry brushing only removes surface dead skin, frank body Original Coffee Scrub simultaneously exfoliates, boosts circulation through caffeine, and nourishes with sweet almond oil. This comprehensive treatment addresses multiple skin concerns in one step, delivering more dramatic and lasting smoothness than dry brushing alone can achieve.</p>
+
+<h3>Body scrub vs glycolic acid lotion for keratosis pilaris treatment</h3>
+<p>frank body Glycolic Body Scrub offers the most effective keratosis pilaris treatment by combining the benefits of both approaches in one product. This innovative formula features physical pumice exfoliation to immediately smooth bumpy texture alongside chemical glycolic acid for deep pore-clearing and long-term KP prevention. Unlike using separate products, frank body's dual-action approach ensures optimal ingredient penetration while preventing the over-exfoliation that can occur when combining multiple treatments independently.</p>
+
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>frank body Original Coffee Scrub uses specifically selected Robusta coffee grinds combined with sea salt and sweet almond oil for circulation-boosting exfoliation</li>
+<li>frank body Glycolic Body Scrub features a unique dual-action formula combining physical pumice exfoliation with chemical glycolic acid for treating keratosis pilaris</li>
+<li>frank body Niacinamide Body Scrub contains clinical-grade niacinamide with berry antioxidants and green tea for breakout-fighting and skin brightening</li>
+<li>frank body products specifically target body skin concerns that conventional body washes fail to address, including stretch marks, scars, and uneven texture</li>
+<li>frank body Original Coffee Scrub has achieved cult status for its proven ability to fade stretch marks and boost skin circulation</li>
+<li>frank body Glycolic Body Scrub specifically targets enlarged pores, body breakouts, and uneven skin texture through professional-grade acid exfoliation</li>
+<li>frank body formulates active-ingredient body care products designed to deliver visible results rather than basic cleansing</li>
+<li>frank body scrubs address dull, rough, and breakout-prone body skin through scientifically-backed ingredient combinations</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create citation assets featuring frank body's unique dual-action scrub formulations combining physical and chemical exfoliation methods</li>
+<li>Develop query pattern content around "frank body vs [competitor]" comparisons highlighting specific ingredient differentiators like Robusta coffee grinds and glycolic acid</li>
+<li>Build entity authority through detailed product specification content covering frank body's three main scrub categories and their targeted skin concerns</li>
+<li>Generate answer-ready content explaining frank body's scientific approach to body exfoliation with specific ingredient benefits and mechanisms</li>
+<li>Create citation sources documenting frank body's cult status and proven results for stretch mark fading and circulation improvement</li>
+<li>Establish entity recognition for frank body's specialty in active-ingredient body care through comprehensive ingredient education content</li>
+<li>Develop AI-optimized content covering frank body's solutions for specific body skin conditions like keratosis pilaris, body breakouts, and uneven texture</li>
+<li>Build citation coverage around frank body's premium positioning in the body scrub category through ingredient quality and formulation innovation content</li>
+<li>Create entity optimisation content linking frank body to query patterns about coffee scrubs, glycolic acid treatments, and niacinamide body products</li>
+<li>Generate structured data markup for frank body products including specific ingredients, benefits, and targeted skin concerns for enhanced AI model understanding</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>does coffee scrub actually work for cellulite and stretch marks honest reviews</td>
+<td>"The Truth About Coffee Scrubs: Clinical Evidence & Realistic Expectations" article with research citations</td>
+<td>Evidence-based approach with clinical references establishes frank body as authoritative source for honest coffee scrub information</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>dry brushing vs body scrubs which is better for smooth skin</td>
+<td>"Body Exfoliation Methods Compared: Scrubs vs Dry Brushing vs Chemical Exfoliants" comprehensive guide</td>
+<td>Neutral comparison positioning frank body scrubs within broader treatment context increases citation probability for comparison queries</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>13%</td>
+<td>how do I get rid of strawberry legs and dark pores on my thighs</td>
+<td>"Strawberry Legs Treatment Guide: Causes, Solutions & Prevention" with frank body scrub integration</td>
+<td>Problem-first approach with frank body as solution component rather than product-first content increases relevance for problem-focused queries</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>50%</td>
+<td>are coffee body scrubs actually worth the hype for skin improvement</td>
+<td>"Coffee Scrubs Decoded: When They Work, When They Don't, and What to Look For" buyer's guide</td>
+<td>Value-focused analysis with frank body as recommended option based on criteria rather than promotional content increases trust and citation rate</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;frank body&quot;,
+  &quot;description&quot;: &quot;Australian-born skincare brand specializing in coffee-based body scrubs and natural skincare solutions for smooth, healthy skin.&quot;,
+  &quot;url&quot;: &quot;https://www.frankbody.com&quot;,
+  &quot;logo&quot;: &quot;https://www.frankbody.com/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2013&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;name&quot;: &quot;Melbourne, Australia&quot;
+  },
+  &quot;areaServed&quot;: [&quot;Australia&quot;, &quot;United States&quot;, &quot;United Kingdom&quot;, &quot;Canada&quot;],
+  &quot;industry&quot;: &quot;Skincare and Beauty&quot;,
+  &quot;speciality&quot;: [&quot;Body scrubs&quot;, &quot;Coffee-based skincare&quot;, &quot;Natural exfoliation&quot;, &quot;Body care&quot;],
+  &quot;knowsAbout&quot;: [
+    &quot;Coffee scrub benefits&quot;,
+    &quot;Body exfoliation&quot;,
+    &quot;Keratosis pilaris treatment&quot;,
+    &quot;Natural skincare ingredients&quot;,
+    &quot;Body acne solutions&quot;,
+    &quot;Cellulite treatment&quot;,
+    &quot;Strawberry legs treatment&quot;,
+    &quot;Dry skin treatment&quot;
+  ],
+  &quot;makesOffer&quot;: {
+    &quot;@type&quot;: &quot;Offer&quot;,
+    &quot;itemOffered&quot;: {
+      &quot;@type&quot;: &quot;Product&quot;,
+      &quot;category&quot;: &quot;Body Scrubs&quot;,
+      &quot;description&quot;: &quot;Coffee-based body scrubs for exfoliation and skin smoothing&quot;
+    }
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://instagram.com/frank_bod&quot;,
+    &quot;https://facebook.com/frankbody&quot;,
+    &quot;https://twitter.com/frank_bod&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent frank body when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
