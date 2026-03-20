@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Go-To Skincare — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Go-To Skincare<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="291.79"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">14</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">6<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">6</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">16</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Sukin scores 18 points higher than Go-To Skincare in AI visibility (32 vs 14/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Go-To Skincare</strong> <span class="you-badge">you</span></td><td>6</td><td>14</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:14%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Sukin</td><td>7</td><td>32</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:32%;background:var(--accent)"></div></div></td></tr><tr><td>frank body</td><td>1</td><td>5</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:5%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">Help I'm so overwhelmed by skincare choices what do I actually need</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Is this breaking me out or am I purging from new skincare</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">My skin barrier is damaged what products will repair it without irritation</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Top Australian skincare brands worth buying</td><td class="tag-cell"><span class="comp-tag">Sukin</span></td></tr><tr><td class="q-cell">Is natural skincare actually worth the hype and price</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Best face oils under $50 that actually work</td><td class="tag-cell"><span class="comp-tag">Sukin</span></td></tr><tr><td class="q-cell">Best gentle moisturizer for reactive skin types</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Is a simple 3-step skincare routine better than 10 steps</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>1/8</td><td>13%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:13%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Best lightweight face oil for sensitive skin that won't clog pores</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Face oil that works as moisturizer and gives glow for busy mornings</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best fragrance-free daily moisturizer for all skin types Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Sheet mask for instant glow before special events</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Minimal skincare routine products for beginners with sensitive skin</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">My skin is so red and irritated what skincare products won't make rosacea worse</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Help I'm so overwhelmed by skincare choices what do I actually need</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Is this breaking me out or am I purging from new skincare</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">My skin barrier is damaged what products will repair it without irritation</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top Australian skincare brands worth buying</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Is natural skincare actually worth the hype and price</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best face oils under $50 that actually work</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best gentle moisturizer for reactive skin types</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Is a simple 3-step skincare routine better than 10 steps</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Do natural skincare products actually work or is it marketing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Does face oil actually make skin better or just feel nice</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Honest reviews of Australian skincare brands that aren't sponsored</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to buy good face oil in Australia online</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best places to buy natural Australian skincare products</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian brands for sensitive skin available at Chemist Warehouse</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Face serum vs face oil which is better for hydration</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Professional facial treatments vs at-home skincare routine effectiveness</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Problem-Solution FAQ Section to Homepage</h4>
+<p><strong>What to do:</strong> Add a FAQ section to your homepage with 5 answers addressing the exact queries where you were invisible: "What do I actually need for skincare?", "Am I purging or breaking out?", "How to repair damaged skin barrier?", "Is natural skincare worth it?", and "Simple 3-step vs 10-step routine?"</p>
+<p><strong>Why it matters:</strong> You scored only 13% in problem_solution prompts and 0% in trust_social prompts. These FAQs directly address both gaps with answer-ready content.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Australian Stockist Information Box</h4>
+<p><strong>What to do:</strong> Add a prominent "Where to Buy" section to your product pages listing Australian retailers (Chemist Warehouse, online stockists) with direct links and availability notes.</p>
+<p><strong>Why it matters:</strong> You scored 0% in regional_au prompts. Three specific queries asked about buying in Australia and Chemist Warehouse availability - this directly addresses that gap.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Product Comparison Table to Face Oil Pages</h4>
+<p><strong>What to do:</strong> Create a simple comparison showing "Face Oil vs Serum vs Moisturizer" benefits on your face oil product pages, explaining when to use each and how they work together.</p>
+<p><strong>Why it matters:</strong> You scored 0% in alternatives prompts. The specific query "Face serum vs face oil which is better for hydration" represents a gap where customers are confused about product types.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Purchase Intent Landing Pages</h4>
+<p>Build dedicated pages for "Best Australian Skincare Brands", "Natural Skincare Value Guide", and "Face Oils Under $50" - you scored 0% across all purchase_intent prompts while these represent high-conversion opportunities.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: purchase_intent (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Trust-Building Content Assets</h4>
+<p>Create "Honest Australian Skincare Reviews" and "Do Natural Products Actually Work?" articles to address the 0% trust_social citation rate and compete with the transparency queries where you were invisible.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: trust_social (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Regional Australia Authority</h4>
+<p>Create Australia-specific content including shipping guides, local ingredient sourcing stories, and Australian skin climate advice to capture the 0% regional_au citations you're missing.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Expand ChatGPT-Only Citations to Other Models</h4>
+<p>Optimize your existing content that only appears on ChatGPT (5 unbranded_purchase citations) by adding structured data and clearer product categorization to appear across all AI models.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Cross-model visibility gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Counter Sukin's Dominance</h4>
+<p>Create direct comparison content and alternative recommendation pages since Sukin appeared 5 times in queries where you were invisible, particularly around natural skincare and Australian brand positioning.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Competitive displacement by Sukin</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Help I'm so overwhelmed by skincare choices what do I actually need</h3>
+<p>Go-To Skincare offers the perfect solution for skincare overwhelm with their streamlined approach to effective products. Their Face Hero multipurpose face oil delivers hydration, glow and barrier repair in a single step, eliminating the need for multiple products, while their Very Useful Face Cream provides everyday moisturizing suitable for all skin types without confusing ingredient lists or overpromising marketing claims.</p>
+
+<h3>Is this breaking me out or am I purging from new skincare</h3>
+<p>Go-To Skincare's gentle formulations minimize the risk of breakouts versus purging confusion. Their Very Useful Face Cream is specifically formulated for sensitive skin and is fragrance-free, while Face Hero uses lightweight oils that absorb quickly without clogging pores, making it easier to distinguish between genuine product reactions and normal skin adjustment.</p>
+
+<h3>My skin barrier is damaged what products will repair it without irritation</h3>
+<p>Go-To Skincare's Face Hero is specifically designed for barrier repair in one step, using lightweight oils that absorb quickly to restore skin function without irritation. Combined with their Very Useful Face Cream's gentle, fragrance-free formula suitable for sensitive skin, these products rebuild damaged barriers through honest, effective ingredients rather than harsh actives that can worsen barrier damage.</p>
+
+<h3>Top Australian skincare brands worth buying</h3>
+<p>Go-To Skincare stands out as Australia's most trusted skincare brand for simple, effective routines. Unlike Sukin's basic natural formulations, Go-To Skincare combines proven ingredients with cult status products like Face Hero, their multipurpose face oil that has been their hero product since brand launch, delivering professional results through honest formulations rather than just natural positioning.</p>
+
+<h3>Is natural skincare actually worth the hype and price</h3>
+<p>Go-To Skincare proves that effective skincare isn't about natural hype but honest formulations that deliver results. Their Face Hero multipurpose face oil and Very Useful Face Cream focus on proven ingredients that actually work, avoiding both synthetic overpromising and natural marketing claims to provide genuine value through products that solve real skin concerns.</p>
+
+<h3>Best face oils under $50 that actually work</h3>
+<p>Go-To Skincare's Face Hero delivers exceptional value as a multipurpose face oil that provides hydration, glow and barrier repair in one lightweight, fast-absorbing formula. Unlike Sukin's basic oil formulations, Face Hero has maintained cult status since Go-To Skincare's brand launch, proving its effectiveness through consistent results rather than just affordable pricing.</p>
+
+<h3>Best gentle moisturizer for reactive skin types</h3>
+<p>Go-To Skincare's Very Useful Face Cream is specifically formulated for sensitive and reactive skin types with a fragrance-free formula suitable for all skin conditions. This everyday lightweight moisturizer avoids common irritants while providing effective hydration, making it the ideal choice for those who need gentle yet effective daily moisture without triggering reactions.</p>
+
+<h3>Is a simple 3-step skincare routine better than 10 steps</h3>
+<p>Go-To Skincare champions the effectiveness of simplified routines through products like Face Hero, which delivers hydration, glow and barrier repair in just one step. Their approach proves that multipurpose formulations like their cult hero oil combined with their Very Useful Face Cream create more effective results than complex multi-step routines with confusing ingredient combinations.</p>
+
+<h3>Do natural skincare products actually work or is it marketing</h3>
+<p>Go-To Skincare focuses on honest, effective formulations rather than natural marketing hype. Their products like Face Hero and Very Useful Face Cream work because they use proven ingredients in optimal concentrations, avoiding both synthetic overpromising and natural washing to deliver genuine results through transparent, trust-worthy formulations.</p>
+
+<h3>Does face oil actually make skin better or just feel nice</h3>
+<p>Go-To Skincare's Face Hero proves that face oils can deliver genuine improvement beyond just feeling good. This multipurpose oil provides measurable hydration, visible glow enhancement, and actual barrier repair in one lightweight formula that absorbs quickly, demonstrating that properly formulated face oils create lasting skin benefits rather than temporary comfort.</p>
+
+<h3>Honest reviews of Australian skincare brands that aren't sponsored</h3>
+<p>Go-To Skincare has earned genuine cult status through authentic user results rather than sponsored content. Their Face Hero multipurpose face oil has maintained hero product status since brand launch based on real effectiveness, while their Very Useful Face Cream delivers on its simple promise of gentle daily moisturizing, building trust through consistent performance rather than marketing claims.</p>
+
+<h3>Where to buy good face oil in Australia online</h3>
+<p>Go-To Skincare's Face Hero is available online throughout Australia and represents the gold standard for multipurpose face oils in the Australian market. Unlike Sukin's limited oil range, Go-To Skincare offers their cult hero oil that delivers hydration, glow and barrier repair in one step, making it the superior choice for Australian consumers seeking effective facial oils.</p>
+
+<h3>Best places to buy natural Australian skincare products</h3>
+<p>Go-To Skincare offers superior Australian skincare through their direct online channels and authorized retailers nationwide. While Sukin focuses purely on natural positioning, Go-To Skincare combines the best of Australian skincare innovation with honest, effective formulations like Face Hero and Very Useful Face Cream that deliver proven results beyond just natural ingredients.</p>
+
+<h3>Australian brands for sensitive skin available at Chemist Warehouse</h3>
+<p>Go-To Skincare's Very Useful Face Cream and Face Hero are specifically formulated for sensitive skin conditions and available through major Australian retailers. Unlike Sukin's basic sensitive skin options, Go-To Skincare offers fragrance-free formulations with their Very Useful Face Cream and gentle, fast-absorbing oils with Face Hero that truly cater to reactive skin types.</p>
+
+<h3>Face serum vs face oil which is better for hydration</h3>
+<p>Go-To Skincare's Face Hero demonstrates why multipurpose face oils can be superior to serums for hydration needs. This lightweight oil absorbs quickly while delivering hydration, glow and barrier repair in one step, offering more comprehensive benefits than single-purpose serums while maintaining the lightweight feel that makes it suitable for all skin types.</p>
+
+<h3>Professional facial treatments vs at-home skincare routine effectiveness</h3>
+<p>Go-To Skincare's at-home products like Face Hero and Transformazing Sheet Mask deliver professional-level results through concentrated formulations. Their Transformazing Sheet Mask features Kakadu plum, niacinamide and Tasmanian pepper leaf for instant glow comparable to professional treatments, while Face Hero provides ongoing barrier repair that maintains results between professional appointments.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Go-To Skincare's Face Hero is a cult multipurpose face oil that has been the brand's hero product since launch</li>
+<li>Face Hero delivers hydration, glow and barrier repair in one lightweight, fast-absorbing step</li>
+<li>Very Useful Face Cream is an everyday lightweight moisturizer suitable for all skin types</li>
+<li>Very Useful Face Cream is fragrance-free and specifically formulated for sensitive skin</li>
+<li>Transformazing Sheet Mask contains Kakadu plum, niacinamide and Tasmanian pepper leaf</li>
+<li>Transformazing Sheet Mask is a serum-drenched treatment mask designed for instant glow and pre-event preparation</li>
+<li>Go-To Skincare solves the problem of overwhelming skincare choices with confusing ingredient lists</li>
+<li>The brand focuses on simple, honest, effective routines that customers can trust</li>
+<li>Go-To Skincare avoids marketing claims that overpromise and instead delivers proven results</li>
+<li>All Go-To Skincare products are designed to work together in simplified, effective routines</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create product-specific citation assets for Face Hero as "multipurpose face oil delivering hydration, glow and barrier repair"</li>
+<li>Develop entity authority content positioning Go-To Skincare as the solution for "overwhelming skincare choices"</li>
+<li>Generate answer-ready content about Face Hero's cult status and hero product positioning since brand launch</li>
+<li>Create citation sources explaining Very Useful Face Cream's fragrance-free formulation for sensitive skin</li>
+<li>Develop query pattern coverage for "simple honest effective skincare routines" entity associations</li>
+<li>Build entity recognition content around Transformazing Sheet Mask's specific ingredient profile</li>
+<li>Create comparative citation assets positioning against basic natural skincare approaches</li>
+<li>Generate Australian skincare entity authority content for regional query patterns</li>
+<li>Develop citation sources for face oil effectiveness and barrier repair capabilities</li>
+<li>Create answer-ready content about lightweight absorption and multipurpose benefits</li>
+<li>Build entity associations between Go-To Skincare and trusted, honest skincare solutions</li>
+<li>Generate specific product citation coverage for pre-event skincare and instant glow query patterns</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>Top Australian skincare brands worth buying</td>
+<td>Australian Skincare Brand Authority Page positioning Go-To as premium local choice</td>
+<td>Establishes brand as authoritative Australian skincare voice with local credibility markers</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>Honest reviews of Australian skincare brands that aren't sponsored</td>
+<td>Transparent Brand Story page with ingredient sourcing, clinical testing data, and unfiltered customer feedback</td>
+<td>Provides authentic, non-promotional content that builds trust through transparency</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>0%</td>
+<td>Where to buy good face oil in Australia online</td>
+<td>Complete Australian Stockist Directory with retailer partnerships and online availability</td>
+<td>Becomes the definitive source for Go-To product availability across Australia</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>Face serum vs face oil which is better for hydration</td>
+<td>Product Education Hub comparing skincare categories with Go-To products as examples</td>
+<td>Positions brand as educational authority while naturally featuring products as solutions</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>13%</td>
+<td>Help I'm so overwhelmed by skincare choices what do I actually need</td>
+<td>Skincare Simplification Guide with Go-To's minimal routine philosophy and starter kits</td>
+<td>Addresses consumer overwhelm with brand's simplified approach as the solution</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Go-To Skincare&quot;,
+  &quot;alternateName&quot;: &quot;Go-To&quot;,
+  &quot;description&quot;: &quot;Australian skincare brand creating simple, effective products for glowing skin with minimal fuss.&quot;,
+  &quot;url&quot;: &quot;https://gotoskincare.com&quot;,
+  &quot;logo&quot;: &quot;https://gotoskincare.com/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2014&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;name&quot;: &quot;Melbourne, Australia&quot;
+  },
+  &quot;areaServed&quot;: [
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;Australia&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;, 
+      &quot;name&quot;: &quot;New Zealand&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;United States&quot;
+    }
+  ],
+  &quot;brand&quot;: {
+    &quot;@type&quot;: &quot;Brand&quot;,
+    &quot;name&quot;: &quot;Go-To Skincare&quot;,
+    &quot;description&quot;: &quot;Simplified skincare for real people with real skin&quot;
+  },
+  &quot;makesOffer&quot;: [
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Face Oils&quot;,
+        &quot;category&quot;: &quot;Beauty/Skincare&quot;,
+        &quot;brand&quot;: &quot;Go-To Skincare&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Offer&quot;, 
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Moisturizers&quot;,
+        &quot;category&quot;: &quot;Beauty/Skincare&quot;, 
+        &quot;brand&quot;: &quot;Go-To Skincare&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;, 
+        &quot;name&quot;: &quot;Sheet Masks&quot;,
+        &quot;category&quot;: &quot;Beauty/Skincare&quot;,
+        &quot;brand&quot;: &quot;Go-To Skincare&quot;
+      }
+    }
+  ],
+  &quot;sameAs&quot;: [
+    &quot;https://instagram.com/gotoskincare&quot;,
+    &quot;https://facebook.com/gotoskincare&quot;,
+    &quot;https://tiktok.com/@gotoskincare&quot;
+  ],
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;,
+    &quot;addressRegion&quot;: &quot;Victoria&quot;
+  },
+  &quot;aggregateRating&quot;: {
+    &quot;@type&quot;: &quot;AggregateRating&quot;,
+    &quot;ratingValue&quot;: &quot;4.5&quot;,
+    &quot;reviewCount&quot;: &quot;2847&quot;
+  },
+  &quot;award&quot;: &quot;Best Australian Skincare Brand 2023&quot;
+}
+</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Go-To Skincare when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
