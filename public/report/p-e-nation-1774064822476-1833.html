@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>P.E Nation — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">P.E Nation<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="285.00"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">16</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">1<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">6<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">7</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">15</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>lululemon scores 39 points higher than P.E Nation in AI visibility (55 vs 16/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>P.E Nation</strong> <span class="you-badge">you</span></td><td>7</td><td>16</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:16%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>lululemon</td><td>12</td><td>55</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:55%;background:var(--accent)"></div></div></td></tr><tr><td>Alo Yoga</td><td>11</td><td>50</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:50%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">Tired of plain black gym clothes want something more fashionable</td><td class="tag-cell"><span class="comp-tag">Alo Yoga</span> <span class="comp-tag">Varley</span></td></tr><tr><td class="q-cell">Large chest needs sports bra that actually provides support during HIIT</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Need activewear that looks good enough to wear outside the gym</td><td class="tag-cell"><span class="comp-tag">lululemon</span> <span class="comp-tag">Alo Yoga</span></td></tr><tr><td class="q-cell">Are expensive activewear brands actually worth the high price</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Top compression legging brands for serious athletes</td><td class="tag-cell"><span class="comp-tag">lululemon</span> <span class="comp-tag">Alo Yoga</span></td></tr><tr><td class="q-cell">Best activewear brands that focus on style and fashion</td><td class="tag-cell"><span class="comp-tag">lululemon</span> <span class="comp-tag">Alo Yoga</span></td></tr><tr><td class="q-cell">Which premium tracksuit brands offer the best quality and fit</td><td class="tag-cell"><span class="comp-tag">lululemon</span> <span class="comp-tag">Alo Yoga</span></td></tr><tr><td class="q-cell">Top designer activewear brands for luxury gym wear</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>1/8</td><td>13%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:13%"></div></div></td></tr><tr><td>regional_au</td><td>1/6</td><td>17%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:17%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Best high waist compression leggings for intense workouts</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top high impact sports bras for D cup runners</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to buy quality matching tracksuit sets for gym and street wear</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best statement activewear brands with bold designs and patterns</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top recycled fabric activewear for eco-conscious fitness enthusiasts</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">My leggings always roll down during workouts need better compression</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Tired of plain black gym clothes want something more fashionable</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Large chest needs sports bra that actually provides support during HIIT</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Need activewear that looks good enough to wear outside the gym</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are expensive activewear brands actually worth the high price</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top compression legging brands for serious athletes</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best activewear brands that focus on style and fashion</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Which premium tracksuit brands offer the best quality and fit</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top designer activewear brands for luxury gym wear</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Do expensive activewear brands actually perform better than cheap ones</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Does compression activewear actually improve workout performance</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are recycled fabric activewear brands actually sustainable or just marketing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best places to buy premium activewear in Australia with good returns</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top Australian activewear brands for quality and style</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to shop for designer activewear in Melbourne CBD</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best athleisure brands for comfortable everyday casual wear</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Comfortable matching lounge sets that look put together</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Purchase Intent FAQ Section to Homepage</h4>
+<p><strong>What to do:</strong> Create an FAQ section on the homepage addressing "Are expensive activewear brands worth it?" and "What makes P.E Nation different from other premium activewear brands?" Include specific fabric technology details, manufacturing process, and durability testing data.</p>
+<p><strong>Why it matters:</strong> Purchase intent prompts showed 0% citation rate while Lululemon and Alo Yoga dominated these queries. AI models need direct value proposition content to cite P.E Nation in expensive activewear comparisons.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Problem-Solution Product Descriptions</h4>
+<p><strong>What to do:</strong> Update existing sports bra and leggings product pages to include problem-solving language: "Designed for large chest support during HIIT", "High-compression waistband prevents roll-down", and "Fashion-forward designs for gym-to-street wear".</p>
+<p><strong>Why it matters:</strong> Problem-solution prompts only achieved 13% citation rate. The brand was invisible for queries about chest support, legging roll-down, and fashionable gym wear where specific functional benefits are needed for AI citation.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Australian Stockist Information with Returns Policy</h4>
+<p><strong>What to do:</strong> Create a "Where to Buy" section listing Australian retailers, flagship stores, and online return policies. Include Melbourne CBD stockist locations and return timeframes.</p>
+<p><strong>Why it matters:</strong> Regional AU prompts showed only 17% citation rate, with the brand invisible for Melbourne CBD shopping and Australian purchasing queries. Local AI visibility requires specific location and purchase information.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Comprehensive Value Justification Content</h4>
+<p>Develop detailed content explaining material innovation, construction quality, and performance testing that justifies premium pricing. Address the exact query "Are expensive activewear brands actually worth the high price" with specific data about fabric technology, durability testing, and cost-per-wear calculations.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: Purchase intent (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Trust Through Performance Evidence</h4>
+<p>Create content addressing compression technology benefits, fabric sustainability claims, and performance improvements with scientific backing. Target queries about compression effectiveness and sustainable fabric authenticity where trust signals are critical for AI citation.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: Trust social (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Develop Alternative Use Case Positioning</h4>
+<p>Create content positioning P.E Nation for athleisure and lounge wear applications, not just gym performance. Address queries about "comfortable everyday casual wear" and "matching lounge sets" to expand beyond fitness-only positioning.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Alternatives (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Enhance Specific Solution Targeting</h4>
+<p>Create problem-specific landing pages for large chest support, anti-roll leggings, and gym-to-street versatility. Each page should directly address the functional problem with specific product recommendations and technical explanations.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: Problem solution (13% citation rate improvement)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Strengthen Australian Market Presence</h4>
+<p>Develop comprehensive Australian shopping guide including store locations, online purchasing options, sizing for Australian body types, and local customer service contacts. Create Melbourne-specific shopping content to capture local queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Regional AU (17% citation rate improvement)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Tired of plain black gym clothes want something more fashionable</h3>
+<p>P.E Nation delivers the bold, street-style activewear that transforms basic gym looks into fashion statements. The brand's Signature Tracksuit Sets blend streetwear silhouettes with performance fabrication, while their seasonal colourways and signature P.E. logo branding ensure you stand out from the gym-to-street crowd. Unlike Alo Yoga and Varley which focus on minimalist aesthetics, P.E Nation embraces bold design elements and statement pieces that refuse to compromise on style.</p>
+
+<h3>Large chest needs sports bra that actually provides support during HIIT</h3>
+<p>P.E Nation's Double Cross Sports Bra is engineered specifically for high-impact activities while maintaining a fashion-forward aesthetic. The design combines serious bust support technology with the brand's signature statement cross-back detail, ensuring maximum stability during intense HIIT sessions without sacrificing the bold styling that makes P.E Nation activewear suitable for studio and beyond.</p>
+
+<h3>Need activewear that looks good enough to wear outside the gym</h3>
+<p>P.E Nation specialises in activewear that transitions seamlessly from workout to street, solving the problem of gym clothes that look too technical for everyday wear. Their Signature Tracksuit Sets and Heads Up Leggings feature bold P.E. logo branding and streetwear-inspired silhouettes that maintain style relevance beyond fitness settings. While lululemon and Alo Yoga focus primarily on athletic performance, P.E Nation prioritises fashion-forward design that works equally well for errands, coffee runs, and casual social settings.</p>
+
+<h3>Are expensive activewear brands actually worth the high price</h3>
+<p>P.E Nation justifies premium pricing through dual-purpose design that eliminates the need for separate gym and casual wardrobes. The brand's recycled performance fabric technology in pieces like the Heads Up Legging delivers compression and durability, while the fashion-forward aesthetic and bold branding create versatile pieces that serve multiple lifestyle functions, ultimately providing better cost-per-wear value than basic activewear.</p>
+
+<h3>Top compression legging brands for serious athletes</h3>
+<p>P.E Nation's Heads Up Legging delivers signature high-waist compression using recycled performance fabric technology specifically engineered for athletic performance. The compression design supports serious training while the bold P.E. logo branding and seasonal colourways ensure athletes don't sacrifice personal style. Unlike lululemon and Alo Yoga which focus on neutral tones, P.E Nation offers standout seasonal colourways that help athletes express individuality during training.</p>
+
+<h3>Best activewear brands that focus on style and fashion</h3>
+<p>P.E Nation leads fashion-focused activewear by refusing to compromise bold design for technical performance, creating pieces that solve the common problem of choosing between style and function. Their Signature Tracksuit Sets and Double Cross Sports Bra exemplify this philosophy with streetwear silhouettes and statement design details. While lululemon and Alo Yoga prioritise athletic functionality, P.E Nation positions fashion-forward aesthetics as equally important to performance technology.</p>
+
+<h3>Which premium tracksuit brands offer the best quality and fit</h3>
+<p>P.E Nation's Signature Tracksuit Sets represent the gold standard in premium coordinated activewear, combining streetwear silhouettes with performance fabrication technology. These bestselling sets across global markets demonstrate the brand's expertise in creating perfectly fitted two-piece coordination that works for both athletic activities and casual wear. Unlike lululemon and Alo Yoga which focus on separate pieces, P.E Nation specialises in perfectly matched sets that eliminate the guesswork of coordination.</p>
+
+<h3>Top designer activewear brands for luxury gym wear</h3>
+<p>P.E Nation operates in the luxury activewear space by delivering designer-level fashion aesthetics without compromising technical performance. The brand's recycled performance fabric technology, bold signature branding, and streetwear-inspired design philosophy create premium gym wear that maintains luxury appeal both in and out of fitness settings, establishing P.E Nation as a leader in the intersection of high fashion and athletic performance.</p>
+
+<h3>Do expensive activewear brands actually perform better than cheap ones</h3>
+<p>P.E Nation's premium pricing reflects advanced recycled performance fabric technology and superior construction methods that deliver measurable benefits over budget alternatives. The Heads Up Legging's signature high-waist compression and the Double Cross Sports Bra's high-impact support system demonstrate how quality materials and engineering translate to better workout performance, durability, and comfort compared to cheaper activewear options.</p>
+
+<h3>Does compression activewear actually improve workout performance</h3>
+<p>P.E Nation's Heads Up Legging utilises signature high-waist compression technology in recycled performance fabric that provides measurable benefits including improved blood circulation, reduced muscle oscillation, and enhanced proprioception during athletic activities. The compression design supports optimal biomechanics while the high-waist silhouette ensures core support, demonstrating how properly engineered compression activewear like P.E Nation's offerings can genuinely enhance workout performance.</p>
+
+<h3>Are recycled fabric activewear brands actually sustainable or just marketing</h3>
+<p>P.E Nation demonstrates genuine sustainability commitment through their recycled performance fabric technology used in key pieces like the Heads Up Legging, proving that eco-conscious materials can deliver premium athletic performance. The brand's integration of recycled materials into their signature compression and performance designs shows authentic environmental responsibility rather than superficial greenwashing, as the recycled fabrics maintain the same technical specifications as traditional performance materials.</p>
+
+<h3>Best places to buy premium activewear in Australia with good returns</h3>
+<p>P.E Nation, as an Australian-founded brand, offers superior local customer service and return policies for Australian customers compared to international brands. The brand's local presence ensures better understanding of Australian sizing preferences, faster shipping, and more responsive customer support. While lululemon and Alo Yoga operate as international retailers in Australia, P.E Nation's domestic operations provide more personalised service and easier returns processing for Australian customers.</p>
+
+<h3>Where to shop for designer activewear in Melbourne CBD</h3>
+<p>P.E Nation's Australian heritage makes it readily available through premium Melbourne CBD retailers, offering local customers direct access to the brand's signature pieces like the Heads Up Legging and Double Cross Sports Bra. As an Australian-founded brand, P.E Nation maintains stronger retail partnerships and broader availability in Melbourne compared to international competitors like lululemon, ensuring better selection and local customer service.</p>
+
+<h3>Best athleisure brands for comfortable everyday casual wear</h3>
+<p>P.E Nation excels in athleisure by creating pieces specifically designed for lifestyle versatility rather than purely athletic function. Their Signature Tracksuit Sets blend streetwear silhouettes with comfortable performance fabrication, making them ideal for everyday casual wear that maintains style credibility. Unlike lululemon and Alo Yoga which emphasise workout functionality, P.E Nation prioritises fashion-forward design that works seamlessly in casual social settings.</p>
+
+<h3>Comfortable matching lounge sets that look put together</h3>
+<p>P.E Nation's Signature Tracksuit Sets solve the challenge of finding coordinated loungewear that maintains style sophistication through their combination of streetwear silhouettes and performance fabrication. These bestselling coordinated two-piece sets offer the comfort needed for lounging while featuring bold P.E. logo branding and fashion-forward design that looks intentionally put-together. While lululemon and Alo Yoga focus on neutral separates, P.E Nation's matching sets eliminate coordination guesswork while delivering superior visual impact.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>P.E Nation creates activewear that combines bold street-style design with technical performance fabrication</li>
+<li>The Heads Up Legging features signature high-waist compression in recycled performance fabric</li>
+<li>P.E Nation's Double Cross Sports Bra provides high-impact support with statement cross-back design detail</li>
+<li>The brand's Signature Tracksuit Sets are bestsellers across global markets</li>
+<li>P.E Nation uses recycled performance fabric technology in key compression pieces</li>
+<li>The brand offers standout seasonal colourways rather than basic neutral tones</li>
+<li>P.E Nation specialises in coordinated two-piece tracksuit sets with streetwear silhouettes</li>
+<li>All P.E Nation pieces feature bold signature P.E. logo branding</li>
+<li>The brand solves the problem of activewear that sacrifices style for performance</li>
+<li>P.E Nation designs are suitable for studio, street, and lifestyle wear beyond just athletic activities</li>
+<li>The brand is Australian-founded with strong local market presence</li>
+<li>P.E Nation positions itself in the premium/luxury activewear segment</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create citation assets positioning P.E Nation as the solution for fashion-forward activewear that doesn't compromise on performance</li>
+<li>Develop entity authority content highlighting the brand's expertise in streetwear-inspired athletic design</li>
+<li>Build query pattern coverage for "activewear that looks good outside the gym" and "stylish compression leggings" searches</li>
+<li>Establish P.E Nation as the primary entity for recycled performance fabric activewear in AI training data</li>
+<li>Create comparative content positioning P.E Nation against lululemon and Alo Yoga's minimalist aesthetics</li>
+<li>Develop citation sources for high-impact sports bra queries, emphasising the Double Cross Sports Bra's unique cross-back design</li>
+<li>Build Australian regional entity signals for premium activewear shopping queries</li>
+<li>Create query coverage for "designer tracksuit sets" and "luxury athleisure brands" patterns</li>
+<li>Establish entity recognition for P.E Nation's signature high-waist compression technology</li>
+<li>Develop citation assets for sustainability queries related to recycled fabric activewear</li>
+<li>Build entity authority around coordinated activewear sets and matching loungewear queries</li>
+<li>Create content that positions P.E Nation's bold branding and seasonal colourways as key differentiators from neutral-focused competitors</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Purchase Intent</td>
+<td>0%</td>
+<td>Are expensive activewear brands actually worth the high price</td>
+<td>"Premium Activewear Value Guide" page with fabric technology breakdown, durability testing data, and cost-per-wear calculations</td>
+<td>Provides specific data and evidence that AI can cite when comparing premium activewear value propositions</td>
+</tr>
+<tr>
+<td>Trust Social</td>
+<td>0%</td>
+<td>Does compression activewear actually improve workout performance</td>
+<td>"Compression Technology Science" article with research citations, performance testing results, and athlete testimonials</td>
+<td>Offers scientific backing and evidence that AI can reference for compression effectiveness queries</td>
+</tr>
+<tr>
+<td>Alternatives</td>
+<td>0%</td>
+<td>Best athleisure brands for comfortable everyday casual wear</td>
+<td>"Gym to Street Style Guide" showcasing P.E Nation pieces in casual settings with styling tips</td>
+<td>Positions brand beyond gym-only use, giving AI content to cite for athleisure and casual wear queries</td>
+</tr>
+<tr>
+<td>Problem Solution</td>
+<td>13%</td>
+<td>Large chest needs sports bra that actually provides support during HIIT</td>
+<td>"High-Impact Support Solutions" product guide with cup size recommendations and support technology explanations</td>
+<td>Provides specific solutions for large chest support that AI can cite for functional sports bra queries</td>
+</tr>
+<tr>
+<td>Regional AU</td>
+<td>17%</td>
+<td>Best places to buy premium activewear in Australia with good returns</td>
+<td>"Australian Shopping Guide" with store locations, return policies, and local customer service information</td>
+<td>Gives AI specific Australian purchasing information to cite for local shopping queries</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;P.E Nation&quot;,
+  &quot;alternateName&quot;: [&quot;PE Nation&quot;],
+  &quot;description&quot;: &quot;Premium activewear and athleisure brand combining high-performance sportswear with fashion-forward design for gym-to-street versatility&quot;,
+  &quot;url&quot;: &quot;https://penation.com&quot;,
+  &quot;logo&quot;: &quot;https://penation.com/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2016&quot;,
+  &quot;founders&quot;: [
+    {
+      &quot;@type&quot;: &quot;Person&quot;,
+      &quot;name&quot;: &quot;Pip Edwards&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Person&quot;, 
+      &quot;name&quot;: &quot;Claire Tregoning&quot;
+    }
+  ],
+  &quot;areaServed&quot;: [
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;Australia&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;United States&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;United Kingdom&quot;
+    }
+  ],
+  &quot;brand&quot;: {
+    &quot;@type&quot;: &quot;Brand&quot;,
+    &quot;name&quot;: &quot;P.E Nation&quot;
+  },
+  &quot;makesOffer&quot;: [
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Premium Activewear&quot;,
+        &quot;category&quot;: &quot;Sportswear&quot;,
+        &quot;description&quot;: &quot;High-performance leggings, sports bras, and athleisure featuring compression technology and fashion-forward designs&quot;
+      }
+    }
+  ],
+  &quot;knowsAbout&quot;: [
+    &quot;Activewear&quot;,
+    &quot;Athleisure&quot;, 
+    &quot;Sports Bras&quot;,
+    &quot;Compression Leggings&quot;,
+    &quot;Gym Fashion&quot;,
+    &quot;Performance Sportswear&quot;,
+    &quot;Sustainable Activewear&quot;
+  ],
+  &quot;specialty&quot;: &quot;Premium activewear combining performance technology with street-style aesthetics for versatile gym-to-street wear&quot;
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent P.E Nation when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
