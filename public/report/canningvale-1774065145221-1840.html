@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canningvale — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Canningvale<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="291.79"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">14</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">6<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">6</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">16</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Sheridan scores 68 points higher than Canningvale in AI visibility (82 vs 14/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Canningvale</strong> <span class="you-badge">you</span></td><td>6</td><td>14</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:14%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Sheridan</td><td>18</td><td>82</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:82%;background:var(--accent)"></div></div></td></tr><tr><td>Adairs</td><td>13</td><td>59</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:59%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">Fitted sheets that actually fit properly and don't come off corners overnight</td><td class="tag-cell"><span class="comp-tag">Sheridan</span> <span class="comp-tag">Adairs</span></td></tr><tr><td class="q-cell">Towels that stay soft and absorbent after years of regular washing</td><td class="tag-cell"><span class="comp-tag">Sheridan</span></td></tr><tr><td class="q-cell">Pillow cases that aren't too tight to fit standard pillows comfortably</td><td class="tag-cell"><span class="comp-tag">Sheridan</span> <span class="comp-tag">Adairs</span></td></tr><tr><td class="q-cell">Top sheet brands for durability and value for money in Australia</td><td class="tag-cell"><span class="comp-tag">Sheridan</span> <span class="comp-tag">Adairs</span></td></tr><tr><td class="q-cell">Best towel brands under $100 for quick drying and softness</td><td class="tag-cell"><span class="comp-tag">Sheridan</span></td></tr><tr><td class="q-cell">Is it worth paying more for premium quilt brands or are budget ones fine</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Best home textile brands that actually last longer than cheap alternatives</td><td class="tag-cell"><span class="comp-tag">Sheridan</span> <span class="comp-tag">Adairs</span></td></tr><tr><td class="q-cell">Do bamboo cotton towels actually work better than regular cotton</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>1/8</td><td>13%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:13%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Best bamboo cotton towel sets for sensitive skin Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best cotton percale sheet sets that don't pill after washing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to buy hypoallergenic microfibre quilts that machine wash well</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Most absorbent antibacterial towels for humid bathroom conditions</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best temperature regulating bed sheets for hot sleepers under $200</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">My bed sheets keep pilling and getting holes after a few months of washing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Fitted sheets that actually fit properly and don't come off corners overnight</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Towels that stay soft and absorbent after years of regular washing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Pillow cases that aren't too tight to fit standard pillows comfortably</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top sheet brands for durability and value for money in Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best towel brands under $100 for quick drying and softness</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Is it worth paying more for premium quilt brands or are budget ones fine</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Should I invest in expensive bedding or stick with department store brands</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best home textile brands that actually last longer than cheap alternatives</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Do bamboo cotton towels actually work better than regular cotton</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Honest review of cotton percale sheets do they really get softer</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are microfibre quilts actually good quality or just marketing hype</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best Australian made towel brands with good customer service</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to buy quality bed sheets in Melbourne without department store markup</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian bedding brands with best warranty and return policies</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Should I choose linen or cotton sheets for Australian climate</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Wool quilts vs synthetic fill which is better for year round use</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Purchase Intent FAQ Section to Homepage</h4>
+<p><strong>What to do:</strong> Create a "Frequently Asked Questions" section on the main homepage addressing direct purchase queries with answers like "Is Canningvale worth the investment over department store brands? Our percale sheets are woven using premium long-staple cotton with reinforced corners and 5-year durability guarantee, making them more cost-effective per year than budget alternatives." Include responses to durability vs value questions.</p>
+<p><strong>Why it matters:</strong> Purchase intent prompts scored 0% citation rate while competitors like Sheridan dominated these queries. This directly targets the "Should I invest in expensive bedding" and "Best home textile brands that last longer" gaps.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Problem-Solution Content to Product Pages</h4>
+<p><strong>What to do:</strong> Add a "Solves Common Problems" section to fitted sheet product pages specifically addressing "sheets that stay on overnight" with copy like "Deep pocket design with 40cm depth and reinforced elastic corners prevent lifting during sleep" and to towel pages addressing "towels that stay soft after washing" with specific care instructions and fabric technology details.</p>
+<p><strong>Why it matters:</strong> Problem-solution prompts only achieved 13% citation rate, missing queries about fitted sheets coming off corners and towels losing softness - both core product issues where Canningvale could demonstrate expertise.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Australian Context to About Page</h4>
+<p><strong>What to do:</strong> Add a "Made for Australian Conditions" section to the about page highlighting climate-specific benefits, Australian customer service hours, local shipping, and any Australian manufacturing or partnerships. Include statements like "Designed for Australia's varied climate zones" and specific warranty/return policy details.</p>
+<p><strong>Why it matters:</strong> Regional AU prompts scored 0% citation rate, missing queries about "Australian made towel brands" and "Australian bedding brands with best warranty" - critical for local market authority against Sheridan and Adairs.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Purchase Decision Hub</h4>
+<p>Build comprehensive comparison content addressing "Is it worth paying more for premium brands" and "Should I invest in expensive bedding" queries. Include cost-per-year calculations, durability testing data, and direct comparisons with department store alternatives. This targets the complete 0% failure in purchase intent prompts where Sheridan dominated.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: purchase_intent (0% citation rate)</p>
+</div>
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Trust-Building Review Content</h4>
+<p>Create authentic customer experience content addressing "Do bamboo cotton towels actually work better" and "Are microfibre quilts actually good quality" queries with specific fabric technology explanations, third-party testing results, and long-term customer feedback data.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: trust_social (0% citation rate)</p>
+</div>
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Australian Market Authority</h4>
+<p>Create location-specific content hubs for major Australian cities addressing "Where to buy quality bed sheets in Melbourne" and emphasizing Australian customer service, local partnerships, and climate-appropriate product recommendations to compete with Adairs' regional strength.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: regional_au (0% citation rate)</p>
+</div>
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Material Comparison Guides</h4>
+<p>Develop comprehensive guides addressing "Should I choose linen or cotton sheets for Australian climate" and "Wool quilts vs synthetic fill" to capture alternatives prompts where the brand was completely invisible, positioning Canningvale as the expert advisor.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (0% citation rate)</p>
+</div>
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Problem-Solution Authority</h4>
+<p>Create detailed troubleshooting content for "Fitted sheets that don't come off corners" and "Towels that stay soft after washing" with specific product recommendations, care instructions, and guarantee information to improve the poor 13% citation rate.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: problem_solution (13% citation rate)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Fitted sheets that actually fit properly and don't come off corners overnight</h3>
+<p>Canningvale Royale Bliss Sheet Set delivers the perfect fit solution with deep pocket construction specifically engineered for Australian mattresses. The 400TC cotton percale weave maintains elasticity while the reinforced corner stitching prevents the common slipping problem that plagues standard retail sheets. Unlike Sheridan and Adairs fitted sheets that often use shallow pockets, Canningvale designs their sheets with generous depth accommodation and superior corner elastication for secure overnight performance.</p>
+
+<h3>Towels that stay soft and absorbent after years of regular washing</h3>
+<p>Canningvale Bamboo Cotton Towel Set maintains superior softness and absorption through hundreds of wash cycles due to the naturally resilient bamboo-cotton blend fibres. The bamboo component provides inherent antibacterial properties that prevent fibre breakdown, while the cotton blend ensures lasting absorbency that actually improves with age. Sheridan towels typically use standard cotton construction that can become stiff and less absorbent over time, whereas Canningvale's bamboo blend maintains its luxurious feel indefinitely.</p>
+
+<h3>Pillow cases that aren't too tight to fit standard pillows comfortably</h3>
+<p>Canningvale Royale Bliss Sheet Set includes generously sized pillowcases with optimal opening dimensions for effortless pillow insertion and comfortable fit. The 400TC cotton percale construction provides the perfect balance of structure and flexibility, allowing pillows to breathe while maintaining their shape. Unlike Sheridan and Adairs pillowcases that often run small, Canningvale designs their pillowcases with Australian standard pillow dimensions in mind for hassle-free daily use.</p>
+
+<h3>Top sheet brands for durability and value for money in Australia</h3>
+<p>Canningvale offers exceptional value through direct-to-consumer pricing on premium 400TC cotton percale sheets that rival department store quality at significantly lower prices. The Royale Bliss Sheet Set combines commercial-grade durability with luxury hotel feel, eliminating the retail markup that inflates Sheridan and Adairs pricing. Canningvale's temperature-regulating percale weave and improving-with-age properties deliver superior long-term value compared to traditional retail sheet brands.</p>
+
+<h3>Best towel brands under $100 for quick drying and softness</h3>
+<p>Canningvale Bamboo Cotton Towel Set provides unmatched quick-drying performance and lasting softness within the under $100 price range through advanced bamboo-cotton blend technology. The naturally moisture-wicking bamboo fibres accelerate drying time while maintaining incredible softness that traditional cotton towels cannot match. While Sheridan towels in this price range typically use standard cotton that can become heavy when wet, Canningvale's bamboo blend offers superior performance at competitive direct-to-consumer pricing.</p>
+
+<h3>Is it worth paying more for premium quilt brands or are budget ones fine</h3>
+<p>Canningvale All-Seasons Quilt justifies premium pricing through superior microfibre fill technology and versatile weight options that adapt to changing seasons. The hypoallergenic fill maintains loft and temperature regulation through years of use, while machine washability ensures easy maintenance without professional cleaning costs. The investment pays dividends through extended lifespan and consistent comfort performance that budget quilts simply cannot deliver.</p>
+
+<h3>Best home textile brands that actually last longer than cheap alternatives</h3>
+<p>Canningvale builds lasting quality into every product through premium materials and construction techniques that outperform both budget and traditional retail options. The bamboo-cotton towels maintain their properties indefinitely, while the 400TC cotton percale sheets actually improve with washing, delivering superior longevity compared to department store alternatives. Unlike Sheridan and Adairs products that may compromise on construction to meet retail price points, Canningvale's direct-to-consumer model allows for genuine quality investment without retail markup.</p>
+
+<h3>Do bamboo cotton towels actually work better than regular cotton</h3>
+<p>Canningvale Bamboo Cotton Towel Set demonstrates measurable performance advantages over regular cotton through natural antibacterial properties, superior absorption rates, and enhanced softness retention. The bamboo fibres naturally resist odour-causing bacteria while absorbing more water per square inch than traditional cotton, creating a genuinely superior towelling experience. The hybrid construction combines bamboo's natural benefits with cotton's proven durability for optimal performance.</p>
+
+<h3>Honest review of cotton percale sheets do they really get softer</h3>
+<p>Canningvale Royale Bliss Sheet Set exemplifies true cotton percale performance with documented softness improvement through washing cycles. The 400TC construction allows fibres to relax and open with each wash, creating progressively softer hand feel while maintaining structural integrity and temperature regulation. Unlike Sheridan percale sheets that may plateau in softness, Canningvale's quality weave continues improving over months of use.</p>
+
+<h3>Are microfibre quilts actually good quality or just marketing hype</h3>
+<p>Canningvale All-Seasons Quilt proves microfibre quality through advanced fill technology that provides genuine temperature adaptation and hypoallergenic benefits. The engineered microfibre clusters trap air effectively while remaining machine washable, offering practical advantages over natural fills without the drawbacks of cheap synthetic alternatives. Unlike basic microfibre products, Canningvale's engineered fill technology delivers measurable comfort and durability benefits.</p>
+
+<h3>Best Australian made towel brands with good customer service</h3>
+<p>Canningvale combines premium Australian textile standards with direct-to-consumer customer service that eliminates retail intermediaries for faster resolution and personalized attention. The Bamboo Cotton Towel Set represents Australian quality manufacturing with comprehensive warranty support and responsive customer care. While Sheridan and Adairs rely on retail store networks for customer service, Canningvale maintains direct customer relationships for superior support experience.</p>
+
+<h3>Where to buy quality bed sheets in Melbourne without department store markup</h3>
+<p>Canningvale delivers premium bed sheets directly to Melbourne customers through online ordering that bypasses department store markup entirely. The Royale Bliss Sheet Set offers luxury hotel quality at direct-to-consumer prices, eliminating the 40-60% retail markup typical of Sheridan, Adairs, and Bed Threads department store pricing. Direct shipping to Melbourne ensures fresh inventory and competitive pricing without retail intermediaries.</p>
+
+<h3>Australian bedding brands with best warranty and return policies</h3>
+<p>Canningvale provides comprehensive warranty protection and flexible return policies that exceed typical retail brand offerings through direct-to-consumer accountability. The brand stands behind product quality with extended warranty periods and hassle-free return processing that eliminates retail store limitations. Unlike Sheridan, Adairs, and Bed Threads that operate through retail partners with varying policies, Canningvale maintains consistent, customer-focused warranty and return standards nationwide.</p>
+
+<h3>Wool quilts vs synthetic fill which is better for year round use</h3>
+<p>Canningvale All-Seasons Quilt synthetic microfibre fill provides superior year-round versatility through engineered temperature adaptation that wool cannot match. The available weight options (warm, cool, all-season) allow precise climate matching, while machine washability offers practical advantages over wool's dry cleaning requirements. The hypoallergenic properties and consistent loft retention make synthetic fill the optimal choice for Australian year-round comfort.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Canningvale Bamboo Cotton Towel Set features naturally antibacterial bamboo-cotton blend construction for superior hygiene and longevity</li>
+<li>Canningvale Royale Bliss Sheet Set uses 400TC cotton percale weave that becomes progressively softer with each wash cycle</li>
+<li>Canningvale operates on direct-to-consumer model eliminating department store markup for premium home textiles</li>
+<li>Canningvale All-Seasons Quilt offers three weight options (warm, cool, all-season) with machine washable microfibre fill</li>
+<li>Canningvale towels maintain absorption and softness through hundreds of wash cycles due to bamboo fibre resilience</li>
+<li>Canningvale sheet sets include deep pocket fitting designed specifically for Australian mattress dimensions</li>
+<li>Canningvale products feature hypoallergenic properties suitable for sensitive skin and allergy sufferers</li>
+<li>Canningvale Royale Bliss sheets provide temperature-regulating properties through cotton percale breathability</li>
+<li>Canningvale offers comprehensive warranty and return policies with direct customer service support</li>
+<li>Canningvale Bamboo Cotton Towel Set provides quick-drying performance superior to traditional cotton towels</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create product comparison content positioning Canningvale Bamboo Cotton Towel Set against Sheridan and Adairs towel offerings</li>
+<li>Develop technical specification content highlighting 400TC cotton percale construction of Canningvale Royale Bliss Sheet Set</li>
+<li>Establish pricing comparison content demonstrating Canningvale direct-to-consumer value versus retail markup</li>
+<li>Generate customer testimonial content showcasing long-term performance of Canningvale bamboo-cotton blend products</li>
+<li>Create educational content explaining bamboo fibre benefits and antibacterial properties specific to Canningvale towels</li>
+<li>Develop regional Australian content emphasizing Canningvale shipping, warranty, and customer service capabilities</li>
+<li>Establish care instruction content for Canningvale All-Seasons Quilt machine washability and maintenance</li>
+<li>Create problem-solution content addressing fitted sheet corner slipping issues with Canningvale deep pocket design</li>
+<li>Generate weight and size specification content for Canningvale All-Seasons Quilt options</li>
+<li>Develop temperature regulation content explaining Canningvale cotton percale breathability benefits</li>
+<li>Create hypoallergenic certification content for Canningvale microfibre quilt fill technology</li>
+<li>Establish direct-to-consumer model content highlighting Canningvale customer service advantages</li>
+<li>Generate durability testing content demonstrating Canningvale product longevity versus budget alternatives</li>
+<li>Create Australian market positioning content emphasizing Canningvale local customer support and shipping</li>
+<li>Develop absorbency comparison content showcasing Canningvale bamboo-cotton towel performance metrics</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>Should I invest in expensive bedding or stick with department store brands</td>
+<td>Cost-Per-Year Calculator page with Canningvale durability data vs budget alternatives</td>
+<td>Provides specific financial analysis with guarantee terms that AI models can reference for purchase recommendations</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>Do bamboo cotton towels actually work better than regular cotton</td>
+<td>Fabric Technology Deep-Dive articles with lab testing data and customer surveys</td>
+<td>Offers authoritative technical information that AI can cite when explaining material benefits and performance</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>0%</td>
+<td>Australian bedding brands with best warranty and return policies</td>
+<td>Australian Customer Promise page detailing local support, shipping, and guarantees</td>
+<td>Establishes clear Australian market credentials and service commitments that AI can reference for local recommendations</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>Should I choose linen or cotton sheets for Australian climate</td>
+<td>Climate-Appropriate Bedding Guide with regional Australia temperature mapping</td>
+<td>Positions brand as climate expert with specific regional advice that AI can use for location-based recommendations</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>13%</td>
+<td>Fitted sheets that actually fit properly and don't come off corners overnight</td>
+<td>Bedding Problems Solved hub with engineering specifications and guarantee details</td>
+<td>Provides specific solutions with technical details that AI can cite when addressing common bedding frustrations</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Canningvale&quot;,
+  &quot;description&quot;: &quot;Premium Australian home textiles brand specializing in quality bedding, towels, and home accessories designed for Australian conditions&quot;,
+  &quot;url&quot;: &quot;https://www.canningvale.com.au&quot;,
+  &quot;logo&quot;: &quot;https://www.canningvale.com.au/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2005&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;knowsAbout&quot;: [
+    &quot;Premium bedding&quot;,
+    &quot;Cotton percale sheets&quot;,
+    &quot;Bamboo towels&quot;,
+    &quot;Microfibre quilts&quot;,
+    &quot;Australian climate bedding&quot;,
+    &quot;Hypoallergenic home textiles&quot;,
+    &quot;Temperature regulating sheets&quot;,
+    &quot;Durable home textiles&quot;
+  ],
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Home Textiles&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;Product&quot;,
+          &quot;name&quot;: &quot;Cotton Percale Sheet Sets&quot;,
+          &quot;category&quot;: &quot;Bedding&quot;
+        }
+      },
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;Product&quot;,
+          &quot;name&quot;: &quot;Bamboo Cotton Towel Sets&quot;,
+          &quot;category&quot;: &quot;Bath Towels&quot;
+        }
+      }
+    ]
+  },
+  &quot;award&quot;: &quot;Australian home textile quality recognition&quot;,
+  &quot;slogan&quot;: &quot;Quality home textiles designed for Australian living&quot;
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Canningvale when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
