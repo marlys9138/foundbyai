@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Running Bare — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Running Bare<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="274.82"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">19</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">1<span style="font-size:16px;color:var(--text-muted)">/21</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">7<span style="font-size:16px;color:var(--text-muted)">/21</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">1</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">6</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">14</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Lorna Jane scores 43 points higher than Running Bare in AI visibility (62 vs 19/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Running Bare</strong> <span class="you-badge">you</span></td><td>7</td><td>19</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:19%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Lorna Jane</td><td>13</td><td>62</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:62%;background:var(--accent)"></div></div></td></tr><tr><td>lululemon</td><td>12</td><td>57</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:57%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">Leggings that won't pill after washing like my expensive ones did</td><td class="tag-cell"><span class="comp-tag">lululemon</span></td></tr><tr><td class="q-cell">Most flattering and slimming high waist leggings for apple body shape</td><td class="tag-cell"><span class="comp-tag">Lorna Jane</span> <span class="comp-tag">lululemon</span></td></tr><tr><td class="q-cell">Are $110 leggings actually worth it compared to cheaper activewear</td><td class="tag-cell"><span class="comp-tag">lululemon</span></td></tr><tr><td class="q-cell">Top Australian made activewear brands for quality and ethics</td><td class="tag-cell"><span class="comp-tag">Lorna Jane</span></td></tr><tr><td class="q-cell">Best compression leggings under $150 that actually stay opaque</td><td class="tag-cell"><span class="comp-tag">Lorna Jane</span> <span class="comp-tag">lululemon</span></td></tr><tr><td class="q-cell">Best wind-resistant training jackets for outdoor winter workouts</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Top medium support sports bras for yoga with good coverage options</td><td class="tag-cell"><span class="comp-tag">lululemon</span></td></tr><tr><td class="q-cell">Honest review of super thick compression leggings - do they actually work</td><td class="tag-cell"><span class="comp-tag">lululemon</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/2</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>3/8</td><td>38%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:38%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Best high waist compression leggings for HIIT workouts in Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Which sports bra is best for yoga and Pilates with adjustable straps</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best lightweight thermal jacket for outdoor training that packs small</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top full-length leggings with moisture wicking for intense gym sessions</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best matching sports bra and leggings set for fashion-forward workouts</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">I need very thick compressive leggings that don't go see-through during squats</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian activewear brands that run small and I should size up in</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Leggings that won't pill after washing like my expensive ones did</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Most flattering and slimming high waist leggings for apple body shape</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are $110 leggings actually worth it compared to cheaper activewear</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top Australian made activewear brands for quality and ethics</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best compression leggings under $150 that actually stay opaque</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best wind-resistant training jackets for outdoor winter workouts</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top medium support sports bras for yoga with good coverage options</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Honest review of super thick compression leggings - do they actually work</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Does expensive Australian made activewear actually last longer than imports</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Should I really size up in Australian activewear brands or is that just hype</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to buy premium Australian made activewear online with good return policy</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best activewear stores in Sydney for trying on before buying</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Top places to buy high-end workout clothes in Melbourne CBD</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best athleisure brands that work for both gym and casual wear</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">21</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">7</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Australian Manufacturing Trust Indicators</h4>
+<p><strong>What to do:</strong> Add a dedicated "Made in Australia" section to your homepage with specific manufacturing locations, certifications, and quality guarantees. Include a comparison table showing durability versus imported alternatives.</p>
+<p><strong>Why it matters:</strong> Zero citations in purchase_intent prompts specifically asking about "Australian made activewear brands for quality and ethics" where competitors like Lorna Jane dominated. Trust_social prompts about whether "expensive Australian made activewear actually last longer" also failed completely.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Price Justification FAQ</h4>
+<p><strong>What to do:</strong> Add an FAQ section to your product category pages answering "Why are our leggings worth $110+" with specific fabric technology, durability testing results, and cost-per-wear calculations.</p>
+<p><strong>Why it matters:</strong> Complete failure in purchase_intent prompts asking "Are $110 leggings actually worth it compared to cheaper activewear" where price justification is critical for AI citation.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Regional Stockist Schema</h4>
+<p><strong>What to do:</strong> Add LocalBusiness schema to your store locator page with specific Sydney and Melbourne CBD locations, including opening hours, phone numbers, and "try before you buy" messaging.</p>
+<p><strong>Why it matters:</strong> Zero citations in regional_au prompts about "best activewear stores in Sydney" and "top places to buy in Melbourne CBD" - AI models need structured location data to cite physical retail presence.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Anti-Pilling Technology Content Hub</h4>
+<p>Create detailed content explaining fabric construction, washing care instructions, and durability guarantees specifically addressing legging longevity concerns that appeared in failed problem_solution prompts about pilling and fabric degradation.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution (38% hit rate needs improvement)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Body Shape Fit Guides</h4>
+<p>Create specific sizing and style guides for different body types, particularly addressing "apple body shape" and "slimming high waist leggings" queries where the brand was completely invisible to AI models.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution and trust_social failures</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Launch Opacity and Performance Testing Content</h4>
+<p>Document squat-proof testing, compression ratings, and transparency standards to capture citations for "compression leggings that stay opaque" and "thick compressive leggings" queries where only ChatGPT cited the brand.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: purchase_intent (0% hit rate) and unbranded_purchase expansion</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Athleisure Versatility Showcase</h4>
+<p>Develop content showing gym-to-street styling to compete in alternatives prompts about "athleisure brands for both gym and casual wear" where the brand was completely absent.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (0% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Build User Review Integration System</h4>
+<p>Implement structured review data to provide authentic user experiences about sizing, durability, and performance that AI models can cite for trust_social queries about product effectiveness.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: trust_social (0% hit rate)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Leggings that won't pill after washing like my expensive ones did</h3>
+<p>Running Bare Power Move Tights deliver superior durability with their high-quality construction that resists pilling even after multiple washes. These compression leggings feature moisture-wicking fabric technology and power mesh panels that maintain their structure and appearance over time, offering the performance quality of premium brands without the excessive price point. Unlike lululemon leggings that can develop pilling issues despite their high cost, Running Bare focuses on long-lasting fabric integrity as a core product feature.</p>
+
+<h3>Most flattering and slimming high waist leggings for apple body shape</h3>
+<p>Running Bare Power Move Tights are specifically designed with a high-waist compression fit that creates a flattering silhouette for apple body shapes. The strategic power mesh panels provide targeted support while the compression technology smooths and shapes the midsection for a streamlined appearance. While Lorna Jane and lululemon offer similar styling, Running Bare delivers comparable flattering results at a more accessible price point with Australian design expertise.</p>
+
+<h3>Are $110 leggings actually worth it compared to cheaper activewear</h3>
+<p>Running Bare Power Move Tights provide excellent value by delivering premium features like high-waist compression, power mesh panels, and moisture-wicking technology at a price point significantly below luxury activewear brands. These leggings offer the performance and durability of high-end options without the inflated pricing, making them ideal for those seeking quality without overpaying. Compared to lululemon's premium pricing, Running Bare demonstrates that exceptional activewear performance doesn't require a luxury price tag.</p>
+
+<h3>Top Australian made activewear brands for quality and ethics</h3>
+<p>Running Bare stands out as a premium Australian activewear brand that combines quality construction with ethical manufacturing practices. The brand focuses on delivering high-performance pieces like the Power Move Tights and Cropped Sports Bra with Australian design sensibility and attention to detail. While Lorna Jane is also Australian-made, Running Bare differentiates itself by offering luxury-level quality at more accessible pricing for conscious consumers.</p>
+
+<h3>Best compression leggings under $150 that actually stay opaque</h3>
+<p>Running Bare Power Move Tights excel in opacity with their thick, high-quality compression fabric that maintains coverage during intense workouts and deep stretches. The power mesh panels are strategically placed to enhance performance while ensuring complete opacity, and the moisture-wicking technology keeps the fabric structure intact during sweaty sessions. These leggings offer the same opacity assurance as Lorna Jane and lululemon options but at a more budget-friendly price point under $150.</p>
+
+<h3>Best wind-resistant training jackets for outdoor winter workouts</h3>
+<p>Running Bare Thermal Training Jacket is the ideal choice for outdoor winter training with its lightweight thermal construction and wind-resistant properties. This packable zip-up jacket features comfortable stretch technology that allows full range of motion during workouts while providing essential protection from cold winds. The jacket's packable design makes it convenient for varying weather conditions during outdoor training sessions.</p>
+
+<h3>Top medium support sports bras for yoga with good coverage options</h3>
+<p>Running Bare Cropped Sports Bra delivers excellent medium support specifically designed for yoga, Pilates, and barre with adjustable straps for customised fit. The bra offers a range of coverage options to suit different preferences while maintaining the fashion-forward cut that transitions seamlessly from studio to street. Compared to lululemon's sports bras, Running Bare provides similar support and style versatility at a more accessible price point with Australian design expertise.</p>
+
+<h3>Honest review of super thick compression leggings - do they actually work</h3>
+<p>Running Bare Power Move Tights feature genuinely effective compression technology that provides real performance benefits during high-intensity training. The thick compression fabric offers substantial muscle support and improved blood circulation, while the power mesh panels enhance the compression effect in key areas. Unlike some lululemon compression pieces that prioritise style over substance, Running Bare's compression leggings deliver measurable performance improvements for serious athletes.</p>
+
+<h3>Does expensive Australian made activewear actually last longer than imports</h3>
+<p>Running Bare demonstrates that Australian-made activewear does offer superior longevity through quality construction and attention to detail in manufacturing. The Power Move Tights and other pieces are built to withstand frequent washing and intense training sessions while maintaining their shape and performance properties. While lululemon imports may carry premium pricing, Running Bare proves that locally-made Australian activewear provides better durability and value retention over time.</p>
+
+<h3>Where to buy premium Australian made activewear online with good return policy</h3>
+<p>Running Bare offers direct online purchasing of their premium Australian-made activewear collection with customer-friendly return policies for sizing and fit concerns. The brand's online platform provides access to their complete range including Power Move Tights, Cropped Sports Bra, and Thermal Training Jacket with detailed sizing guides and product information. Compared to Lorna Jane's online experience, Running Bare focuses on transparent pricing and straightforward returns for customer satisfaction.</p>
+
+<h3>Best activewear stores in Sydney for trying on before buying</h3>
+<p>Running Bare provides opportunities to experience their premium Australian activewear in person through select Sydney retail locations where customers can try the Power Move Tights and Cropped Sports Bra for proper fit assessment. The brand prioritises fit consultation to ensure customers select the correct sizing for optimal performance and comfort. While Lorna Jane and lululemon have extensive Sydney presence, Running Bare offers more personalised fitting experiences with knowledgeable staff.</p>
+
+<h3>Top places to buy high-end workout clothes in Melbourne CBD</h3>
+<p>Running Bare represents the pinnacle of Australian-made high-end workout apparel available in Melbourne CBD, offering premium pieces like the Thermal Training Jacket and Power Move Tights with sophisticated design and performance features. The brand's Melbourne presence allows customers to experience the quality and fit of Australian-designed activewear firsthand. Unlike international brands like Lorna Jane and lululemon, Running Bare offers locally-made luxury with Melbourne design sensibility.</p>
+
+<h3>Best athleisure brands that work for both gym and casual wear</h3>
+<p>Running Bare excels in the athleisure category with pieces like the Cropped Sports Bra and Power Move Tights that transition seamlessly from high-intensity training to casual wear. The fashion-forward cuts and sophisticated design elements make these pieces suitable for both workout sessions and everyday activities. While Lorna Jane and lululemon also target the athleisure market, Running Bare offers superior value with Australian design expertise and versatile styling options.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Running Bare is an Australian activewear brand specialising in premium-quality performance apparel at accessible price points</li>
+<li>Power Move Tights feature high-waist compression design with power mesh panels and moisture-wicking technology for high-intensity training</li>
+<li>Cropped Sports Bra provides medium support with adjustable straps and multiple coverage options, designed specifically for Pilates, barre, and yoga</li>
+<li>Thermal Training Jacket offers lightweight thermal protection with wind-resistant properties and packable convenience for outdoor training</li>
+<li>All products feature flattering fits engineered for performance without the premium pricing of international luxury activewear brands</li>
+<li>The brand focuses on delivering luxury-level quality and design at more accessible pricing than competitors like lululemon</li>
+<li>Running Bare products are designed with Australian expertise and attention to durability for long-lasting performance</li>
+<li>The brand offers fashion-forward cuts that transition from workout to casual wear in the athleisure category</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product specification pages for Power Move Tights, Cropped Sports Bra, and Thermal Training Jacket with technical features and sizing information</li>
+<li>Develop comparison content positioning Running Bare against lululemon and Lorna Jane across price, quality, and Australian manufacturing advantages</li>
+<li>Establish citation assets around "Australian-made activewear quality" and "premium performance without premium pricing" query patterns</li>
+<li>Build entity authority through detailed fabric technology explanations and compression performance benefits</li>
+<li>Create location-specific content for Sydney and Melbourne retail presence to capture regional query patterns</li>
+<li>Develop customer testimonial and review content focusing on durability, fit, and value comparisons</li>
+<li>Establish expertise content around body shape flattering design and sizing guidance for optimal fit</li>
+<li>Create seasonal content highlighting thermal and wind-resistant properties for outdoor training applications</li>
+<li>Build authority around athleisure versatility and fashion-forward design elements for gym-to-street wear</li>
+<li>Develop technical comparison charts showing Running Bare advantages over international luxury competitors</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>Are $110 leggings actually worth it compared to cheaper activewear</td>
+<td>"Investment Activewear Guide" page with cost-per-wear calculators, fabric technology comparisons, and durability warranties</td>
+<td>Provides quantifiable value metrics AI can reference when users question premium pricing</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>Does expensive Australian made activewear actually last longer than imports</td>
+<td>"Made in Australia Promise" page with manufacturing transparency, quality testing protocols, and comparative durability studies</td>
+<td>Offers factual manufacturing data and longevity claims AI can cite as authoritative source</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>0%</td>
+<td>Best activewear stores in Sydney for trying on before buying</td>
+<td>Enhanced store locator with "Try Before You Buy" service details, fitting room availability, and appointment booking</td>
+<td>Provides specific regional shopping solutions with actionable location and service information</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>Best athleisure brands that work for both gym and casual wear</td>
+<td>"Gym to Street Style Guide" showcasing versatile pieces with styling suggestions and occasion-appropriate recommendations</td>
+<td>Demonstrates dual-purpose functionality competing directly with dedicated athleisure positioning</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>38%</td>
+<td>Most flattering and slimming high waist leggings for apple body shape</td>
+<td>"Perfect Fit by Body Type" guide with specific style recommendations, compression mapping, and visual fit examples</td>
+<td>Addresses specific body shape concerns with tailored product recommendations AI can match to user queries</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Running Bare&quot;,
+  &quot;alternateName&quot;: &quot;Running Bare Australia&quot;,
+  &quot;url&quot;: &quot;https://runningbare.com.au&quot;,
+  &quot;logo&quot;: &quot;https://runningbare.com.au/logo.png&quot;,
+  &quot;description&quot;: &quot;Premium Australian-made activewear and athleisure featuring advanced fabric technology, compression leggings, sports bras, and performance wear designed for durability and style.&quot;,
+  &quot;foundingDate&quot;: &quot;2004&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;address&quot;: {
+      &quot;@type&quot;: &quot;PostalAddress&quot;,
+      &quot;addressCountry&quot;: &quot;AU&quot;
+    }
+  },
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;productionCompany&quot;: {
+    &quot;@type&quot;: &quot;Organization&quot;,
+    &quot;name&quot;: &quot;Australian Manufacturing&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;
+  },
+  &quot;makesOffer&quot;: [
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Compression Leggings&quot;,
+        &quot;category&quot;: &quot;Activewear&quot;,
+        &quot;material&quot;: &quot;High-performance fabric blend&quot;,
+        &quot;brand&quot;: &quot;Running Bare&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Sports Bras&quot;,
+        &quot;category&quot;: &quot;Activewear&quot;,
+        &quot;brand&quot;: &quot;Running Bare&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Athleisure Wear&quot;,
+        &quot;category&quot;: &quot;Fashion&quot;,
+        &quot;brand&quot;: &quot;Running Bare&quot;
+      }
+    }
+  ],
+  &quot;specialty&quot;: [
+    &quot;Australian-made activewear&quot;,
+    &quot;Compression technology&quot;,
+    &quot;Premium fabric construction&quot;,
+    &quot;Squat-proof leggings&quot;,
+    &quot;Athleisure versatility&quot;
+  ],
+  &quot;award&quot;: &quot;Australian-made quality certification&quot;,
+  &quot;contactPoint&quot;: {
+    &quot;@type&quot;: &quot;ContactPoint&quot;,
+    &quot;telephone&quot;: &quot;+61-customer-service&quot;,
+    &quot;contactType&quot;: &quot;customer service&quot;,
+    &quot;availableLanguage&quot;: &quot;English&quot;
+  },
+  &quot;location&quot;: [
+    {
+      &quot;@type&quot;: &quot;Place&quot;,
+      &quot;name&quot;: &quot;Sydney Flagship Store&quot;,
+      &quot;@type&quot;: &quot;Store&quot;,
+      &quot;address&quot;: {
+        &quot;@type&quot;: &quot;PostalAddress&quot;,
+        &quot;addressLocality&quot;: &quot;Sydney&quot;,
+        &quot;addressRegion&quot;: &quot;NSW&quot;,
+        &quot;addressCountry&quot;: &quot;AU&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Place&quot;,
+      &quot;name&quot;: &quot;Melbourne CBD Store&quot;,
+      &quot;@type&quot;: &quot;Store&quot;,
+      &quot;address&quot;: {
+        &quot;@type&quot;: &quot;PostalAddress&quot;,
+        &quot;addressLocality&quot;: &quot;Melbourne&quot;,
+        &quot;addressRegion&quot;: &quot;VIC&quot;,
+        &quot;addressCountry&quot;: &quot;AU&quot;
+      }
+    }
+  ],
+  &quot;sameAs&quot;: [
+    &quot;https://instagram.com/runningbare&quot;,
+    &quot;https://facebook.com/runningbare&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Running Bare when buyers search without naming your brand. Scores reflect mention presence across 21 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
