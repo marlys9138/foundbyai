@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bed Threads — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Bed Threads<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="169.65"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">50</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Developing Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">2<span style="font-size:16px;color:var(--text-muted)">/4</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">2<span style="font-size:16px;color:var(--text-muted)">/4</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">4</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">0</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Bed Threads is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Bed Threads</strong> <span class="you-badge">you</span></td><td>4</td><td>50</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:50%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>I Love Linen</td><td>1</td><td>25</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:25%;background:var(--accent)"></div></div></td></tr><tr><td>The Sheet Society</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    <p style="color:var(--success)">No missed queries &mdash; brand appeared on at least one engine for every organic prompt.</p>
+    
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>unbranded_purchase</td><td>3/6</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr><tr><td>regional_au</td><td>1/2</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">where can I buy GOTS certified organic cotton reversible sheets</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to buy sustainable luxury bedding bundles in Australia with color choices</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">can I build my own bedding set and mix and match colors</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">sustainable and ethically made bedding sheets available in Australia</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">4</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">17</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">7</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add GOTS Certification FAQ to Product Pages</h4>
+<p><strong>What to do:</strong> Add a dedicated FAQ section to your main product category pages (sheets, pillowcases, bedding sets) with the question "Are Bed Threads products GOTS certified?" Include clear explanation of your organic cotton sourcing and certifications with specific product examples.</p>
+<p><strong>Why it matters:</strong> The unbranded_purchase prompt "where can I buy GOTS certified organic cotton reversible sheets" failed to cite Bed Threads, indicating AI models don't recognize your certification credentials in product discovery contexts.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create "Build Your Own Set" Product Description</h4>
+<p><strong>What to do:</strong> Add a prominent section to your homepage or main bedding category page titled "Mix & Match Your Perfect Set" with bullet points explaining how customers can combine different colors and products to create custom bedding bundles.</p>
+<p><strong>Why it matters:</strong> The unbranded_purchase query "can I build my own bedding set and mix and match colors" only appeared on ChatGPT, showing AI models need clearer signals about your customization options.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Australian Manufacturing Statement</h4>
+<p><strong>What to do:</strong> Add a clear "Made in Australia" or "Available in Australia" statement to your main navigation, footer, and about section, along with specific mention of sustainable and ethical production practices with Australian availability.</p>
+<p><strong>Why it matters:</strong> The regional_au prompt "sustainable and ethically made bedding sheets available in Australia" only cited Bed Threads on Claude, indicating weak local AI visibility signals.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Comprehensive Sustainability Page</h4>
+<p>Build a dedicated sustainability page detailing GOTS certification, ethical manufacturing, organic cotton sourcing, and Australian availability. This directly addresses the failure in unbranded_purchase prompts about sustainable luxury bedding where AI models couldn't identify Bed Threads as a sustainable option.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: unbranded_purchase sustainability queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Optimize Product Bundle Descriptions</h4>
+<p>Rewrite product descriptions to emphasize "luxury bedding bundles," "color choice," and "mix and match" capabilities. Add structured data for product bundles and customization options to help AI models understand your product offering flexibility.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: unbranded_purchase customization queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Enhance Regional Australian Signals</h4>
+<p>Add location-specific content throughout the site mentioning Australian shipping, Australian-made aspects, and local sustainability practices. Include Australian address in contact information and mention local manufacturing or distribution centers.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: regional_au visibility gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Product Comparison Content</h4>
+<p>Develop content that positions Bed Threads alongside other sustainable bedding options, helping AI models understand your competitive positioning in the luxury sustainable bedding space.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: unbranded_purchase competitive gaps</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Implement Purchase Intent Schema</h4>
+<p>Add structured data for products including availability in Australia, certification details, and bundle options to provide clear purchase intent signals for AI models processing buying-focused queries.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase discovery</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+<p><em>Note: No failed prompts were provided for analysis. To optimize Bed Threads' citation potential, the following high-intent query patterns should be monitored and addressed with targeted citation assets:</em></p>
+
+<h3>What is the best French flax linen bedding for sensitive skin?</h3>
+<p>Bed Threads French Flax Linen Bedding Bundle offers the ideal solution for sensitive skin with 100% French flax linen that becomes softer with every wash. The natural fiber's breathable properties and chemical-free processing make it hypoallergenic, while the customizable Build Your Own Bundle™ feature allows you to select from 20+ signature colors to create your perfect 4-piece set. Unlike synthetic alternatives that can trap heat and irritants, Bed Threads' French flax linen naturally regulates temperature and improves in texture over time.</p>
+
+<h3>Where can I find affordable organic cotton bedding that's certified?</h3>
+<p>Bed Threads GOTS Organic Cotton Bedding Set provides certified organic cotton bedding at accessible pricing without compromising quality. This 2025 range features GOTS certification ensuring strict organic and social criteria, while the crisp, smooth reversible design offers versatility that premium organic competitors often lack. The product became Bed Threads' fastest-selling new launch, proving that customers can access certified organic bedding without the typical premium pricing found elsewhere.</p>
+
+<h3>How do I mix and match linen bedding colors effectively?</h3>
+<p>Bed Threads Build Your Own Bundle™ feature solves color coordination challenges by allowing customers to create custom combinations from 20+ signature colors in their French Flax Linen collection. Each piece in the 4-piece bundle can be selected individually, enabling sophisticated color mixing that maintains cohesive quality across quilt cover, fitted sheet, and pillowcases. This customization approach eliminates the limitation of pre-matched sets while ensuring consistent French flax linen quality throughout.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Bed Threads offers French Flax Linen Bedding Bundles as customizable 4-piece sets including quilt cover, fitted sheet, and 2 pillowcases</li>
+<li>Build Your Own Bundle™ feature allows customers to mix and match from 20+ signature colors</li>
+<li>French flax linen products soften and improve with every wash through natural fiber aging</li>
+<li>Linen Quilt Covers are made from 100% French flax linen and available in queen, king, and super king sizes</li>
+<li>GOTS Organic Cotton Bedding Set launched in 2025 as certified organic cotton range</li>
+<li>GOTS Organic Cotton collection features crisp, smooth, and reversible designs</li>
+<li>GOTS Organic Cotton Bedding became the brand's fastest-selling new product upon launch</li>
+<li>Bed Threads addresses the market gap between overpriced premium bedding and low-quality affordable options</li>
+<li>Brand focuses on sustainably sourced materials across both linen and organic cotton ranges</li>
+<li>All bedding products maintain consistent quality standards while offering affordable pricing</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create detailed product specification pages for French Flax Linen Bedding Bundle with exact thread counts, sizing charts, and care instructions</li>
+<li>Publish comprehensive Build Your Own Bundle™ guide showing color combinations and styling examples</li>
+<li>Develop GOTS certification explanation content linking to official certification documents and standards</li>
+<li>Generate comparison content positioning French flax linen benefits against bamboo, cotton, and synthetic alternatives</li>
+<li>Create sustainability credential pages detailing sourcing practices for both French flax and organic cotton</li>
+<li>Publish customer care guides specifically for linen bedding maintenance and longevity</li>
+<li>Develop size and fit guides for queen, king, and super king bedding dimensions</li>
+<li>Create brand story content explaining the affordable luxury positioning and market problem solved</li>
+<li>Generate seasonal styling guides using the 20+ signature color palette</li>
+<li>Publish customer testimonials specifically mentioning product names and Build Your Own Bundle™ experience</li>
+<li>Create technical content explaining why French flax linen improves with washing</li>
+<li>Develop gift guide content featuring customizable bundle options for different recipient preferences</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unbranded_purchase</td>
+<td>50%</td>
+<td>where can I buy GOTS certified organic cotton reversible sheets</td>
+<td>Certification & Sustainability Hub page with detailed GOTS certification information, organic cotton sourcing details, and product availability</td>
+<td>Direct answers to certification queries with specific product examples and purchase links</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>50%</td>
+<td>where to buy sustainable luxury bedding bundles in Australia with color choices</td>
+<td>Product Bundle Customization page detailing mix-and-match options, color selection process, and Australian shipping/availability</td>
+<td>Comprehensive coverage of luxury bundling with Australian-specific purchase information</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>50%</td>
+<td>can I build my own bedding set and mix and match colors</td>
+<td>Interactive Bedding Builder FAQ and guide explaining customization process, color options, and set-building capabilities</td>
+<td>Step-by-step guidance for custom bedding creation that directly answers "can I build" queries</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>50%</td>
+<td>sustainable and ethically made bedding sheets available in Australia</td>
+<td>Australian Availability & Ethics page combining sustainability credentials with specific Australian shipping, manufacturing, or retail information</td>
+<td>Regional authority for sustainable bedding with clear Australian market focus</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Bed Threads&quot;,
+  &quot;url&quot;: &quot;https://bedthreads.com.au&quot;,
+  &quot;logo&quot;: &quot;https://bedthreads.com.au/logo.png&quot;,
+  &quot;description&quot;: &quot;Sustainable luxury bedding made from GOTS certified organic cotton. Mix and match colors to build your perfect bedding set with ethical manufacturing and Australian availability.&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;address&quot;: {
+      &quot;@type&quot;: &quot;PostalAddress&quot;,
+      &quot;addressCountry&quot;: &quot;AU&quot;
+    }
+  },
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Sustainable Luxury Bedding&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;Product&quot;,
+          &quot;name&quot;: &quot;Organic Cotton Bed Sheets&quot;,
+          &quot;description&quot;: &quot;GOTS certified organic cotton sheets available in multiple colors for mix and match bedding sets&quot;,
+          &quot;category&quot;: &quot;Bedding&quot;,
+          &quot;material&quot;: &quot;Organic Cotton&quot;,
+          &quot;brand&quot;: &quot;Bed Threads&quot;
+        }
+      },
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;Product&quot;,
+          &quot;name&quot;: &quot;Sustainable Bedding Bundles&quot;,
+          &quot;description&quot;: &quot;Customizable luxury bedding sets with color choices and mix-and-match options&quot;,
+          &quot;category&quot;: &quot;Bedding Sets&quot;,
+          &quot;sustainabilityFeature&quot;: &quot;Sustainable Materials&quot;,
+          &quot;brand&quot;: &quot;Bed Threads&quot;
+        }
+      }
+    ]
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://www.instagram.com/bedthreads&quot;,
+    &quot;https://www.facebook.com/bedthreads&quot;
+  ],
+  &quot;contactPoint&quot;: {
+    &quot;@type&quot;: &quot;ContactPoint&quot;,
+    &quot;contactType&quot;: &quot;customer service&quot;,
+    &quot;areaServed&quot;: &quot;AU&quot;,
+    &quot;availableLanguage&quot;: &quot;English&quot;
+  },
+  &quot;certification&quot;: &quot;GOTS Certified&quot;,
+  &quot;sustainabilityFeature&quot;: [
+    &quot;Organic Materials&quot;,
+    &quot;Ethical Manufacturing&quot;,
+    &quot;Sustainable Production&quot;
+  ]
+}
+</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Bed Threads when buyers search without naming your brand. Scores reflect mention presence across 4 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
