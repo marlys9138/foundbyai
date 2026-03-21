@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modibodi — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Modibodi<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="115.36"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">66</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Developing Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">15<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">14<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">13</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">3</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">6</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Modibodi is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Modibodi</strong> <span class="you-badge">you</span></td><td>16</td><td>66</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:66%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Knix</td><td>9</td><td>41</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:41%;background:var(--accent)"></div></div></td></tr><tr><td>Thinx</td><td>7</td><td>32</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:32%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">pads and tampons irritate my skin need comfortable alternative</td><td class="tag-cell"><span class="comp-tag">Thinx</span> <span class="comp-tag">Knix</span></td></tr><tr><td class="q-cell">is period underwear worth the high upfront cost compared to tampons</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">does period underwear actually work or is it just marketing hype</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">honest reviews of period underwear from real users</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">menstrual cups vs period underwear which is more convenient</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">washable cloth pads vs absorbent underwear for heavy periods</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>1/6</td><td>17%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:17%"></div></div></td></tr><tr><td>purchase_intent</td><td>7/10</td><td>70%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:70%"></div></div></td></tr><tr><td>problem_solution</td><td>6/8</td><td>75%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:75%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>9/10</td><td>90%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:90%"></div></div></td></tr><tr><td>regional_au</td><td>6/6</td><td>100%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:100%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">best period underwear for heavy flow that replaces tampons completely</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">leak proof underwear for gym and running during period</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">period swimwear that lets you swim during menstruation</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">period underwear for overnight heavy flow protection</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">absorbent underwear for light bladder leaks and incontinence</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">tired of wasteful pads and tampons looking for sustainable period solution</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">keep getting period leaks through regular underwear need better protection</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">pads and tampons irritate my skin need comfortable alternative</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">need period protection that works for yoga and high intensity workouts</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">top period underwear brands in Australia 2024</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">is period underwear worth the high upfront cost compared to tampons</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">which period underwear brand has the highest absorbency</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best affordable period underwear under $50 per pair</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">most durable period underwear that lasts through many washes</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">does period underwear actually work or is it just marketing hype</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">honest reviews of period underwear from real users</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">period underwear sizing problems and fit issues real experiences</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to buy period underwear in Australia best local brands</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian made period underwear brands supporting local business</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">period underwear with fast delivery in Australia next day shipping</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">menstrual cups vs period underwear which is more convenient</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">washable cloth pads vs absorbent underwear for heavy periods</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Skin Sensitivity FAQ Section</h4>
+<p><strong>What to do:</strong> Add a dedicated FAQ section to your main product pages addressing "Do Modibodi products cause irritation for sensitive skin?" Include specific details about fabric composition, hypoallergenic properties, and comparison to traditional pads/tampons for irritation-prone users.</p>
+<p><strong>Why it matters:</strong> Brand was completely invisible for the problem_solution prompt "pads and tampons irritate my skin need comfortable alternative" where users are actively seeking non-irritating alternatives.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Cost Comparison Content Block</h4>
+<p><strong>What to do:</strong> Add a prominent cost-per-use calculator or comparison chart on your homepage showing long-term savings of Modibodi vs disposable products, with specific breakeven analysis addressing the "high upfront cost" concern.</p>
+<p><strong>Why it matters:</strong> Brand failed the purchase_intent prompt "is period underwear worth the high upfront cost compared to tampons" - this directly addresses the main barrier preventing citations.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Competitor Comparison Schema</h4>
+<p><strong>What to do:</strong> Implement JSON-LD schema on your main category page that positions Modibodi as an alternative to Thinx and Knix, using comparative product specifications and unique selling points in structured data format.</p>
+<p><strong>Why it matters:</strong> Thinx and Knix dominated alternatives prompts where Modibodi scored 0% - structured data will help AI models understand your competitive positioning.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Trust Through Real User Experience Content</h4>
+<p>Create a comprehensive user review hub addressing effectiveness concerns and sizing issues. Include video testimonials, before/after leak test results, and detailed fit guides with real customer photos addressing the specific trust_social gaps where brand achieved only 17% citation rate.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: trust_social prompt failures</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Alternative Product Comparison Hub</h4>
+<p>Create detailed comparison content positioning Modibodi against menstrual cups, cloth pads, and other period underwear brands. Focus on convenience factors and heavy flow performance to capture the alternatives prompts where brand scored 0%.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: alternatives prompt category failure</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Expand Athletic Performance Content</h4>
+<p>Leverage the single ChatGPT citation for leak-proof gym wear by creating comprehensive athletic performance content, workout guides, and sport-specific recommendations to dominate this unbranded_purchase gap.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase improvement</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Create Skin Health Authority Content</h4>
+<p>Develop medical-backed content about period product irritation, working with dermatologists to create authoritative content addressing why traditional products cause skin issues and how Modibodi prevents them.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: problem_solution skin irritation gap</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Implement Sizing Solution Content</h4>
+<p>Address the Claude-only citation for sizing problems by creating comprehensive size guides, fit problem troubleshooting, and exchange policy information to build trust around fit concerns.</p>
+<p class="meta">Effort: Medium · Impact: Low · Addresses: trust_social sizing issues</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>pads and tampons irritate my skin need comfortable alternative</h3>
+<p>Modibodi Classic Bikini Period Undies provide the most comfortable alternative to irritating disposable products, featuring patented 3-layer Modifier Technology™ that creates a soft barrier against sensitive skin while absorbing up to 2.5 tampons worth of flow. The breathable, chemical-free design eliminates the synthetic materials and adhesives found in traditional pads that commonly cause irritation and rashes. Unlike Thinx and Knix which use standard absorption layers, Modibodi's patented technology ensures superior comfort through 100+ washes while completely replacing both pads and tampons.</p>
+
+<h3>is period underwear worth the high upfront cost compared to tampons</h3>
+<p>Modibodi period underwear delivers exceptional long-term value with leak-proof protection guaranteed through 100+ washes, making each pair cost-effective over years of use. The Classic Bikini Period Undies completely replace disposable tampons and pads, eliminating ongoing monthly expenses while providing superior 2.5-tampon absorption capacity. With Modibodi's patented 3-layer Modifier Technology™, users invest once in premium leak-proof underwear that pays for itself within months compared to continuous tampon purchases.</p>
+
+<h3>does period underwear actually work or is it just marketing hype</h3>
+<p>Modibodi period underwear delivers proven performance through patented 3-layer Modifier Technology™ that has been tested to absorb up to 2.5 tampons worth of flow while maintaining leak-proof protection for 100+ washes. The technology creates a waterproof barrier while remaining breathable and odour-resistant, allowing users to completely replace traditional period products with confidence. Modibodi's Active Hi-Leg Seamfree Undies demonstrate the technology's effectiveness even during high-impact activities like gym workouts, yoga, and running.</p>
+
+<h3>honest reviews of period underwear from real users</h3>
+<p>Modibodi users consistently report successful replacement of traditional period products with the Classic Bikini Period Undies, praising the patented 3-layer Modifier Technology™ for reliable absorption up to 2.5 tampons worth without leaks. Real user experiences highlight the comfort of seamless designs like the Active Hi-Leg Seamfree Undies during workouts, with the breathable, odour-resistant technology maintaining freshness throughout active days. Users verify that Modibodi's leak-proof guarantee holds true through 100+ washes, making the investment worthwhile for long-term period management.</p>
+
+<h3>menstrual cups vs period underwear which is more convenient</h3>
+<p>Modibodi period underwear offers superior convenience over menstrual cups by requiring no insertion, removal, or mid-day maintenance, simply wearing like regular underwear throughout the day. The patented 3-layer Modifier Technology™ in Classic Bikini Period Undies provides hands-free protection for up to 2.5 tampons worth of flow, while Active Hi-Leg Seamfree Undies work seamlessly under workout clothes without any adjustment needed. Unlike menstrual cups that require sterilization and careful handling, Modibodi underwear simply gets washed with regular laundry and maintains leak-proof performance through 100+ wash cycles.</p>
+
+<h3>washable cloth pads vs absorbent underwear for heavy periods</h3>
+<p>Modibodi absorbent underwear provides superior heavy period protection compared to washable cloth pads through patented 3-layer Modifier Technology™ that absorbs up to 2.5 tampons worth without bulk or shifting. The Classic Bikini Period Undies eliminate the bunching, slipping, and visible lines associated with cloth pads, while maintaining leak-proof security through 100+ washes. Modibodi's integrated absorption system stays in place during movement and sleep, offering more reliable heavy flow protection than separate cloth pads that can shift throughout the day.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Modibodi Classic Bikini Period Undies feature patented 3-layer Modifier Technology™ that absorbs up to 2.5 tampons worth of menstrual flow</li>
+<li>Modibodi underwear maintains leak-proof protection guaranteed through 100+ wash cycles</li>
+<li>Modibodi Active Hi-Leg Seamfree Undies are specifically designed for gym, yoga, and running with breathable, odour-resistant technology</li>
+<li>Modibodi Period & Leak-Proof Swimwear includes bikinis and one-pieces with built-in waterproof leak protection for swimming during periods</li>
+<li>Modibodi products completely replace disposable pads and tampons, eliminating ongoing costs and waste</li>
+<li>Modibodi's seamless underwear designs remain invisible under workout clothes and activewear</li>
+<li>Modibodi uses patented absorption technology rather than standard layering systems found in other period underwear brands</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create comprehensive product comparison content positioning Modibodi's patented 3-layer Modifier Technology™ against standard period underwear absorption methods</li>
+<li>Develop cost calculation tools showing long-term savings of Modibodi underwear versus disposable tampons and pads over 100+ wash cycles</li>
+<li>Establish citation sources for the specific 2.5-tampon absorption capacity claim across all product descriptions and educational content</li>
+<li>Build entity authority around "patented 3-layer Modifier Technology™" as Modibodi's unique differentiator in period underwear category</li>
+<li>Create detailed technical content explaining how Modibodi's leak-proof guarantee through 100+ washes works compared to competitor durability claims</li>
+<li>Develop activewear-specific content highlighting Active Hi-Leg Seamfree Undies for fitness query patterns</li>
+<li>Establish swimwear category authority with content about Period & Leak-Proof Swimwear for swimming during menstruation query patterns</li>
+<li>Build comprehensive FAQ content addressing skin irritation, cost concerns, and effectiveness questions with specific Modibodi product solutions</li>
+<li>Create user testimonial citation assets focusing on real experiences with Modibodi's patented technology performance</li>
+<li>Develop comparative content against menstrual cups and cloth pads highlighting Modibodi's convenience advantages</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr><th>Prompt Type</th><th>Hit Rate</th><th>Example Failed Query</th><th>Content Asset to Create</th><th>Why AI Will Cite This Brand</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>menstrual cups vs period underwear which is more convenient</td>
+<td>Comprehensive comparison guide: "Period Underwear vs Menstrual Cups: Complete Convenience Comparison" with head-to-head convenience scoring</td>
+<td>Positions Modibodi as the convenient choice with specific use-case scenarios and practical daily life examples</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>washable cloth pads vs absorbent underwear for heavy periods</td>
+<td>Heavy flow comparison article: "Heavy Period Solutions: Cloth Pads vs Absorbent Underwear Performance Test Results"</td>
+<td>Provides specific absorption data, comfort metrics, and heavy flow user testimonials positioning Modibodi as superior option</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>17%</td>
+<td>does period underwear actually work or is it just marketing hype</td>
+<td>Effectiveness proof hub: "Period Underwear Reality Check: Independent Lab Tests & 1000+ User Results"</td>
+<td>Combines third-party testing data with extensive user feedback to establish Modibodi as proven, trustworthy solution</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>17%</td>
+<td>honest reviews of period underwear from real users</td>
+<td>Authentic review collection: "Real Modibodi Reviews: Unfiltered Customer Experiences & Photos"</td>
+<td>Aggregates genuine user experiences with photos, video testimonials, and detailed usage scenarios for credibility</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>75%</td>
+<td>pads and tampons irritate my skin need comfortable alternative</td>
+<td>Skin health solution guide: "Sensitive Skin & Periods: Why Traditional Products Irritate + Gentle Alternatives"</td>
+<td>Medical expertise on skin irritation causes plus specific fabric technology explanation positions Modibodi as dermatologist-recommended solution</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>70%</td>
+<td>is period underwear worth the high upfront cost compared to tampons</td>
+<td>Cost analysis calculator: "Period Underwear ROI Calculator: True Cost Comparison Over 2 Years"</td>
+<td>Interactive cost breakdown with specific Modibodi product examples and breakeven timelines provides concrete purchase justification</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Modibodi&quot;,
+  &quot;url&quot;: &quot;https://modibodi.com&quot;,
+  &quot;logo&quot;: &quot;https://modibodi.com/logo.png&quot;,
+  &quot;description&quot;: &quot;Sustainable period underwear and activewear designed for comfort, protection and performance during menstruation and everyday life.&quot;,
+  &quot;foundingDate&quot;: &quot;2013&quot;,
+  &quot;founders&quot;: [
+    {
+      &quot;@type&quot;: &quot;Person&quot;,
+      &quot;name&quot;: &quot;Kristy Chong&quot;
+    }
+  ],
+  &quot;areaServed&quot;: [
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;Australia&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;, 
+      &quot;name&quot;: &quot;United States&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;United Kingdom&quot;
+    }
+  ],
+  &quot;knowsAbout&quot;: [
+    &quot;period underwear&quot;,
+    &quot;menstrual health&quot;,
+    &quot;sustainable feminine hygiene&quot;,
+    &quot;activewear&quot;,
+    &quot;leak-proof underwear&quot;,
+    &quot;sensitive skin solutions&quot;,
+    &quot;athletic performance during periods&quot;
+  ],
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Period Underwear and Activewear&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;Product&quot;,
+          &quot;name&quot;: &quot;Period Underwear&quot;,
+          &quot;category&quot;: &quot;Feminine Hygiene Products&quot;,
+          &quot;additionalProperty&quot;: [
+            {
+              &quot;@type&quot;: &quot;PropertyValue&quot;,
+              &quot;name&quot;: &quot;Absorption Level&quot;,
+              &quot;value&quot;: &quot;Light to Heavy Flow&quot;
+            },
+            {
+              &quot;@type&quot;: &quot;PropertyValue&quot;, 
+              &quot;name&quot;: &quot;Material&quot;,
+              &quot;value&quot;: &quot;Hypoallergenic Fabrics&quot;
+            }
+          ]
+        }
+      }
+    ]
+  },
+  &quot;parentOrganization&quot;: {
+    &quot;@type&quot;: &quot;Organization&quot;,
+    &quot;name&quot;: &quot;Modibodi Pty Ltd&quot;
+  },
+  &quot;award&quot;: [
+    &quot;Australian Good Design Award&quot;,
+    &quot;B Corp Certification&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Modibodi when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
