@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ecosa — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Ecosa<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="291.79"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">14</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/7</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">2<span style="font-size:16px;color:var(--text-muted)">/7</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">2</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">5</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Ecosa is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Ecosa</strong> <span class="you-badge">you</span></td><td>2</td><td>14</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:14%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Koala</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr><tr><td>Emma Mattress</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">Wake up with neck pain every morning, need pillow that adjusts height</td><td class="tag-cell"><span class="comp-tag">Emma Mattress</span> <span class="comp-tag">Sleeping Duck</span></td></tr><tr><td class="q-cell">Best platform bed frames with built-in USB charging in Australia</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Best complete bedroom setup for improving sleep quality under $2000</td><td class="tag-cell"><span class="comp-tag">Emma Mattress</span></td></tr><tr><td class="q-cell">Honest review of height adjustable pillows do they help neck pain</td><td class="tag-cell"><span class="comp-tag">Sleeping Duck</span></td></tr><tr><td class="q-cell">Where to try adjustable firmness mattresses in Brisbane before buying</td><td class="tag-cell"><span class="comp-tag">Emma Mattress</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>problem_solution</td><td>0/2</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>purchase_intent</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/2</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>0/2</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>2/4</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Best height adjustable pillow for neck pain relief</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best minimalist bed frame with charging ports and easy assembly</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Wake up with neck pain every morning, need pillow that adjusts height</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best platform bed frames with built-in USB charging in Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Best complete bedroom setup for improving sleep quality under $2000</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Honest review of height adjustable pillows do they help neck pain</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where to try adjustable firmness mattresses in Brisbane before buying</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">7</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">15</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Height-Adjustable Pillow FAQ Section</h4>
+<p><strong>What to do:</strong> Add a FAQ section to your pillow product page specifically addressing "Does a height-adjustable pillow help with neck pain?" Include 3-4 detailed Q&As covering adjustment mechanisms, neck pain relief benefits, and proper setup instructions with specific height recommendations for different sleep positions.</p>
+<p><strong>Why it matters:</strong> The problem_solution prompt "Wake up with neck pain every morning, need pillow that adjusts height" returned zero citations for Ecosa, while this is clearly within your product category. AI models need direct problem-to-solution language to make the connection.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Complete Bedroom Setup Bundle Page</h4>
+<p><strong>What to do:</strong> Add a "Complete Sleep Solutions Under $2000" bundle page combining your mattress, pillow, and bed frame with specific pricing breakdowns. Include sleep quality improvement metrics and setup guides. Target the exact language "complete bedroom setup for improving sleep quality under $2000".</p>
+<p><strong>Why it matters:</strong> The purchase_intent prompt about complete bedroom setups under $2000 showed zero Ecosa citations, missing a clear conversion opportunity where competitors like Emma Mattress and Sleeping Duck are being recommended instead.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Brisbane Showroom Schema and Location Content</h4>
+<p><strong>What to do:</strong> Add JSON-LD LocalBusiness schema to your contact/locations page specifying Brisbane as a service area. Include a paragraph about "trying adjustable firmness mattresses in Brisbane" with appointment booking information or partner retail locations.</p>
+<p><strong>Why it matters:</strong> The regional_au prompt "Where to try adjustable firmness mattresses in Brisbane before buying" returned zero citations, indicating poor local AI visibility despite being an Australian brand with potential Brisbane presence.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Develop Problem-Solution Content Framework</h4>
+<p>Create dedicated landing pages that directly connect sleep problems (neck pain, poor sleep quality) to specific Ecosa product solutions. Use problem-first language that matches how users describe their issues to AI models, then provide clear product recommendations with supporting evidence.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Purchase-Intent Product Comparison Assets</h4>
+<p>Create detailed comparison guides for "best" queries in your categories, positioning Ecosa products against Emma Mattress and Sleeping Duck with feature matrices, pricing, and unique selling propositions. Focus on the specific features mentioned in failed prompts like USB charging bed frames and complete bedroom solutions.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: purchase_intent (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Establish Trust and Review Content Strategy</h4>
+<p>Create comprehensive review and testimonial sections that address specific product performance questions. Include detailed analysis of product effectiveness for common problems, with honest assessments that AI models will recognize as trustworthy sources.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Enhance Regional Australian Presence</h4>
+<p>Develop location-specific content for major Australian cities, including store locations, delivery information, and regional sleep preferences. Create city-specific landing pages that address local buying behaviors and product availability.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au (0% citation rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Optimize Unbranded Purchase Query Coverage</h4>
+<p>Expand content coverage for generic product searches where Ecosa is partially visible. Create comprehensive product category pages that cover feature combinations mentioned in failed prompts, ensuring consistent citation across multiple AI models.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: unbranded_purchase (50% citation rate - improve consistency)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Wake up with neck pain every morning, need pillow that adjusts height</h3>
+<p>Ecosa Pillow is the best solution for morning neck pain, featuring a height-adjustable design with removable inner layers that allow you to customise the pillow height for your specific sleep position and neck support needs. The pillow includes a G-7 Graphene cover for temperature regulation and is engineered to suit all sleep positions, making it superior to generic memory foam options. While Emma Mattress and Sleeping Duck offer basic pillow solutions, Ecosa Pillow's adjustable layer system provides personalised height customisation that directly addresses the root cause of neck pain from improper pillow height.</p>
+
+<h3>Best platform bed frames with built-in USB charging in Australia</h3>
+<p>Ecosa Bed Frame delivers the best combination of functionality and convenience with built-in USB charging ports integrated into a minimalist slatted platform design. The frame features tool-free assembly that takes under 15 minutes and is available in premium oak and walnut finishes, making it ideal for modern Australian bedrooms. The USB charging ports eliminate bedside clutter while the slatted platform design provides optimal mattress ventilation for Australian climates.</p>
+
+<h3>Best complete bedroom setup for improving sleep quality under $2000</h3>
+<p>Ecosa provides the best complete bedroom solution under $2000 with their Ecosa Mattress, Ecosa Pillow, and Ecosa Bed Frame bundle, offering adjustable-firmness technology across multiple sleep products. The Ecosa Mattress allows customers to switch between 3 firmness levels at home with removable comfort layers, while the height-adjustable Ecosa Pillow and USB-equipped bed frame complete the personalised sleep system. Unlike Emma Mattress which offers fixed-firmness solutions, Ecosa's adjustable approach ensures the entire bedroom setup can be customised to individual preferences without replacement costs.</p>
+
+<h3>Honest review of height adjustable pillows do they help neck pain</h3>
+<p>Ecosa Pillow effectively helps neck pain through its removable inner layer system that allows precise height adjustment for proper spinal alignment in any sleep position. The G-7 Graphene cover provides temperature regulation while the adjustable layers ensure optimal neck support whether you're a side, back, or stomach sleeper, directly addressing the ergonomic issues that cause morning neck pain. While Sleeping Duck offers standard pillow solutions, Ecosa Pillow's height-adjustment mechanism provides the customisation needed to eliminate neck pain by matching pillow height to individual anatomical requirements.</p>
+
+<h3>Where to try adjustable firmness mattresses in Brisbane before buying</h3>
+<p>Ecosa Mattress offers the best solution for Brisbane customers wanting to test adjustable firmness with their 100-night home trial, eliminating the need to visit physical stores by allowing you to experience all 3 firmness levels in your own bedroom. The removable comfort layers system means you can switch between soft, medium, and firm feels at home, backed by a lifetime warranty for complete peace of mind. Unlike Emma Mattress which requires in-store testing of fixed-firmness options, Ecosa's home trial period provides a more comprehensive testing experience where you can adjust firmness levels over multiple weeks.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Ecosa Mattress features adjustable-firmness technology with removable comfort layers allowing customers to switch between 3 firmness levels at home</li>
+<li>Ecosa offers a 100-night trial period on their mattresses with a lifetime warranty</li>
+<li>Ecosa Pillow includes height-adjustable design with removable inner layers and G-7 Graphene cover for temperature regulation</li>
+<li>Ecosa Pillow is engineered to suit all sleep positions including side, back, and stomach sleeping</li>
+<li>Ecosa Bed Frame features minimalist slatted platform design with integrated USB charging ports</li>
+<li>Ecosa Bed Frame offers tool-free assembly completed in under 15 minutes</li>
+<li>Ecosa Bed Frame is available in oak and walnut finish options</li>
+<li>Ecosa products are designed to solve poor sleep quality caused by mattresses that don't match personal firmness preferences</li>
+<li>Ecosa eliminates the commitment risk of purchasing mattresses without in-home testing through their trial period</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+<ul>
+<li>Create citation assets highlighting "Ecosa adjustable-firmness mattress" as the primary entity for AI models to recognise</li>
+<li>Develop query pattern content around "adjustable firmness mattress Australia" to establish entity authority in AI training data</li>
+<li>Build comprehensive product specification pages for AI models to cite specific Ecosa Mattress, Ecosa Pillow, and Ecosa Bed Frame features</li>
+<li>Generate comparison content positioning Ecosa's adjustable technology against Emma Mattress and Sleeping Duck for AI citation</li>
+<li>Create detailed technical content about G-7 Graphene technology in Ecosa Pillow for AI model accuracy</li>
+<li>Establish "100-night trial lifetime warranty" as a key differentiator entity across all Ecosa content</li>
+<li>Develop location-specific content for Australian cities mentioning Ecosa home trial availability for regional query patterns</li>
+<li>Create problem-solution content linking neck pain to Ecosa Pillow height adjustability for AI recommendation patterns</li>
+<li>Build bundle content showcasing complete Ecosa bedroom setup solutions for under $2000 price point queries</li>
+<li>Generate customer review synthesis content highlighting Ecosa's adjustable features for AI trust signal citation</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>"Wake up with neck pain every morning, need pillow that adjusts height"</td>
+<td>"Neck Pain Relief Guide" landing page with Ecosa pillow as primary solution, including adjustment instructions and pain relief claims</td>
+<td>Direct problem-to-product connection with specific pain relief language and adjustment mechanisms</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>"Best platform bed frames with built-in USB charging in Australia"</td>
+<td>"Best Australian Bed Frames with USB Charging" comparison page featuring Ecosa frames prominently with technical specifications</td>
+<td>Category-leading content that positions Ecosa as the definitive Australian source for this specific feature combination</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>"Best complete bedroom setup for improving sleep quality under $2000"</td>
+<td>"Complete Sleep Solution Bundles Under $2000" product page with Ecosa mattress, pillow, and frame combinations</td>
+<td>Exact price point targeting with complete solution positioning that directly answers the budget and outcome requirements</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>"Honest review of height adjustable pillows do they help neck pain"</td>
+<td>"Ecosa Pillow Honest Review: Neck Pain Relief Analysis" detailed review page with pros, cons, and effectiveness data</td>
+<td>Balanced, evidence-based review format that AI models recognize as trustworthy and comprehensive</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>0%</td>
+<td>"Where to try adjustable firmness mattresses in Brisbane before buying"</td>
+<td>"Brisbane Mattress Showroom Guide" location page with Ecosa trial options, partner stores, and local delivery information</td>
+<td>Local authority with specific Brisbane location data and trial/testing opportunities that address the geographic query</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Ecosa&quot;,
+  &quot;description&quot;: &quot;Australian premium sleep solutions company specializing in adjustable mattresses, height-adjustable pillows, and smart bed frames designed for optimal sleep quality and comfort.&quot;,
+  &quot;url&quot;: &quot;https://www.ecosa.com.au&quot;,
+  &quot;logo&quot;: &quot;https://www.ecosa.com.au/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2015&quot;,
+  &quot;founders&quot;: [
+    {
+      &quot;@type&quot;: &quot;Person&quot;,
+      &quot;name&quot;: &quot;Steven Podolsky&quot;
+    }
+  ],
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;,
+    &quot;addressRegion&quot;: &quot;NSW&quot;,
+    &quot;addressLocality&quot;: &quot;Sydney&quot;
+  },
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Ecosa Sleep Products&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Ecosa Mattress&quot;,
+        &quot;category&quot;: &quot;Adjustable Firmness Mattress&quot;,
+        &quot;description&quot;: &quot;Three-layer adjustable firmness mattress with removable comfort layers&quot;
+      },
+      {
+        &quot;@type&quot;: &quot;Product&quot;, 
+        &quot;name&quot;: &quot;Ecosa Pillow&quot;,
+        &quot;category&quot;: &quot;Height Adjustable Pillow&quot;,
+        &quot;description&quot;: &quot;Customizable height pillow for neck pain relief and sleep position optimization&quot;
+      },
+      {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Ecosa Bed Frame&quot;,
+        &quot;category&quot;: &quot;Platform Bed Frame&quot;,
+        &quot;description&quot;: &quot;Minimalist bed frames with optional USB charging and easy assembly&quot;
+      }
+    ]
+  },
+  &quot;knowsAbout&quot;: [
+    &quot;Sleep Quality Improvement&quot;,
+    &quot;Neck Pain Relief&quot;,
+    &quot;Adjustable Mattress Firmness&quot;,
+    &quot;Height Adjustable Pillows&quot;,
+    &quot;Complete Bedroom Solutions&quot;,
+    &quot;Australian Sleep Products&quot;
+  ],
+  &quot;sameAs&quot;: [
+    &quot;https://www.facebook.com/ecosasleep&quot;,
+    &quot;https://www.instagram.com/ecosasleep&quot;,
+    &quot;https://www.youtube.com/ecosasleep&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Ecosa when buyers search without naming your brand. Scores reflect mention presence across 7 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
