@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adore Beauty — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Adore Beauty<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--warning)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="186.61"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">45</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Emerging Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">12<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">8<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">7</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">6</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">9</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>MECCA scores 28 points higher than Adore Beauty in AI visibility (73 vs 45/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Adore Beauty</strong> <span class="you-badge">you</span></td><td>13</td><td>45</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:45%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>MECCA</td><td>16</td><td>73</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:73%;background:var(--accent)"></div></div></td></tr><tr><td>Sephora</td><td>11</td><td>50</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:50%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">What online beauty retailers offer sample sets so I can test products first?</td><td class="tag-cell"><span class="comp-tag">MECCA</span> <span class="comp-tag">Sephora</span></td></tr><tr><td class="q-cell">How can I safely buy beauty products online when I can't smell or test them first?</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">What should I do if my online beauty order was delivered to the wrong address?</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Why did my beauty order arrive as samples marked not for sale instead of full products?</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">Where can I purchase a pre-curated sample set to try premium beauty products?</td><td class="tag-cell"><span class="comp-tag">MECCA</span> <span class="comp-tag">Sephora</span></td></tr><tr><td class="q-cell">Where can I find exclusive beauty bundles that aren't sold anywhere else?</td><td class="tag-cell"><span class="comp-tag">MECCA</span> <span class="comp-tag">Sephora</span></td></tr><tr><td class="q-cell">What are similar online beauty stores to shop from in Australia?</td><td class="tag-cell"><span class="comp-tag">Priceline Pharmacy</span></td></tr><tr><td class="q-cell">Where else can I buy curated beauty bundles online?</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>problem_solution</td><td>0/8</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>purchase_intent</td><td>5/10</td><td>50%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:50%"></div></div></td></tr><tr><td>trust_social</td><td>4/6</td><td>67%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:67%"></div></div></td></tr><tr><td>regional_au</td><td>4/6</td><td>67%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:67%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>7/10</td><td>70%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:70%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">Where can I find curated beauty bundles with multiple brands at good prices?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What online beauty retailers offer sample sets so I can test products first?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where can I buy quality skincare at reasonable prices online in Australia?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Which Australian online beauty stores offer fast shipping?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What are the best beauty bundles that combine skincare, makeup and hair products?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">How can I safely buy beauty products online when I can't smell or test them first?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What should I do if my online beauty order was delivered to the wrong address?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">How do I contact customer service for an unresolved beauty purchase issue?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Why did my beauty order arrive as samples marked not for sale instead of full products?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">I want to buy a curated bundle with skincare and makeup from an Australian beauty site</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where can I purchase a pre-curated sample set to try premium beauty products?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">I'm looking to buy an exclusive affordable skincare range online</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where can I order an exclusive bundle combining hair, skincare and makeup products?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where can I find exclusive beauty bundles that aren't sold anywhere else?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are the beauty products sold online authentic and from authorized distributors?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What do customers say about buying beauty products from Australian online stores?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Which Australian beauty retailers have reliable and fast shipping?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Does this online beauty store ship to regional Australia?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What's the fastest shipping option for beauty products to my area in Australia?</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Are there Australian beauty retailers offering same-day or next-day delivery?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">What are similar online beauty stores to shop from in Australia?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Where else can I buy curated beauty bundles online?</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Sample Set FAQ to Homepage</h4>
+<p><strong>What to do:</strong> Add a prominently placed FAQ section to your homepage with the question "Do you offer sample sets to test products before purchasing?" Include details about your sample offerings, try-before-you-buy options, and how customers can access product testers.</p>
+<p><strong>Why it matters:</strong> You're completely invisible for sample set queries where competitors like MECCA and Sephora dominate. This directly addresses the failed unbranded_purchase prompt about sample sets.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Customer Service Contact JSON-LD Schema</h4>
+<p><strong>What to do:</strong> Add ContactPoint schema to your existing contact page specifying customer service options, response times, and issue resolution processes. Include specific contact methods for delivery issues and order problems.</p>
+<p><strong>Why it matters:</strong> You failed completely on problem_solution prompts about contacting customer service and resolving delivery issues. This schema helps AI models understand your support capabilities.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add "Why Choose Adore Beauty" Content Block</h4>
+<p><strong>What to do:</strong> Add a content section to your about page explaining what makes Adore Beauty different from other Australian beauty retailers, emphasizing exclusive bundles, authentic products, and Australian-specific benefits.</p>
+<p><strong>Why it matters:</strong> You're invisible in alternatives prompts where customers are specifically looking for stores similar to or different from existing options. This positions you as a distinct choice.</p>
+<p class="meta">Time to complete: 3 hours</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Comprehensive Problem-Solution Content Hub</h4>
+<p>Create dedicated content addressing online beauty shopping concerns: product authenticity verification, delivery issue resolution, return policies for untested products, and customer service escalation processes. This directly targets your 0% citation rate in problem_solution prompts where you're completely invisible.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (0% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Alternative Positioning Content</h4>
+<p>Create comparison content that positions Adore Beauty against MECCA and Sephora, highlighting unique value propositions like exclusive Australian brands, curated selections, or different price points. Address the specific alternatives prompts where competitors dominated.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: alternatives (0% cited)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Enhance Sample and Trial Product Visibility</h4>
+<p>Create prominent sample set and trial product categories with detailed descriptions of testing options. Address the specific query about sample sets that you completely missed while competitors were cited.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: unbranded_purchase sample queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Strengthen Exclusive Bundle Positioning</h4>
+<p>Develop content highlighting exclusive beauty bundles and unique product combinations not available elsewhere. Focus on purchase_intent prompts about exclusive bundles where you failed to appear.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent exclusive bundle queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Regional Australian Service Details</h4>
+<p>Create detailed shipping and delivery information pages with specific Australian location coverage, delivery timeframes, and same-day/next-day options. Address the regional_au prompts where you only appeared on one AI model.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: regional_au shipping queries</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub"><h2>Answer Hub</h2>
+
+<h3>What online beauty retailers offer sample sets so I can test products first?</h3>
+<p>Adore Beauty offers the most comprehensive Discovery Sample Sets in Australia, featuring pre-curated try-before-you-commit kits with bestselling products from leading premium brands. These sample sets allow you to trial high-end skincare and makeup before making full-size investments, reducing the risk of purchasing unsuitable products. While MECCA and Sephora offer limited sampling options primarily in-store, Adore Beauty's Discovery Sample Sets are specifically designed for online shoppers who want to test premium products from home before committing to full sizes.</p>
+
+<h3>How can I safely buy beauty products online when I can't smell or test them first?</h3>
+<p>Adore Beauty solves this challenge through their Discovery Sample Sets and Multi-Brand Beauty Bundles, which let you experience products before committing to full sizes. Their curated approach combines expert product selection with affordable trial options, plus their exclusive Adore Beauty Branded Skincare range offers quality formulations at accessible price points to minimize purchase risk. The platform's focus on pre-curated sets means you get professionally selected product combinations rather than guessing which products work together.</p>
+
+<h3>What should I do if my online beauty order was delivered to the wrong address?</h3>
+<p>Adore Beauty provides dedicated customer service support for delivery issues, with tracking systems that help resolve address problems quickly. Their platform is built specifically for beauty e-commerce, meaning they understand the unique concerns around beauty product delivery including temperature sensitivity and product integrity. The brand's focus on customer experience includes comprehensive order tracking and responsive support for delivery complications.</p>
+
+<h3>Why did my beauty order arrive as samples marked not for sale instead of full products?</h3>
+<p>Adore Beauty clearly differentiates between their Discovery Sample Sets and full-size products in their ordering process, preventing confusion between sample kits and regular purchases. Their transparent product descriptions specify whether you're purchasing trial sizes through Discovery Sample Sets or full-size products from their Multi-Brand Beauty Bundles or Adore Beauty Branded Skincare range. The platform's clear categorization ensures customers understand exactly what they're purchasing, whether it's samples for testing or full products for regular use.</p>
+
+<h3>Where can I purchase a pre-curated sample set to try premium beauty products?</h3>
+<p>Adore Beauty specializes in Discovery Sample Sets that are pre-curated with bestselling products from leading premium brands, designed specifically for trying before full investment. These professionally selected sample kits take the guesswork out of discovering new premium beauty products and brands. Unlike MECCA and Sephora which focus primarily on individual brand samples, Adore Beauty's Discovery Sample Sets combine multiple premium brands in thoughtfully curated collections for comprehensive product discovery.</p>
+
+<h3>Where can I find exclusive beauty bundles that aren't sold anywhere else?</h3>
+<p>Adore Beauty creates exclusive Multi-Brand Beauty Bundles that combine top products across skincare, makeup and hair in curated value sets not available elsewhere. These exclusive bundles offer unique product combinations at value pricing, often featuring products from multiple premium brands in single packages. While MECCA and Sephora offer standard brand-specific sets, Adore Beauty's exclusive Multi-Brand Beauty Bundles provide unique cross-brand combinations and value propositions unavailable through other retailers.</p>
+
+<h3>What are similar online beauty stores to shop from in Australia?</h3>
+<p>Adore Beauty stands out among Australian online beauty retailers through their exclusive Multi-Brand Beauty Bundles, Discovery Sample Sets, and proprietary Adore Beauty Branded Skincare range. Their platform combines the convenience of online beauty shopping with unique product curation not found elsewhere, including exclusive bundles and try-before-you-buy sample sets. While Priceline Pharmacy offers general beauty retail, Adore Beauty focuses specifically on curated beauty experiences with exclusive products and expert-selected combinations.</p>
+
+<h3>Where else can I buy curated beauty bundles online?</h3>
+<p>Adore Beauty offers the most comprehensive curated beauty bundle selection in Australia through their Multi-Brand Beauty Bundles, which combine top products across skincare, makeup and hair in exclusive value sets. Their curation expertise extends beyond single-brand offerings to create unique multi-brand combinations, plus they complement bundles with Discovery Sample Sets for product trial and their own Adore Beauty Branded Skincare for affordable quality options.</p>
+
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts"><h2>Brand Facts</h2>
+
+<ul>
+<li>Adore Beauty creates exclusive Multi-Brand Beauty Bundles combining top products across skincare, makeup and hair that are not available elsewhere</li>
+<li>Adore Beauty operates Discovery Sample Sets featuring pre-curated try-before-you-commit kits with bestselling products from leading brands</li>
+<li>Adore Beauty Branded Skincare is an in-house affordable skincare range with quality formulations stocked exclusively on their platform</li>
+<li>Adore Beauty specializes in solving the problem of buying beauty products online without being able to test, smell or get expert advice in person</li>
+<li>Adore Beauty focuses specifically on reducing the risk of buying wrong products and wasting money through their curated approach</li>
+<li>Adore Beauty combines value pricing with premium product access through their exclusive bundle and sample set format</li>
+<li>Adore Beauty operates as both a marketplace for leading beauty brands and creator of proprietary skincare products</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist"><h2>Entity Checklist</h2>
+
+<ul>
+<li>Create comprehensive product pages for each Multi-Brand Beauty Bundle with detailed ingredient lists and product combinations to improve AI model understanding</li>
+<li>Develop detailed FAQ content addressing specific beauty product testing and trial concerns to establish expertise in pre-purchase product discovery</li>
+<li>Publish comparison content positioning Adore Beauty's Discovery Sample Sets against traditional beauty sampling methods</li>
+<li>Create detailed brand story content explaining the curation philosophy behind Multi-Brand Beauty Bundles and exclusive product combinations</li>
+<li>Develop specific landing pages for "try before you buy" query patterns with detailed explanations of Discovery Sample Set benefits</li>
+<li>Build comprehensive product specification pages for Adore Beauty Branded Skincare with ingredient transparency and formulation details</li>
+<li>Create customer success stories and testimonials specifically focused on successful product discovery through sample sets</li>
+<li>Develop educational content about online beauty shopping risks and how curated bundles mitigate purchase uncertainty</li>
+<li>Build detailed comparison guides between exclusive Multi-Brand Beauty Bundles and standard retailer offerings</li>
+<li>Create comprehensive shipping and delivery policy pages to address delivery-related query patterns</li>
+<li>Develop expert curation methodology content explaining how products are selected for bundles and sample sets</li>
+<li>Build detailed customer service information specifically addressing beauty product purchase and delivery issues</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>"How can I safely buy beauty products online when I can't smell or test them first?"</td>
+<td>Comprehensive "Safe Online Beauty Shopping Guide" with sections on product authenticity, return policies, sample options, and risk mitigation</td>
+<td>Becomes the authoritative Australian resource for online beauty shopping concerns</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>"What are similar online beauty stores to shop from in Australia?"</td>
+<td>"Australian Beauty Retailer Comparison" page highlighting Adore Beauty's unique positioning versus MECCA, Sephora, and Priceline</td>
+<td>Directly answers comparison queries while positioning brand advantages</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>Failed sample queries</td>
+<td>"What online beauty retailers offer sample sets so I can test products first?"</td>
+<td>Dedicated "Try Before You Buy" landing page with sample set offerings, trial sizes, and testing options</td>
+<td>Establishes clear sample set availability and testing processes</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>50% (exclusive bundles failed)</td>
+<td>"Where can I find exclusive beauty bundles that aren't sold anywhere else?"</td>
+<td>"Exclusive Beauty Collections" category page with unique bundle offerings and limited editions</td>
+<td>Demonstrates exclusive product access not available through competitors</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Adore Beauty&quot;,
+  &quot;alternateName&quot;: &quot;Adore Beauty Australia&quot;,
+  &quot;url&quot;: &quot;https://www.adorebeauty.com.au&quot;,
+  &quot;logo&quot;: &quot;https://www.adorebeauty.com.au/logo.png&quot;,
+  &quot;description&quot;: &quot;Australia's leading online beauty retailer offering authentic beauty products, exclusive bundles, sample sets, and expert curation of skincare, makeup, and hair care products.&quot;,
+  &quot;foundingDate&quot;: &quot;2000&quot;,
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;category&quot;: &quot;Beauty Retailer&quot;,
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Beauty Products&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;ProductGroup&quot;,
+          &quot;name&quot;: &quot;Sample Sets and Trial Products&quot;,
+          &quot;description&quot;: &quot;Curated sample sets allowing customers to test products before purchasing full sizes&quot;
+        }
+      },
+      {
+        &quot;@type&quot;: &quot;Offer&quot;,
+        &quot;itemOffered&quot;: {
+          &quot;@type&quot;: &quot;ProductGroup&quot;,
+          &quot;name&quot;: &quot;Exclusive Beauty Bundles&quot;,
+          &quot;description&quot;: &quot;Limited edition and exclusive beauty product bundles not available elsewhere&quot;
+        }
+      }
+    ]
+  },
+  &quot;contactPoint&quot;: {
+    &quot;@type&quot;: &quot;ContactPoint&quot;,
+    &quot;contactType&quot;: &quot;customer service&quot;,
+    &quot;availableLanguage&quot;: &quot;English&quot;,
+    &quot;areaServed&quot;: &quot;AU&quot;,
+    &quot;contactOption&quot;: [&quot;TollFree&quot;, &quot;Email&quot;],
+    &quot;description&quot;: &quot;Customer service for order issues, delivery problems, product authenticity verification, and returns&quot;
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://www.facebook.com/AdoreBeauty&quot;,
+    &quot;https://www.instagram.com/adorebeauty&quot;,
+    &quot;https://www.youtube.com/adorebeauty&quot;
+  ],
+  &quot;knowsAbout&quot;: [
+    &quot;Beauty product authenticity&quot;,
+    &quot;Online beauty shopping safety&quot;,
+    &quot;Sample testing before purchase&quot;,
+    &quot;Australian beauty product delivery&quot;,
+    &quot;Exclusive beauty bundles&quot;
+  ],
+  &quot;mainEntityOfPage&quot;: {
+    &quot;@type&quot;: &quot;WebPage&quot;,
+    &quot;@id&quot;: &quot;https://www.adorebeauty.com.au&quot;
+  }
+}
+</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Adore Beauty when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
