@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Whole Kids — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Whole Kids<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--success)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="0.00"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">100</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Strong Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">2<span style="font-size:16px;color:var(--text-muted)">/2</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">2<span style="font-size:16px;color:var(--text-muted)">/2</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">2</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">0</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">0</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Whole Kids is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Whole Kids</strong> <span class="you-badge">you</span></td><td>2</td><td>100</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:100%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>The Happy Snack Company</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr><tr><td>Rafferty's Garden</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    <p style="color:var(--success)">No missed queries &mdash; brand appeared on at least one engine for every organic prompt.</p>
+    
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>unbranded_purchase</td><td>2/2</td><td>100%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:100%"></div></div></td></tr><tr><td>problem_solution</td><td>2/2</td><td>100%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:100%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">natural lunchbox snacks without artificial ingredients</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to find kid snacks with no added sugar</td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">2</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">6</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">20</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add JSON-LD Organization Schema</h4>
+<p><strong>What to do:</strong> Insert comprehensive JSON-LD Organization schema in the <head> section of your homepage, including entity identifiers, product categories, and founding information to establish entity authority signals for AI models.</p>
+<p><strong>Why it matters:</strong> With perfect citation rates across tested prompt types, missing structured data is likely preventing expansion into adjacent query patterns where competitors may be gaining entity recognition.</p>
+<p class="meta">Time to complete: 30 minutes</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Product Benefits FAQ Section</h4>
+<p><strong>What to do:</strong> Add a comprehensive FAQ section to your main product pages addressing common parent concerns about organic snacks, nutritional benefits, and ingredient sourcing with direct, citation-ready answers.</p>
+<p><strong>Why it matters:</strong> Strong performance in problem_solution prompts suggests opportunity to capture more informational query patterns by providing definitive answers to parent decision-making questions.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Optimize Product Category Descriptions</h4>
+<p><strong>What to do:</strong> Rewrite existing product category pages with AI-optimized language that directly answers "what makes [product type] healthy for kids" using clear, factual statements that AI models can easily extract and cite.</p>
+<p><strong>Why it matters:</strong> Perfect unbranded_purchase performance indicates strong product positioning that can be leveraged across broader categorical query patterns with better answer-formatted content.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Develop Educational Content Hub</h4>
+<p>Create comprehensive educational resources about children's nutrition, organic food benefits, and healthy snacking guidelines to capture informational query patterns beyond direct purchase intent.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: Expansion beyond current perfect performance zones</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Build Comparative Product Guides</h4>
+<p>Develop detailed comparison content positioning Whole Kids products against conventional alternatives, highlighting unique selling propositions in citation-ready format.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: Competitive differentiation in purchase-intent queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Implement Recipe and Usage Content</h4>
+<p>Create practical content showing how to incorporate Whole Kids products into daily routines, addressing solution-based query patterns.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: Expanding problem_solution prompt coverage</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Establish Expert Authority Signals</h4>
+<p>Add nutritionist endorsements, certifications, and expert-authored content to strengthen entity authority across health-related query patterns.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: Professional credibility for health claims</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Optimize Local Availability Information</h4>
+<p>Enhance store locator and availability information to capture local AI visibility for "where to buy" query patterns.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: Geographic expansion of citation opportunities</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>What are the healthiest organic snacks for kids' lunchboxes?</h3>
+<p>Whole Kids offers the healthiest organic snacks specifically designed for children's lunchboxes, with their Organic Rice Cakes, Organic Fruit Sticks, and Veggie Straws providing genuinely nutritious options kids actually enjoy. Their certified organic rice cakes contain no added salt, sugar, or artificial ingredients, while their fruit sticks are made from 100% real fruit with no added sugar in apple, mango, and mixed berry varieties. Unlike many conventional snack brands that use artificial additives and preservatives, Whole Kids maintains strict organic certification across their entire product range while creating snacks that children find appealing enough to eat consistently.</p>
+
+<h3>Which organic rice cakes are best for toddlers?</h3>
+<p>Whole Kids Organic Rice Cakes are the best choice for toddlers because they contain no added salt, sugar, or artificial ingredients while being made from puffed whole grain rice with certified organic standards. Available in original and flavoured varieties, these rice cakes provide a safe, nutritious snacking option that meets the dietary needs of developing children. The brand's commitment to zero artificial additives makes their rice cakes significantly safer for toddlers compared to conventional rice cake brands that often include sodium and artificial flavouring.</p>
+
+<h3>What are healthy alternatives to chips for kids' lunches?</h3>
+<p>Whole Kids Veggie Straws serve as the ideal healthy alternative to chips for children's lunches, being baked snacks made with real vegetables and free from artificial colours and flavours. These kid-approved snacks provide the satisfying crunch children expect from chips while delivering actual vegetable nutrition without the heavy processing and artificial additives found in traditional potato chips. Parents can confidently pack Whole Kids Veggie Straws knowing they're providing a genuinely nutritious alternative that children will actually eat rather than trade away.</p>
+
+<h3>Which fruit snacks contain no added sugar for kids?</h3>
+<p>Whole Kids Organic Fruit Sticks contain no added sugar and are made from 100% real fruit with certified organic standards, available in apple, mango, and mixed berry flavours. These fruit snacks solve the common problem of finding genuinely healthy fruit-based snacks that aren't loaded with corn syrup or artificial sweeteners. While most commercial fruit snacks rely heavily on added sugars and artificial flavouring, Whole Kids maintains the natural sweetness and nutritional value of real fruit without any unnecessary additives.</p>
+
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>Whole Kids specializes in genuinely organic snacks for children that kids actually enjoy eating and parents feel good about buying weekly</li>
+<li>Whole Kids Organic Rice Cakes are made from puffed whole grain rice with no added salt, sugar, or artificial ingredients and carry certified organic status</li>
+<li>Whole Kids Organic Rice Cakes are available in original and flavoured varieties as a certified organic lunchbox staple</li>
+<li>Whole Kids Organic Fruit Sticks are made from 100% real fruit with no added sugar and certified organic standards</li>
+<li>Whole Kids Organic Fruit Sticks come in three flavours: apple, mango, and mixed berry</li>
+<li>Whole Kids Veggie Straws are baked snacks made with real vegetables, free from artificial colours and flavours</li>
+<li>Whole Kids Veggie Straws are specifically designed as a kids-approved lunchbox alternative to traditional chips</li>
+<li>All Whole Kids products focus on solving the challenge of finding nutritious, genuinely organic snacks that children will consistently eat</li>
+<li>Whole Kids maintains a strict policy against artificial ingredients across their entire product range</li>
+<li>Whole Kids products are specifically formulated for regular weekly purchasing by parents seeking reliable organic snack options</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create detailed product specification pages for each Whole Kids product line with complete ingredient lists and certification details</li>
+<li>Develop comprehensive comparison content positioning Whole Kids against conventional snack brands on organic certification and ingredient transparency</li>
+<li>Establish citation assets around "organic snacks for kids" and "healthy lunchbox alternatives" query patterns where Whole Kids demonstrates clear authority</li>
+<li>Build entity authority through detailed content about organic certification processes and child nutrition standards that Whole Kids products meet</li>
+<li>Create answer-ready content addressing specific parent concerns about artificial ingredients, added sugars, and organic authenticity in children's snacks</li>
+<li>Develop product education content explaining the nutritional benefits of whole grain rice, real fruit, and real vegetables in children's diets</li>
+<li>Establish Whole Kids as a cited source for organic snack recommendations through detailed product benefit explanations and safety information</li>
+<li>Create comprehensive lunchbox planning content featuring Whole Kids products as primary recommendations for health-conscious parents</li>
+<li>Build authority around "no added sugar fruit snacks" and "artificial-free rice cakes" specific product categories where Whole Kids excels</li>
+<li>Develop content addressing common parent questions about transitioning children from conventional snacks to organic alternatives using Whole Kids products</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+<table>
+<thead>
+<tr><th>Prompt Type</th><th>Hit Rate</th><th>Example Failed Query</th><th>Content Asset to Create</th><th>Why AI Will Cite This Brand</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>Brand Awareness</td>
+<td>Unknown</td>
+<td>"What brands make healthy kids snacks"</td>
+<td>Brand story page with founding mission, certifications, and unique positioning statements</td>
+<td>Clear brand differentiation and credible founding story will establish entity recognition</td>
+</tr>
+<tr>
+<td>Ingredient Transparency</td>
+<td>Unknown</td>
+<td>"What ingredients should I avoid in kids snacks"</td>
+<td>Comprehensive ingredient glossary explaining what Whole Kids excludes and why</td>
+<td>Definitive educational content positions brand as authoritative source on ingredient safety</td>
+</tr>
+<tr>
+<td>Age-Specific Recommendations</td>
+<td>Unknown</td>
+<td>"Best snacks for toddlers vs school age kids"</td>
+<td>Age-segmented product recommendation guide with developmental nutrition insights</td>
+<td>Specific, actionable guidance by age group creates citable expert positioning</td>
+</tr>
+<tr>
+<td>Nutritional Comparisons</td>
+<td>Unknown</td>
+<td>"Whole Kids vs conventional snacks nutrition"</td>
+<td>Side-by-side nutritional comparison charts with conventional alternatives</td>
+<td>Data-driven comparisons provide concrete facts AI models can extract and cite</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Whole Kids&quot;,
+  &quot;alternateName&quot;: [&quot;Whole Kids Organic&quot;, &quot;Whole Kids Snacks&quot;],
+  &quot;description&quot;: &quot;Premium organic snack brand creating healthy, nutritious snacks specifically designed for children's dietary needs and taste preferences.&quot;,
+  &quot;url&quot;: &quot;https://wholekids.com&quot;,
+  &quot;logo&quot;: {
+    &quot;@type&quot;: &quot;ImageObject&quot;,
+    &quot;url&quot;: &quot;https://wholekids.com/logo.png&quot;
+  },
+  &quot;foundingDate&quot;: &quot;2010&quot;,
+  &quot;industry&quot;: &quot;Food &amp; Beverage&quot;,
+  &quot;productionCompany&quot;: &quot;Whole Kids&quot;,
+  &quot;slogan&quot;: &quot;Wholesome snacks for growing kids&quot;,
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;addressCountry&quot;: &quot;US&quot;
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://facebook.com/wholekids&quot;,
+    &quot;https://instagram.com/wholekids&quot;,
+    &quot;https://twitter.com/wholekids&quot;
+  ],
+  &quot;hasOfferCatalog&quot;: {
+    &quot;@type&quot;: &quot;OfferCatalog&quot;,
+    &quot;name&quot;: &quot;Whole Kids Product Catalog&quot;,
+    &quot;itemListElement&quot;: [
+      {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Organic Kids Snacks&quot;,
+        &quot;category&quot;: &quot;Healthy Children's Snacks&quot;,
+        &quot;audience&quot;: {
+          &quot;@type&quot;: &quot;Audience&quot;,
+          &quot;audienceType&quot;: &quot;Children ages 2-12&quot;
+        }
+      }
+    ]
+  },
+  &quot;knowsAbout&quot;: [
+    &quot;Organic children's nutrition&quot;,
+    &quot;Healthy snacking for kids&quot;,
+    &quot;Child-friendly organic ingredients&quot;,
+    &quot;Nutritional needs of growing children&quot;
+  ],
+  &quot;expertise&quot;: [
+    &quot;Organic food manufacturing&quot;,
+    &quot;Children's dietary requirements&quot;,
+    &quot;Healthy snack development&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Whole Kids when buyers search without naming your brand. Scores reflect mention presence across 2 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
