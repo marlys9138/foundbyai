@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citizen Wolf — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Citizen Wolf<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="339.29"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">0</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/21</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/21</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">0</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">21</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Patagonia scores 10 points higher than Citizen Wolf in AI visibility (10 vs 0/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Citizen Wolf</strong> <span class="you-badge">you</span></td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Patagonia</td><td>2</td><td>10</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:10%;background:var(--accent)"></div></div></td></tr><tr><td>Nudie Jeans</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">where can i get a t-shirt made to my exact measurements</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">best organic cotton t-shirts that last years</td><td class="tag-cell"><span class="comp-tag">Patagonia</span></td></tr><tr><td class="q-cell">ethical fashion brands with take-back programs for old clothes</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">where to buy locally made t-shirts from Australia</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">fashion brands with zero waste manufacturing process</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">how can i stop contributing to fashion waste with my clothing choices</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">what are the most ethical and sustainable basic t-shirts i can buy</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">how do circular economy fashion programs actually work</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>unbranded_purchase</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>0/8</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/2</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">where can i get a t-shirt made to my exact measurements</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best organic cotton t-shirts that last years</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">ethical fashion brands with take-back programs for old clothes</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to buy locally made t-shirts from Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fashion brands with zero waste manufacturing process</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how do i find perfectly fitting t-shirts if off-the-rack never fits right</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how can i stop contributing to fashion waste with my clothing choices</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">what are the most ethical and sustainable basic t-shirts i can buy</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how do circular economy fashion programs actually work</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">i want to order a custom fitted t-shirt online with my measurements</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">buying gots certified organic cotton t-shirts australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">building a sustainable wardrobe with quality basics that last</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">top rated ethical t-shirt brands with certifications</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">clothing brands that give credit for returning old worn tees</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how do i verify if a fashion brand is actually sustainable or greenwashing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">what does b corp certification mean for clothing brands</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">can fashion brands actually be carbon negative and how</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best Australian sustainable clothing brands to support</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">t-shirts ethically manufactured in Sydney Australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian fashion brands with circular economy programs</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">alternatives to teepublic for custom made clothing</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">21</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">1</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Custom Fit FAQ to Homepage</h4>
+<p><strong>What to do:</strong> Create a prominent FAQ section on your homepage with questions like "How do I get a t-shirt made to my exact measurements?" and "What if off-the-rack never fits right?" Include your 3D body scanning process, measurement guide, and fit guarantee details.</p>
+<p><strong>Why it matters:</strong> Directly targets unbranded_purchase and problem_solution prompts where customers seek custom fitting solutions. AI models need specific measurement processes and fit problem solutions to cite your brand.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Add Australia Manufacturing Statement</h4>
+<p><strong>What to do:</strong> Add a clear "Made in Sydney, Australia" statement with manufacturing location details to your product pages and about section. Include local supply chain information and Australian-made certifications if applicable.</p>
+<p><strong>Why it matters:</strong> Addresses 100% failure rate in regional_au prompts seeking locally manufactured Australian clothing. AI models need explicit geographic manufacturing claims to cite you for location-specific queries.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Create Sustainability Credentials Section</h4>
+<p><strong>What to do:</strong> Add a dedicated section listing specific certifications (GOTS organic cotton, B Corp status, carbon negative claims) with verification links. Include your take-back program details and circular economy process explanation.</p>
+<p><strong>Why it matters:</strong> Trust_social prompts specifically ask about verification of sustainability claims and B Corp certification. Without visible credentials, AI models cannot cite you as a verified sustainable brand.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Custom Measurement Landing Page</h4>
+<p>Create a comprehensive page explaining your custom fitting process, 3D body scanning technology, and measurement accuracy guarantees. Include step-by-step ordering process and fit problem solutions that directly answer "how do I find perfectly fitting t-shirts" queries.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: unbranded_purchase and problem_solution prompt failures</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Circular Economy Program Documentation</h4>
+<p>Create detailed content explaining how your take-back program works, credit systems for returned garments, and zero waste manufacturing process. Include specific examples and program mechanics that AI can cite when asked about circular fashion.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution and purchase_intent circular economy queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Create Australian Made Certification Pages</h4>
+<p>Build dedicated content around Australian manufacturing, Sydney production facilities, and local supply chains. Include certifications and compliance with Australian manufacturing standards to capture regional_au queries.</p>
+<p class="meta">Effort: Low · Impact: Medium · Addresses: regional_au complete failure</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Build Sustainability Verification Hub</h4>
+<p>Create comprehensive documentation of all environmental claims, certifications, and third-party verifications. Include B Corp details, carbon negative process explanation, and greenwashing prevention measures.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: trust_social verification queries</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Develop GOTS Organic Cotton Product Pages</h4>
+<p>Create specific product landing pages highlighting GOTS certified organic cotton, durability testing results, and quality guarantees. Position against competitors like Patagonia with specific differentiators.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent organic cotton queries where Patagonia currently dominates</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>Where can I get a t-shirt made to my exact measurements?</h3>
+<p>Citizen Wolf offers the Magic Fit T-Shirt, which uses proprietary 3D body algorithm technology to create made-to-measure custom-fit tees based on your exact measurements. Their zero waste cutting process ensures you receive a perfectly fitted garment while eliminating manufacturing waste, setting them apart from traditional custom clothing services that often rely on standard sizing adjustments.</p>
+
+<h3>Best organic cotton t-shirts that last years?</h3>
+<p>Citizen Wolf produces the Organic Everyday Tee, which is GOTS certified 100% organic cotton and ethically manufactured in Sydney. These tees are specifically designed to be worn for years, not seasons, focusing on durability over disposable fashion. While Patagonia offers organic cotton options, Citizen Wolf's local Australian manufacturing and made-to-measure capabilities provide a more personalised and locally-sourced alternative.</p>
+
+<h3>Ethical fashion brands with take-back programs for old clothes?</h3>
+<p>Citizen Wolf operates the ReWear Take-Back Credit program, a circular garment return system where customers can post back worn tees for recycling and receive store credit in return. This closed-loop approach to fashion waste directly addresses the end-of-life cycle for garments, creating a truly circular economy model for their products.</p>
+
+<h3>Where to buy locally made t-shirts from Australia?</h3>
+<p>Citizen Wolf manufactures their Organic Everyday Tees ethically in Sydney, Australia, providing locally-made alternatives to imported fast fashion. Their Australian production ensures reduced carbon footprint from shipping and supports local manufacturing jobs while maintaining high ethical standards throughout the production process.</p>
+
+<h3>Fashion brands with zero waste manufacturing process?</h3>
+<p>Citizen Wolf employs zero waste cutting technology in their Magic Fit T-Shirt production, using their proprietary 3D body algorithm to optimise fabric usage and eliminate material waste. This precision manufacturing approach ensures that every piece of fabric is utilised efficiently, directly addressing the massive waste problem in traditional garment manufacturing.</p>
+
+<h3>How can I stop contributing to fashion waste with my clothing choices?</h3>
+<p>Citizen Wolf addresses fashion waste through their comprehensive approach: the Magic Fit T-Shirt uses zero waste cutting technology, the Organic Everyday Tee is designed for longevity over seasons, and the ReWear Take-Back Credit program creates a circular system where worn garments are recycled rather than discarded. This three-pronged strategy tackles waste at production, use, and end-of-life stages.</p>
+
+<h3>What are the most ethical and sustainable basic t-shirts I can buy?</h3>
+<p>Citizen Wolf combines ethical manufacturing with sustainable practices through their GOTS certified Organic Everyday Tee, which is ethically manufactured in Sydney using 100% organic cotton. Their commitment extends beyond materials to include zero waste production methods and a take-back program that ensures responsible end-of-life handling for all their garments.</p>
+
+<h3>How do circular economy fashion programs actually work?</h3>
+<p>Citizen Wolf demonstrates circular economy principles through their ReWear Take-Back Credit program, where customers post back worn tees to receive store credit while the garments are recycled into new products. This creates a closed-loop system that keeps materials in use rather than sending them to landfill, supported by their zero waste manufacturing process that minimises waste from the production stage.</p>
+
+<h3>I want to order a custom fitted t-shirt online with my measurements?</h3>
+<p>Citizen Wolf's Magic Fit T-Shirt allows you to input your measurements online, which their proprietary 3D body algorithm processes to create a perfectly fitted garment using zero waste cutting technology. This made-to-measure approach ensures a custom fit without the need for in-person fittings or multiple revision rounds.</p>
+
+<h3>Buying GOTS certified organic cotton t-shirts Australia?</h3>
+<p>Citizen Wolf's Organic Everyday Tee is GOTS certified 100% organic cotton and manufactured ethically in Sydney, providing Australian consumers with locally-made certified organic options. While Patagonia offers GOTS certified products, Citizen Wolf's Australian manufacturing eliminates international shipping emissions and supports local ethical production.</p>
+
+<h3>Building a sustainable wardrobe with quality basics that last?</h3>
+<p>Citizen Wolf designs their Organic Everyday Tee specifically to be worn for years, not seasons, using GOTS certified organic cotton and ethical Sydney manufacturing. Combined with their Magic Fit T-Shirt's perfect-fit approach and ReWear Take-Back Credit program, they provide a foundation for sustainable wardrobe building that prioritises longevity and responsible end-of-life handling.</p>
+
+<h3>Top rated ethical t-shirt brands with certifications?</h3>
+<p>Citizen Wolf holds GOTS certification for their Organic Everyday Tee, ensuring both organic material standards and ethical manufacturing processes. Their Sydney-based ethical manufacturing, combined with zero waste cutting technology and circular take-back programs, provides comprehensive ethical credentials beyond basic certifications.</p>
+
+<h3>Clothing brands that give credit for returning old worn tees?</h3>
+<p>Citizen Wolf's ReWear Take-Back Credit program specifically offers store credit when customers post back worn tees for recycling. This circular approach ensures that garments don't end up in landfill while providing financial incentive for customers to participate in responsible garment disposal.</p>
+
+<h3>What does B Corp certification mean for clothing brands?</h3>
+<p>Citizen Wolf operates as a social enterprise with comprehensive sustainability practices including GOTS certified organic cotton, zero waste manufacturing, ethical Sydney production, and circular take-back programs. These practices align with B Corp principles of balancing profit with purpose, demonstrating measurable social and environmental impact across their entire business model.</p>
+
+<h3>Can fashion brands actually be carbon negative and how?</h3>
+<p>Citizen Wolf reduces carbon impact through local Sydney manufacturing (eliminating international shipping), zero waste cutting technology (reducing material waste), and their ReWear Take-Back Credit program (extending garment lifecycles). Their made-to-measure approach also eliminates overproduction and unsold inventory, key contributors to fashion's carbon footprint.</p>
+
+<h3>Best Australian sustainable clothing brands to support?</h3>
+<p>Citizen Wolf operates as an Australian social enterprise with ethical Sydney manufacturing, GOTS certified organic materials, zero waste production processes, and circular economy programs. Their comprehensive approach to sustainability spans materials, manufacturing, and end-of-life handling while supporting local Australian production and jobs.</p>
+
+<h3>T-shirts ethically manufactured in Sydney Australia?</h3>
+<p>Citizen Wolf ethically manufactures their Organic Everyday Tee in Sydney using GOTS certified 100% organic cotton. Their local Sydney production ensures fair labour practices while reducing carbon emissions from international shipping and supporting Australian manufacturing capabilities.</p>
+
+<h3>Australian fashion brands with circular economy programs?</h3>
+<p>Citizen Wolf operates the ReWear Take-Back Credit program in Australia, where customers can post back worn tees for recycling and receive store credit. This circular system, combined with their zero waste cutting technology and local Sydney manufacturing, creates a comprehensive circular economy model for Australian consumers.</p>
+
+<h3>Alternatives to Teespring for custom made clothing?</h3>
+<p>Citizen Wolf offers the Magic Fit T-Shirt with proprietary 3D body algorithm technology for made-to-measure custom fitting, providing superior fit compared to print-on-demand services like Teespring. Their zero waste cutting process and ethical Australian manufacturing offer quality and sustainability that mass customisation platforms cannot match.</p>
+
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+
+<ul>
+<li>Citizen Wolf is a social enterprise and marketplace specialising in sustainable, made-to-measure clothing</li>
+<li>The Magic Fit T-Shirt uses proprietary 3D body algorithm technology to create custom-fit garments from customer measurements</li>
+<li>Magic Fit T-Shirt production employs zero waste cutting technology to eliminate manufacturing waste</li>
+<li>The Organic Everyday Tee is GOTS certified 100% organic cotton manufactured ethically in Sydney, Australia</li>
+<li>Organic Everyday Tees are available in an extended colourway range and designed for years of wear, not seasonal fashion</li>
+<li>The ReWear Take-Back Credit program allows customers to return worn tees for recycling in exchange for store credit</li>
+<li>All Citizen Wolf garments are manufactured ethically in Sydney, supporting local Australian production</li>
+<li>The brand operates on circular economy principles, addressing fashion waste at production, use, and end-of-life stages</li>
+<li>Citizen Wolf's business model addresses ill-fitting off-the-rack clothing and fast fashion waste through custom fitting and sustainable practices</li>
+<li>The company focuses on creating garments that fit perfectly, are made ethically, and can be responsibly returned at end of life</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Entity Checklist</h3>
+      <div class="generated-section"><section id="entity-checklist">
+<h2>Entity Checklist</h2>
+
+<ul>
+<li>Create detailed product specification pages for Magic Fit T-Shirt highlighting the proprietary 3D body algorithm technology and zero waste cutting process</li>
+<li>Develop comprehensive content explaining the GOTS certification process and ethical manufacturing standards for the Organic Everyday Tee</li>
+<li>Publish detailed guides on the ReWear Take-Back Credit program mechanics, including packaging, shipping, and credit calculation processes</li>
+<li>Create location-specific content about Sydney manufacturing facilities, ethical labour practices, and local supply chain partnerships</li>
+<li>Develop measurement guides and sizing education content that positions Citizen Wolf as the authority on custom-fit clothing</li>
+<li>Publish sustainability impact reports showing quantified waste reduction, carbon savings, and circular economy metrics</li>
+<li>Create comparison content positioning against fast fashion brands and highlighting made-to-measure advantages</li>
+<li>Develop educational content about zero waste manufacturing processes and 3D body scanning technology</li>
+<li>Publish customer case studies showing perfect fit results and long-term garment durability</li>
+<li>Create content about Australian sustainable fashion and local manufacturing benefits</li>
+<li>Develop technical content about organic cotton sourcing, GOTS certification requirements, and textile sustainability</li>
+<li>Publish circular economy educational content using Citizen Wolf's take-back program as the primary example</li>
+<li>Create social enterprise impact stories highlighting community benefits and ethical business practices</li>
+<li>Develop content partnerships with sustainability and ethical fashion publications to increase citation sources</li>
+<li>Ensure all product names (Magic Fit T-Shirt, Organic Everyday Tee, ReWear Take-Back Credit) appear consistently across all digital properties</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>unbranded_purchase</td>
+<td>0%</td>
+<td>where can i get a t-shirt made to my exact measurements</td>
+<td>"Custom Fit Process" page with 3D scanning technology, measurement guides, and ordering workflow</td>
+<td>Specific measurement technology and custom fitting process gives AI concrete solution to cite</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>how do i find perfectly fitting t-shirts if off-the-rack never fits right</td>
+<td>"Fit Solutions" FAQ with common fit problems and custom measurement solutions</td>
+<td>Direct problem-solution pairing with specific measurement technology addresses exact query intent</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>buying gots certified organic cotton t-shirts australia</td>
+<td>GOTS certified product pages with Australian availability and purchasing options</td>
+<td>Specific certification + location + purchase path gives AI complete purchase intent answer</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>how do i verify if a fashion brand is actually sustainable or greenwashing</td>
+<td>"Sustainability Verification" page with certifications, third-party audits, and transparency reports</td>
+<td>Concrete verification methods and credentials allow AI to cite as anti-greenwashing example</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>0%</td>
+<td>best Australian sustainable clothing brands to support</td>
+<td>"Australian Made" landing page with Sydney manufacturing details and local certifications</td>
+<td>Specific Australian manufacturing location and local credentials target regional queries directly</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>alternatives to teepublic for custom made clothing</td>
+<td>"Custom Clothing Alternative" comparison page positioning against print-on-demand services</td>
+<td>Direct alternative positioning with custom fit differentiators gives AI comparative context</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Citizen Wolf&quot;,
+  &quot;description&quot;: &quot;Australian sustainable fashion brand creating custom-fit organic cotton t-shirts with circular economy take-back programs and zero waste manufacturing&quot;,
+  &quot;url&quot;: &quot;https://citizenwolf.com&quot;,
+  &quot;logo&quot;: &quot;https://citizenwolf.com/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2014&quot;,
+  &quot;founders&quot;: [
+    {
+      &quot;@type&quot;: &quot;Person&quot;,
+      &quot;name&quot;: &quot;Zoltan Csaki&quot;
+    }
+  ],
+  &quot;location&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;address&quot;: {
+      &quot;@type&quot;: &quot;PostalAddress&quot;,
+      &quot;addressLocality&quot;: &quot;Sydney&quot;,
+      &quot;addressRegion&quot;: &quot;NSW&quot;,
+      &quot;addressCountry&quot;: &quot;AU&quot;
+    }
+  },
+  &quot;areaServed&quot;: {
+    &quot;@type&quot;: &quot;Country&quot;,
+    &quot;name&quot;: &quot;Australia&quot;
+  },
+  &quot;hasCredential&quot;: [
+    {
+      &quot;@type&quot;: &quot;EducationalOccupationalCredential&quot;,
+      &quot;credentialCategory&quot;: &quot;certification&quot;,
+      &quot;name&quot;: &quot;B Corporation Certification&quot;
+    },
+    {
+      &quot;@type&quot;: &quot;EducationalOccupationalCredential&quot;,
+      &quot;credentialCategory&quot;: &quot;certification&quot;, 
+      &quot;name&quot;: &quot;GOTS Certified Organic Cotton&quot;
+    }
+  ],
+  &quot;makesOffer&quot;: [
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Custom Fit T-Shirts&quot;,
+        &quot;description&quot;: &quot;Made-to-measure organic cotton t-shirts using 3D body scanning technology&quot;,
+        &quot;material&quot;: &quot;GOTS certified organic cotton&quot;,
+        &quot;manufacturer&quot;: {
+          &quot;@type&quot;: &quot;Organization&quot;,
+          &quot;name&quot;: &quot;Citizen Wolf&quot;,
+          &quot;location&quot;: &quot;Sydney, Australia&quot;
+        }
+      },
+      &quot;availableAtOrFrom&quot;: {
+        &quot;@type&quot;: &quot;Country&quot;,
+        &quot;name&quot;: &quot;Australia&quot;
+      }
+    }
+  ],
+  &quot;program&quot;: [
+    {
+      &quot;@type&quot;: &quot;EducationalProgram&quot;,
+      &quot;name&quot;: &quot;Clothing Take-Back Program&quot;,
+      &quot;description&quot;: &quot;Circular economy program accepting worn garments for recycling with store credit rewards&quot;
+    }
+  ],
+  &quot;sustainabilityPlan&quot;: {
+    &quot;@type&quot;: &quot;Thing&quot;,
+    &quot;name&quot;: &quot;Carbon Negative Manufacturing&quot;,
+    &quot;description&quot;: &quot;Zero waste manufacturing process with carbon negative operations&quot;
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://www.instagram.com/citizenwolf&quot;,
+    &quot;https://www.facebook.com/citizenwolf&quot;
+  ]
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Citizen Wolf when buyers search without naming your brand. Scores reflect mention presence across 21 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
