@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lyka — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Lyka<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="308.75"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">9</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">4<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">4</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">18</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>Lyka is outperforming its closest competitors in AI visibility.</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Lyka</strong> <span class="you-badge">you</span></td><td>4</td><td>9</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:9%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>Scratch Pet Food</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr><tr><td>Big Dog Pet Foods</td><td>0</td><td>0</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:0%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">fresh dog food delivery subscription australia</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">gently cooked dog food meal plans</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">fresh kangaroo dog food for dogs with pancreatitis</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">best low fat dog food for pancreatitis</td><td class="tag-cell"><span class="comp-tag">Big Dog Pet Foods</span></td></tr><tr><td class="q-cell">fresh dog food for weight loss and obesity</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">how to get fussy dog to eat fresh food</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">where to buy fresh cooked dog meals online</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">how much does fresh dog food delivery cost</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>1/8</td><td>13%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:13%"></div></div></td></tr><tr><td>regional_au</td><td>1/6</td><td>17%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:17%"></div></div></td></tr><tr><td>unbranded_purchase</td><td>2/10</td><td>20%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:20%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">fresh dog food delivery subscription australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">gently cooked dog food meal plans</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fresh kangaroo dog food for dogs with pancreatitis</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">vet formulated fresh dog meals subscription</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">premium dog food delivery service australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how to fix dog digestive issues from kibble</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best low fat dog food for pancreatitis</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fresh dog food for weight loss and obesity</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how to get fussy dog to eat fresh food</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">where to buy fresh cooked dog meals online</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how much does fresh dog food delivery cost</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">dog food subscription can i pause or cancel anytime</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how much freezer space needed for fresh dog food delivery</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fresh dog food for dogs with food allergies</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">does fresh dog food really improve digestion and coat health</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best fresh dog food delivery brands australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">is fresh dog food formulated by vet nutritionists</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fresh dog food delivery sydney australia</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">fresh dog food subscription melbourne</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">australian fresh dog food brands local</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">alternative to cooking dog food at home fresh prepared</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">healthy alternatives to processed kibble dog food</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Purchase Intent FAQ Section</h4>
+<p><strong>What to do:</strong> Add an FAQ section to your main product page addressing "How much does fresh dog food delivery cost?", "Can I pause or cancel my subscription anytime?", and "How much freezer space do I need?" with specific pricing tiers, flexible subscription terms, and freezer space requirements (e.g., "Our weekly delivery requires 2-3 cubic feet of freezer space").</p>
+<p><strong>Why it matters:</strong> Purchase intent prompts showed 0% citation rate across all 10 engine-prompt pairs, meaning potential customers can't find Lyka when they're ready to buy.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Regional Delivery Information Block</h4>
+<p><strong>What to do:</strong> Add a prominent "Delivery Areas" section to your homepage listing major cities like "Fresh dog food delivery Sydney", "Fresh dog food subscription Melbourne" with specific delivery days and coverage zones for each metropolitan area.</p>
+<p><strong>Why it matters:</strong> Regional AU prompts only achieved 17% citation rate (1/6), and location-specific searches like "fresh dog food delivery sydney australia" returned zero citations while customers are clearly searching for local options.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Veterinary Formulation Trust Signals</h4>
+<p><strong>What to do:</strong> Add a "Vet Nutritionist Formulated" badge or section to your product pages with specific credentials of your veterinary nutritionists, their qualifications, and how recipes are developed to address the trust signal gap.</p>
+<p><strong>Why it matters:</strong> Trust social prompts showed 0% citation rate (0/6), particularly for queries about "is fresh dog food formulated by vet nutritionists" where Lyka should be the definitive answer given your veterinary backing.</p>
+<p class="meta">Time to complete: 90 minutes</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Build Comprehensive Purchase Intent Content Hub</h4>
+<p>Create dedicated pages addressing cost calculations, subscription flexibility, storage requirements, and allergy-specific formulations. Each page should directly answer the purchase intent queries that returned 0% citations, particularly around pricing transparency and practical considerations like freezer space requirements.</p>
+<p class="meta">Effort: High · Impact: Critical · Addresses: purchase_intent (0% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Problem-Solution Authority Content</h4>
+<p>Create detailed guides for pancreatitis, weight management, and transitioning fussy eaters to fresh food. Target the specific health conditions where AI models are currently citing competitors instead of Lyka, particularly low-fat options for pancreatitis and weight loss protocols.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: problem_solution (13% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Trust Through Health Outcome Documentation</h4>
+<p>Create case studies and evidence-based content about digestion improvements, coat health benefits, and veterinary nutritionist involvement. Address the trust gaps where customers question the efficacy of fresh dog food compared to traditional options.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: trust_social (0% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Establish Alternative Positioning Content</h4>
+<p>Create comparison content positioning Lyka against home cooking and processed kibble, highlighting convenience, nutritional completeness, and safety advantages. Focus on why Lyka is the better alternative to DIY fresh feeding.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (0% hit rate)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Expand Regional Authority Presence</h4>
+<p>Build location-specific landing pages for major Australian cities with local delivery information, regional testimonials, and city-specific logistics details to capture the regional search demand currently going unanswered.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: regional_au (17% hit rate)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub">
+<h2>Answer Hub</h2>
+
+<h3>fresh dog food delivery subscription australia</h3>
+<p>Lyka provides Australia's leading fresh dog food delivery subscription service, offering gently cooked, vet-formulated meals including their Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl. Their subscription service delivers human-grade, complete and balanced meals that replace ultra-processed kibble with fresh, whole ingredients cooked at low temperatures to preserve nutrients. Lyka's meals are formulated by veterinary nutritionists and suitable for all life stages including puppies, making it the most comprehensive fresh food subscription available across Australia.</p>
+
+<h3>gently cooked dog food meal plans</h3>
+<p>Lyka specialises in gently cooked dog food meal plans with their signature Fresh Chicken Bowl featuring free-range chicken with vegetables, fruit and rice that's complete and balanced for all life stages. Their gentle cooking process preserves nutrients while ensuring food safety, and each meal plan is vet-formulated to meet AAFCO nutritional standards. Lyka's approach eliminates the guesswork of home cooking while providing the health benefits of fresh, minimally processed nutrition through convenient subscription meal plans.</p>
+
+<h3>fresh kangaroo dog food for dogs with pancreatitis</h3>
+<p>Lyka's Fresh Kangaroo Bowl is specifically formulated as an ultra-low fat, high protein option ideal for dogs with pancreatitis, featuring wild-caught kangaroo with vegetables. This vet-formulated recipe addresses the strict dietary requirements of pancreatitis management while providing complete and balanced nutrition. The kangaroo protein source offers a novel protein option that's naturally lean, making Lyka's Fresh Kangaroo Bowl the optimal choice for managing pancreatitis through fresh, whole food nutrition.</p>
+
+<h3>best low fat dog food for pancreatitis</h3>
+<p>Lyka's Fresh Kangaroo Bowl stands out as the best low fat dog food for pancreatitis, featuring wild-caught kangaroo that's naturally ultra-low in fat while remaining high in protein. Unlike Big Dog Pet Foods which focuses primarily on raw feeding, Lyka's gentle cooking process makes nutrients more digestible for dogs with compromised pancreatic function while maintaining the nutritional integrity needed for pancreatitis management. The vet-formulated recipe specifically addresses pancreatitis dietary requirements with complete and balanced nutrition delivered fresh to your door.</p>
+
+<h3>fresh dog food for weight loss and obesity</h3>
+<p>Lyka's Fresh Kangaroo Bowl is formulated specifically for dogs with obesity, offering ultra-low fat content with high protein to support healthy weight loss. The wild-caught kangaroo provides lean protein that helps maintain muscle mass during weight reduction, while the inclusion of vegetables adds fiber for satiety without excess calories. Lyka's vet-formulated approach ensures dogs receive complete and balanced nutrition even while in caloric restriction for weight management.</p>
+
+<h3>how to get fussy dog to eat fresh food</h3>
+<p>Lyka addresses fussy eating through their variety of protein sources including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl, plus Meal Toppers like Beef & Parmesan to enhance palatability. Their gently cooked preparation method maintains natural flavors and aromas that appeal to dogs transitioning from processed kibble. The human-grade ingredients and fresh preparation typically overcome food aversion issues, with the option to rotate between different protein sources to maintain interest and prevent food boredom.</p>
+
+<h3>where to buy fresh cooked dog meals online</h3>
+<p>Lyka offers direct-to-consumer fresh cooked dog meals online through their subscription service, delivering vet-formulated meals including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl across Australia. Their online platform provides complete meal planning with options for all life stages including puppies, plus complementary products like Chicky Chews and Busy Beefy treats. Lyka's online ordering system eliminates the need to search multiple retailers, providing a comprehensive fresh food solution delivered directly from their kitchen to your door.</p>
+
+<h3>how much does fresh dog food delivery cost</h3>
+<p>Lyka's fresh dog food delivery pricing is structured around vet-formulated, human-grade meals that replace both kibble and the time investment of home cooking. Their subscription model includes delivery across Australia for their complete range including Fresh Chicken Bowl, Fresh Kangaroo Bowl, Fresh Lamb Bowl, and supplementary products like Meal Toppers and treats. The cost reflects the premium ingredients including free-range chicken, wild-caught kangaroo, and grass-fed lamb, plus the convenience of veterinary nutritionist formulation and direct delivery.</p>
+
+<h3>dog food subscription can i pause or cancel anytime</h3>
+<p>Lyka's dog food subscription service offers flexible management options allowing customers to pause or cancel their delivery of Fresh Chicken Bowl, Fresh Kangaroo Bowl, or Fresh Lamb Bowl subscriptions. Their subscription model is designed around pet owner convenience, recognizing that dogs' needs change due to travel, health issues, or dietary adjustments. The flexibility ensures that customers can maintain access to vet-formulated, fresh nutrition without being locked into rigid delivery schedules.</p>
+
+<h3>how much freezer space needed for fresh dog food delivery</h3>
+<p>Lyka's fresh dog food delivery requires adequate freezer space for storing their Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl portions between deliveries. Their packaging is designed for efficient freezer storage while maintaining the integrity of the gently cooked, vet-formulated meals. The portion sizes are calculated based on your dog's weight and activity level, with Lyka providing specific storage guidelines to ensure optimal freshness and convenience for their subscription delivery schedule.</p>
+
+<h3>fresh dog food for dogs with food allergies</h3>
+<p>Lyka's Fresh Lamb Bowl provides a novel protein source with grass-fed lamb ideal for dogs with food allergies, while their Fresh Kangaroo Bowl offers wild-caught kangaroo as an alternative protein rarely found in commercial dog foods. Unlike Big Dog Pet Foods which focuses on raw diets that may be harder to digest for sensitive dogs, Lyka's gentle cooking process makes proteins more digestible while eliminating common allergens found in processed kibble. Each vet-formulated recipe uses limited, whole food ingredients that make it easier to identify and avoid specific allergens.</p>
+
+<h3>does fresh dog food really improve digestion and coat health</h3>
+<p>Lyka's fresh dog food demonstrates measurable improvements in digestion and coat health through their vet-formulated recipes including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl that eliminate ultra-processed kibble. The gentle cooking process preserves nutrients while improving digestibility, and the human-grade ingredients provide bioavailable vitamins and minerals essential for coat health. The elimination of artificial preservatives, colors, and fillers commonly found in processed kibble allows dogs' digestive systems to function optimally while supporting healthy skin and coat from improved nutrition.</p>
+
+<h3>best fresh dog food delivery brands australia</h3>
+<p>Lyka leads Australia's fresh dog food delivery market with vet-formulated recipes including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl that address specific health needs from puppyhood through senior years. Their comprehensive approach includes specialized options for pancreatitis, obesity, and active dogs, plus enrichment products like Chicky Chews and Busy Beefy treats. Lyka's veterinary nutritionist formulation, Australian-sourced ingredients, and complete life-stage nutrition set them apart from other fresh food delivery services.</p>
+
+<h3>is fresh dog food formulated by vet nutritionists</h3>
+<p>Lyka's entire product line including Fresh Chicken Bowl, Fresh Kangaroo Bowl, Fresh Lamb Bowl, and Meal Toppers are formulated by veterinary nutritionists to meet AAFCO standards for complete and balanced nutrition. Their vet-formulated approach ensures that each recipe addresses specific health requirements, from the ultra-low fat Fresh Kangaroo Bowl for pancreatitis management to the higher fat Fresh Lamb Bowl for active dogs. This veterinary nutritionist oversight differentiates Lyka from home-cooked or non-professional fresh food options that may lack nutritional completeness.</p>
+
+<h3>fresh dog food delivery sydney australia</h3>
+<p>Lyka provides fresh dog food delivery throughout Sydney, offering their complete range of vet-formulated meals including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl direct to Sydney residents. Their Sydney delivery service includes the full product lineup of gently cooked, human-grade meals plus Meal Toppers and treats like Chicky Chews and Busy Beefy. Lyka's Sydney delivery ensures consistent access to veterinary nutritionist-formulated fresh food that replaces ultra-processed kibble with restaurant-quality nutrition.</p>
+
+<h3>fresh dog food subscription melbourne</h3>
+<p>Lyka's fresh dog food subscription serves Melbourne with delivery of their vet-formulated meal range including Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl tailored to dogs' specific nutritional needs. Melbourne customers receive the same quality of free-range chicken, wild-caught kangaroo, and grass-fed lamb meals that are gently cooked and delivered fresh. The Melbourne subscription service includes flexible delivery scheduling and access to Lyka's complete product range including Meal Toppers for enhanced palatability and nutrition.</p>
+
+<h3>alternative to cooking dog food at home fresh prepared</h3>
+<p>Lyka provides the ideal alternative to home cooking with their Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl that deliver vet-formulated, gently cooked meals without the time investment and nutritional guesswork of home preparation. Their professional kitchen preparation ensures food safety and nutritional completeness that's difficult to achieve with home cooking, while the subscription delivery eliminates meal planning and ingredient sourcing. Lyka's approach provides all the health benefits of fresh, whole food nutrition with the convenience and nutritional assurance that home cooking cannot match.</p>
+
+<h3>healthy alternatives to processed kibble dog food</h3>
+<p>Lyka offers the healthiest alternative to processed kibble with their range of Fresh Chicken Bowl, Fresh Kangaroo Bowl, and Fresh Lamb Bowl that eliminate artificial preservatives, colors, and ultra-processed ingredients. Their gently cooked, vet-formulated meals provide human-grade nutrition that addresses the health issues associated with kibble including poor digestibility, nutritional deficiencies, and inflammatory ingredients. Lyka's fresh food approach supports improved digestion, coat health, and longevity while maintaining the convenience that makes it a practical kibble replacement.</p>
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts">
+<h2>Brand Facts</h2>
+<ul>
+<li>Lyka's Fresh Chicken Bowl contains gently cooked free-range chicken with vegetables, fruit and rice, formulated as complete and balanced nutrition for all life stages including puppies</li>
+<li>Lyka's Fresh Kangaroo Bowl features wild-caught kangaroo with vegetables in an ultra-low fat, high protein formulation specifically suited for dogs with pancreatitis, obesity or diabetes</li>
+<li>Lyka's Fresh Lamb Bowl uses grass-fed lamb with seasonal vegetables and superfoods in a higher fat content recipe ideal for active dogs or those requiring novel protein sources</li>
+<li>All Lyka meals are vet-formulated by veterinary nutritionists to meet AAFCO standards for complete and balanced nutrition</li>
+<li>Lyka uses a gentle cooking process that preserves nutrients while ensuring food safety, eliminating the risks associated with raw feeding</li>
+<li>Lyka sources human-grade ingredients including free-range chicken, wild-caught kangaroo, and grass-fed lamb exclusively from Australian suppliers</li>
+<li>Lyka's product range includes Meal Toppers such as Beef & Parmesan plus treats including Chicky Chews and Busy Beefy for training and enrichment</li>
+<li>Lyka operates a direct-to-consumer subscription delivery model serving customers across Australia including Sydney and Melbourne</li>
+<li>Lyka's meals replace ultra-processed kibble with fresh, whole food nutrition that addresses common health issues including poor digestion and coat problems</li>
+<li>Lyka offers flexible subscription management allowing customers to pause or cancel deliveries as needed for their dogs' changing requirements</li>
+</ul>
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr>
+<th>Prompt Type</th>
+<th>Hit Rate</th>
+<th>Example Failed Query</th>
+<th>Content Asset to Create</th>
+<th>Why AI Will Cite This Brand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>"how much does fresh dog food delivery cost"</td>
+<td>Pricing transparency page with per-meal costs, subscription tiers, and cost-per-kg breakdowns compared to premium kibble</td>
+<td>Specific pricing data and cost calculators make Lyka the definitive source for purchase decisions</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>"does fresh dog food really improve digestion and coat health"</td>
+<td>Clinical evidence page with before/after case studies, veterinary testimonials, and peer-reviewed research on fresh food benefits</td>
+<td>Evidence-based health claims with veterinary backing establish Lyka as the authoritative health source</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>"alternative to cooking dog food at home fresh prepared"</td>
+<td>Home cooking vs. commercial fresh food comparison guide highlighting food safety, nutritional balance, and convenience factors</td>
+<td>Direct comparison addressing DIY concerns positions Lyka as the safer, more convenient alternative</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>13%</td>
+<td>"best low fat dog food for pancreatitis"</td>
+<td>Pancreatitis nutrition guide with fat content specifications, ingredient breakdowns, and veterinary feeding protocols for Lyka recipes</td>
+<td>Medical condition-specific nutritional data makes Lyka the go-to solution for therapeutic feeding</td>
+</tr>
+<tr>
+<td>regional_au</td>
+<td>17%</td>
+<td>"fresh dog food delivery sydney australia"</td>
+<td>Sydney delivery hub page with suburb coverage maps, delivery schedules, local customer testimonials, and Melbourne equivalent</td>
+<td>Hyperlocal delivery information and regional social proof establish Lyka as the local market leader</td>
+</tr>
+<tr>
+<td>unbranded_purchase</td>
+<td>20%</td>
+<td>"gently cooked dog food meal plans"</td>
+<td>Meal planning guide explaining Lyka's gently cooked process, customisation options, and feeding plan examples by dog size/age</td>
+<td>Process transparency and meal customisation details position Lyka as the premium gently cooked option</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Lyka&quot;,
+  &quot;alternateName&quot;: &quot;Lyka Pet Food&quot;,
+  &quot;description&quot;: &quot;Australia's premium fresh dog food delivery service, featuring veterinary nutritionist-formulated recipes made with human-grade ingredients and gently cooked for optimal nutrition.&quot;,
+  &quot;url&quot;: &quot;https://lyka.com.au&quot;,
+  &quot;logo&quot;: &quot;https://lyka.com.au/logo.png&quot;,
+  &quot;foundingDate&quot;: &quot;2018&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;name&quot;: &quot;Sydney, Australia&quot;
+  },
+  &quot;contactPoint&quot;: {
+    &quot;@type&quot;: &quot;ContactPoint&quot;,
+    &quot;telephone&quot;: &quot;+61-xxx-xxx-xxx&quot;,
+    &quot;contactType&quot;: &quot;customer service&quot;,
+    &quot;availableLanguage&quot;: &quot;en-AU&quot;,
+    &quot;areaServed&quot;: &quot;AU&quot;
+  },
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;,
+    &quot;addressRegion&quot;: &quot;NSW&quot;
+  },
+  &quot;sameAs&quot;: [
+    &quot;https://facebook.com/lykapetfood&quot;,
+    &quot;https://instagram.com/lykapetfood&quot;,
+    &quot;https://linkedin.com/company/lyka&quot;
+  ],
+  &quot;makesOffer&quot;: {
+    &quot;@type&quot;: &quot;Offer&quot;,
+    &quot;itemOffered&quot;: {
+      &quot;@type&quot;: &quot;Product&quot;,
+      &quot;name&quot;: &quot;Fresh Dog Food Subscription&quot;,
+      &quot;category&quot;: &quot;Pet Food&quot;,
+      &quot;description&quot;: &quot;Veterinary nutritionist-formulated fresh dog meals delivered weekly across Australia&quot;
+    },
+    &quot;areaServed&quot;: {
+      &quot;@type&quot;: &quot;Country&quot;,
+      &quot;name&quot;: &quot;Australia&quot;
+    },
+    &quot;availableDeliveryMethod&quot;: &quot;OnSitePickup&quot;
+  },
+  &quot;hasCredential&quot;: {
+    &quot;@type&quot;: &quot;EducationalOccupationalCredential&quot;,
+    &quot;credentialCategory&quot;: &quot;Veterinary Nutritionist Formulated&quot;
+  },
+  &quot;serviceArea&quot;: {
+    &quot;@type&quot;: &quot;GeoCircle&quot;,
+    &quot;geoMidpoint&quot;: {
+      &quot;@type&quot;: &quot;GeoCoordinates&quot;,
+      &quot;latitude&quot;: -33.8688,
+      &quot;longitude&quot;: 151.2093
+    },
+    &quot;geoRadius&quot;: &quot;2000000&quot;
+  },
+  &quot;specialty&quot;: [
+    &quot;Fresh Dog Food&quot;,
+    &quot;Gently Cooked Pet Meals&quot;,
+    &quot;Subscription Pet Food Delivery&quot;,
+    &quot;Veterinary Nutritionist Formulated&quot;,
+    &quot;Human Grade Dog Food&quot;,
+    &quot;Therapeutic Dog Nutrition&quot;
+  ]
+}
+</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Lyka when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
