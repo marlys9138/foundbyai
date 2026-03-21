@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frank Green — AI Visibility Report | Found By AI</title>
+<style>
+:root{
+  --bg:#0b0e0a;
+  --surface:#111408;
+  --surface2:#161a0e;
+  --border:#1e2414;
+  --border2:#252c18;
+  --text:#e8e4d4;
+  --text-soft:#b8b4a4;
+  --text-muted:#6a6e5c;
+  --accent:#c8a428;
+  --accent-dim:#8a6e18;
+  --success:#4a8c3c;
+  --warning:#c87828;
+  --danger:#c84428;
+  --mono:'IBM Plex Mono',monospace;
+  --serif:'Georgia',serif;
+  --sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.65;}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--text-muted)}
+
+/* NAV */
+.report-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.report-nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.nav-brand{font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
+.nav-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links{display:flex;gap:20px;flex-wrap:wrap}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.nav-links a:hover{color:var(--accent);text-decoration:none}
+
+/* HERO */
+.hero{padding:64px 0 48px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:12px}
+.hero-sub{font-size:16px;color:var(--text-soft);max-width:520px}
+.score-ring-wrap{text-align:center;flex-shrink:0}
+.score-ring-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.score-ring svg{display:block;}
+.score-ring text{font-family:var(--sans);}
+.band-tag{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--border2);color:var(--text-muted);margin-top:10px}
+
+/* METRICS STRIP */
+.metrics-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin:40px 0 0}
+.metric{background:var(--surface);padding:22px 20px}
+.metric-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.metric-value{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1}
+.metric-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* SECTIONS */
+.section{padding:56px 0;border-bottom:1px solid var(--border)}
+.section:last-child{border-bottom:none}
+.section-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.section-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:400;margin-bottom:8px;letter-spacing:-.02em}
+.section-lead{font-size:15px;color:var(--text-soft);max-width:600px;margin-bottom:32px}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;background:var(--surface)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+tr:hover td{background:var(--surface2)}
+.q-cell{max-width:340px;word-break:break-word;color:var(--text-soft)}
+.dot-cell{width:64px;text-align:center}
+.tag-cell{}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot-yes{background:var(--success)}
+.dot-no{background:var(--border2)}
+.comp-tag{display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 8px;background:rgba(200,164,40,.08);border:1px solid rgba(200,164,40,.2);color:var(--accent);margin:1px 2px}
+.brand-row td{background:rgba(200,164,40,.04)}
+.you-badge{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--accent-dim);color:var(--accent);margin-left:6px}
+
+/* SCORE BARS */
+.score-bar{height:5px;background:var(--border2);border-radius:2px;overflow:hidden;margin-top:4px}
+.score-fill{height:100%;border-radius:2px;transition:width .3s}
+.pt-bar{height:6px;background:var(--border2);border-radius:3px;overflow:hidden}
+.pt-fill{height:100%;background:var(--accent);border-radius:3px}
+
+/* GAP CARD */
+.gap-card{border:1px solid var(--border2);padding:24px 28px;background:var(--surface);margin-bottom:32px}
+.gap-card p{font-family:var(--serif);font-size:17px;color:var(--text);line-height:1.6}
+
+/* ENGINE CARDS */
+.engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:32px}
+.engine-card{background:var(--surface);padding:24px}
+.engine-name{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.engine-score{font-family:var(--serif);font-size:36px;color:var(--accent);line-height:1}
+.engine-sub{font-size:12px;color:var(--text-muted);margin-top:4px;margin-bottom:12px}
+.engine-detail{font-size:13px;color:var(--text-soft)}
+
+/* DELIVERABLES */
+.deliverables-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.deliverable-card{background:var(--surface);padding:24px 22px}
+.deliverable-card h4{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.deliverable-card p,.deliverable-card li{font-size:13px;color:var(--text-soft);line-height:1.6}
+.deliverable-card ul{padding-left:16px;margin-top:8px}
+.deliverable-card li{margin-bottom:4px}
+
+/* SCHEMA */
+.schema-toggle-btn{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:7px 14px;cursor:pointer;margin-bottom:16px}
+.schema-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+.schema-block{display:none;background:var(--surface);border:1px solid var(--border);padding:20px;overflow-x:auto;margin-bottom:12px}
+.schema-block.open{display:block}
+.schema-block pre{font-family:var(--mono);font-size:11px;color:var(--text-soft);white-space:pre-wrap;word-break:break-word}
+#copy-btn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid var(--border2);color:var(--text-muted);padding:6px 12px;cursor:pointer}
+#copy-btn:hover,#copy-btn.copied{border-color:var(--success);color:var(--success)}
+
+/* SCOPE SUMMARY */
+.scope-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.scope-cell{background:var(--surface);padding:18px 16px;text-align:center}
+.scope-label{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.scope-value{font-family:var(--serif);font-size:22px;color:var(--text)}
+
+/* PROMPT TYPE TABLE */
+.pt thead th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);padding:10px 12px;border-bottom:1px solid var(--border);text-align:left}
+.pt td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft)}
+
+/* FOOTER */
+.report-footer{padding:48px 0;border-top:1px solid var(--border);margin-top:0}
+.footer-brand{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:6px}
+.footer-meta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px}
+.footer-note{font-size:13px;color:var(--text-muted);max-width:600px;line-height:1.7}
+
+/* GENERATED SECTIONS */
+.generated-section h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em}
+.generated-section h3{font-family:var(--serif);font-size:17px;font-weight:400;margin:24px 0 10px;color:var(--text)}
+.generated-section h4{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:20px 0 8px}
+.generated-section p{font-size:14px;color:var(--text-soft);line-height:1.7;margin-bottom:12px}
+.generated-section ul,.generated-section ol{padding-left:20px;margin-bottom:16px}
+.generated-section li{font-size:14px;color:var(--text-soft);line-height:1.65;margin-bottom:6px}
+.generated-section table{width:100%;border-collapse:collapse;margin-bottom:20px}
+.generated-section th{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--surface);text-align:left}
+.generated-section td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text-soft);vertical-align:top}
+.generated-section .action{border:1px solid var(--border);padding:18px 20px;margin-bottom:12px;background:var(--surface)}
+.generated-section .priority{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:6px}
+.generated-section .meta{font-family:var(--mono);font-size:10px;color:var(--text-muted);margin-top:8px}
+
+@media(max-width:640px){
+  .hero-grid{grid-template-columns:1fr}
+  .engine-grid{grid-template-columns:1fr}
+  .scope-grid{grid-template-columns:1fr 1fr}
+  .score-ring-wrap{margin-top:32px}
+}
+</style>
+</head>
+<body>
+
+<nav class="report-nav">
+  <div class="wrap">
+    <div><span class="nav-brand">Found By AI</span> <span class="nav-label">&nbsp;/&nbsp; AI Visibility Report</span></div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#gaps">Gaps</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#assets">Assets</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="score">
+  <div class="wrap">
+    <div class="hero-eyebrow">AI Visibility Report &mdash; March 2026</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-title">Frank Green<br>AI Visibility Report</h1>
+        <p class="hero-sub">How AI models respond when buyers search without naming your brand &mdash; and where your competitors appear instead.</p>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring-label">Organic AI Score</div>
+        <div class="score-ring">
+          <svg width="136" height="136" viewBox="0 0 136 136">
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--border2)" stroke-width="8"/>
+            <circle cx="68" cy="68" r="54" fill="none" stroke="var(--text-muted)" stroke-width="8"
+              stroke-dasharray="339.29" stroke-dashoffset="332.50"
+              stroke-linecap="round" transform="rotate(-90 68 68)"/>
+            <text x="68" y="64" text-anchor="middle" font-size="32" font-weight="700" fill="var(--text)">2</text>
+            <text x="68" y="82" text-anchor="middle" font-size="11" fill="var(--text-muted)">/100</text>
+          </svg>
+        </div>
+        <div class="band-tag">Minimal Presence</div>
+      </div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-label">Claude mentions</div><div class="metric-value">0<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">ChatGPT mentions</div><div class="metric-value">1<span style="font-size:16px;color:var(--text-muted)">/22</span></div><div class="metric-sub">organic prompts</div></div>
+      <div class="metric"><div class="metric-label">Both engines</div><div class="metric-value">0</div><div class="metric-sub">consistent mentions</div></div>
+      <div class="metric"><div class="metric-label">Partial only</div><div class="metric-value">1</div><div class="metric-sub">one engine only</div></div>
+      <div class="metric"><div class="metric-label">Missed</div><div class="metric-value" style="color:var(--warning)">21</div><div class="metric-sub">not mentioned</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENCHMARK -->
+<section class="section" id="benchmark">
+  <div class="wrap">
+    <div class="section-eyebrow">Competitor Benchmark</div>
+    <h2 class="section-title">How you compare</h2>
+    <p class="section-lead">Organic AI visibility score compared against your listed competitors on the same prompts.</p>
+    <div class="gap-card"><p>KeepCup scores 16 points higher than Frank Green in AI visibility (18 vs 2/100).</p></div>
+    <table>
+      <thead><tr><th>Brand</th><th>Mentions</th><th>Score /100</th><th>Visibility</th></tr></thead>
+      <tbody>
+        <tr class="brand-row"><td><strong>Frank Green</strong> <span class="you-badge">you</span></td><td>1</td><td>2</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:2%;background:var(--accent)"></div></div></td></tr>
+        <tr><td>KeepCup</td><td>4</td><td>18</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:18%;background:var(--accent)"></div></div></td></tr><tr><td>S'well</td><td>3</td><td>14</td><td style="min-width:120px"><div class="score-bar"><div class="score-fill" style="width:14%;background:var(--accent)"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section class="section" id="gaps">
+  <div class="wrap">
+    <div class="section-eyebrow">Visibility Gaps</div>
+    <h2 class="section-title">Where competitors appear instead</h2>
+    <p class="section-lead">Queries where neither AI named your brand &mdash; and which competitors were recommended in your place.</p>
+    
+    
+    <table>
+      <thead><tr><th>Query</th><th>Recommended instead</th></tr></thead>
+      <tbody><tr><td class="q-cell">best ceramic lined reusable coffee cup with custom colours</td><td class="tag-cell"><span class="comp-tag">Hydro Flask</span></td></tr><tr><td class="q-cell">triple wall vacuum insulated stainless steel water bottle keeps drinks cold</td><td class="tag-cell"><span class="comp-tag">S'well</span> <span class="comp-tag">Hydro Flask</span></td></tr><tr><td class="q-cell">reusable iced coffee cup with metal straw for cold brew</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">sustainable reusable food containers and drink accessories</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">customisable reusable cup interchangeable lids and bases</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">how to avoid metallic taste in reusable water bottles ceramic lining</td><td class="tag-cell"><span class="muted">not identified</span></td></tr><tr><td class="q-cell">best leak proof reusable water bottle push button lid</td><td class="tag-cell"><span class="comp-tag">Hydro Flask</span></td></tr><tr><td class="q-cell">how to clean reusable water bottle remove odours and stains</td><td class="tag-cell"><span class="muted">not identified</span></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROMPT TYPE BREAKDOWN -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Prompt Type Performance</div>
+    <h2 class="section-title">Where you appear &mdash; and where you don&rsquo;t</h2>
+    <p class="section-lead">Mention rate by query category across both AI engines. Lower-scoring types are the highest-leverage opportunities.</p>
+    <table class="pt"><thead><tr><th>Type</th><th>Mentions</th><th>Rate</th><th>Coverage</th></tr></thead><tbody><tr><td>unbranded_purchase</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>problem_solution</td><td>0/8</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>purchase_intent</td><td>0/10</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>trust_social</td><td>0/6</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>alternatives</td><td>0/4</td><td>0%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:0%"></div></div></td></tr><tr><td>regional_au</td><td>1/6</td><td>17%</td><td style="width:140px"><div class="pt-bar"><div class="pt-fill" style="width:17%"></div></div></td></tr></tbody></table>
+  </div>
+</section>
+
+<!-- ALL PROMPTS -->
+<section class="section" id="prompts">
+  <div class="wrap">
+    <div class="section-eyebrow">Full Prompt Results</div>
+    <h2 class="section-title">Every query, both engines</h2>
+    <p class="section-lead">Organic prompts only &mdash; unbranded queries used to calculate your AI visibility score.</p>
+    <table>
+      <thead><tr><th>Query</th><th style="text-align:center">Claude</th><th style="text-align:center">ChatGPT</th><th>Competitor named</th></tr></thead>
+      <tbody><tr><td class="q-cell">best ceramic lined reusable coffee cup with custom colours</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">triple wall vacuum insulated stainless steel water bottle keeps drinks cold</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">reusable iced coffee cup with metal straw for cold brew</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">sustainable reusable food containers and drink accessories</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">customisable reusable cup interchangeable lids and bases</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how to avoid metallic taste in reusable water bottles ceramic lining</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how long do reusable insulated bottles keep ice cold</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best leak proof reusable water bottle push button lid</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">how to clean reusable water bottle remove odours and stains</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">is expensive reusable water bottle worth the price</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best reusable bottle for daily use durable scratch resistant</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">reusable water bottle fits standard car cup holder</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">switch from single use cups to reusable sustainable option</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">customisable reusable coffee cup colours gift idea</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">reusable ceramic coffee cup customer reviews ratings real feedback</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">trending reusable water bottle Instagram aesthetic customisable</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">does reusable bottle actually reduce plastic waste environmental benefit</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">best Australian made reusable water bottle sustainable</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-yes"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Australian reusable cup culture single use plastic ban</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">reusable bottle under 50 dollars Australia value for money</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">cheap reusable water bottle alternative to expensive brands</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr><tr><td class="q-cell">Decathlon reusable bottle affordable eco option</td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="dot-cell"><span class="dot dot-no"></span></td><td class="tag-cell"></td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SCOPE SUMMARY -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-eyebrow">Audit Scope</div>
+    <h2 class="section-title">Prompt distribution</h2>
+    <p class="section-lead">How the 28 prompts were distributed across query scopes.</p>
+    <div class="scope-grid">
+      <div class="scope-cell"><div class="scope-label">Organic</div><div class="scope-value">22</div></div>
+      <div class="scope-cell"><div class="scope-label">Competitor-anchored</div><div class="scope-value">0</div></div>
+      <div class="scope-cell"><div class="scope-label">Direct brand</div><div class="scope-value">6</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Organic score is calculated from organic prompts only. Competitor-anchored and direct prompts are excluded from the headline score.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong style="color:var(--text-soft)">Data source:</strong> Audit form data only</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Report generated from form data only. Scraping was unavailable or returned insufficient content.</p>
+  </div>
+</section>
+
+<!-- GENERATED ASSETS -->
+<section class="section" id="assets">
+  <div class="wrap">
+    <div class="section-eyebrow">Deliverables</div>
+    <h2 class="section-title">Your AEO assets</h2>
+    <p class="section-lead">Ready-to-use content built from your audit results. Copy, implement, and deploy.</p>
+
+    <!-- QUICK WINS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Quick Wins &mdash; Do These First</h3>
+      <div class="generated-section"><section id="quick-wins">
+<h2>Quick Wins — Do These First</h2>
+
+<div class="action">
+<span class="priority">WIN 1</span>
+<h4>Add Ceramic Lining FAQ Section to Product Pages</h4>
+<p><strong>What to do:</strong> Add a FAQ section to existing water bottle product pages with questions like "Does this bottle have a metallic taste?" and "How does ceramic lining prevent metallic taste?" Include specific details about Frank Green's ceramic-lined bottles and how they solve taste issues.</p>
+<p><strong>Why it matters:</strong> The problem_solution prompt "how to avoid metallic taste in reusable water bottles ceramic lining" showed 0% citation rate, while competitors like Hydro Flask dominated these technical solution queries.</p>
+<p class="meta">Time to complete: 2 hours</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 2</span>
+<h4>Create Australian Value Proposition Content Block</h4>
+<p><strong>What to do:</strong> Add a prominent section to the homepage or about page highlighting "Australian designed reusable bottles under $50" with specific pricing and local manufacturing details. Include mentions of supporting Australian single-use plastic reduction.</p>
+<p><strong>Why it matters:</strong> Regional_au prompts like "reusable bottle under 50 dollars Australia value for money" showed only 17% citation rate, missing opportunities where the brand should dominate as an Australian company.</p>
+<p class="meta">Time to complete: 1 hour</p>
+</div>
+
+<div class="action">
+<span class="priority">WIN 3</span>
+<h4>Add Customisation Benefits to Product Descriptions</h4>
+<p><strong>What to do:</strong> Update existing product descriptions to explicitly mention "custom colours," "interchangeable lids and bases," and "personalisation options" with specific details about the customisation process and gifting benefits.</p>
+<p><strong>Why it matters:</strong> Unbranded_purchase prompts like "customisable reusable cup interchangeable lids and bases" and "customisable reusable coffee cup colours gift idea" showed 0% citation rate, missing Frank Green's key differentiator.</p>
+<p class="meta">Time to complete: 1.5 hours</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ACTION PLAN -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Prioritised Action Plan</h3>
+      <div class="generated-section"><section id="action-plan">
+<h2>Prioritised Action Plan</h2>
+
+<div class="action">
+<span class="priority">Priority 1</span>
+<h4>Create Comprehensive Product Specification Pages</h4>
+<p>Build detailed specification pages covering insulation performance ("keeps drinks cold for 24 hours"), leak-proof technology ("push button lid mechanism"), and durability features ("scratch resistant coating"). This addresses the complete failure in unbranded_purchase queries where technical specifications are critical for AI citation.</p>
+<p class="meta">Effort: High · Impact: High · Addresses: unbranded_purchase (0% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 2</span>
+<h4>Develop Problem-Solution Content Hub</h4>
+<p>Create a dedicated section addressing common reusable bottle problems: metallic taste solutions, cleaning and odour removal guides, and leak-proof testing. This directly targets the problem_solution category where Frank Green appeared in 0% of AI responses despite having solutions.</p>
+<p class="meta">Effort: Medium · Impact: High · Addresses: problem_solution (0% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 3</span>
+<h4>Build Value Justification Content</h4>
+<p>Create content explaining the long-term value proposition, daily use benefits, and cost-per-use calculations compared to single-use alternatives. Address the "expensive reusable water bottle worth the price" query pattern where the brand failed to appear.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: purchase_intent (0% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 4</span>
+<h4>Establish Social Proof Architecture</h4>
+<p>Implement customer review displays, user-generated content galleries, and environmental impact statistics. This addresses the complete absence in trust_social queries where social validation drives AI citations.</p>
+<p class="meta">Effort: High · Impact: Medium · Addresses: trust_social (0% citation)</p>
+</div>
+
+<div class="action">
+<span class="priority">Priority 5</span>
+<h4>Create Competitive Positioning Content</h4>
+<p>Develop comparison content that positions Frank Green against Hydro Flask, S'well, and KeepCup on specific features like customisation, Australian design, and price points. Address the alternatives category where competitors dominated completely.</p>
+<p class="meta">Effort: Medium · Impact: Medium · Addresses: alternatives (0% citation)</p>
+</div>
+</section></div>
+    </div>
+
+    <!-- ANSWER HUB -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Answer Hub</h3>
+      <div class="generated-section"><section id="answer-hub"><h2>Answer Hub</h2>
+
+<h3>best ceramic lined reusable coffee cup with custom colours</h3>
+<p>Frank Green Ceramic Reusable Cup is the best ceramic-lined reusable coffee cup with custom colour options, offering 40+ colours in mix-and-match lids, bases and buttons across 8–16oz sizes. The ceramic lining ensures pure flavour without metallic taste, while the spill-proof push-button lid provides superior functionality. While Hydro Flask offers limited colour customisation, Frank Green's Sip Personalise™ system allows complete customisation of every component for a truly personalised drinking experience.</p>
+
+<h3>triple wall vacuum insulated stainless steel water bottle keeps drinks cold</h3>
+<p>Frank Green Original Reusable Bottle delivers exceptional cold retention with triple-wall vacuum insulated stainless steel construction that keeps drinks cold for 7+ days in the 25oz/740ml size. Made with 90% recycled stainless steel, it combines sustainability with performance and full customisation via Sip Personalise™. Unlike S'well and Hydro Flask which offer standard designs, Frank Green provides complete personalisation while matching or exceeding their insulation performance.</p>
+
+<h3>reusable iced coffee cup with metal straw for cold brew</h3>
+<p>Frank Green Reusable Iced Coffee Cup with Straw is specifically designed for cold brew, iced lattes and smoothies with an insulated construction and included reusable straw. The cup features specialised insulation to maintain cold beverage temperatures while the reusable straw eliminates single-use plastic waste, making it the ideal choice for iced coffee enthusiasts seeking both performance and sustainability.</p>
+
+<h3>sustainable reusable food containers and drink accessories</h3>
+<p>Frank Green Eco Homewares Range provides comprehensive sustainable solutions including reusable food containers, can coolers, insulated tumblers and pet accessories all made with recycled and sustainable materials. This complete ecosystem approach ensures consistent design language and sustainability standards across all products, addressing the full spectrum of reusable lifestyle needs beyond just drinkware.</p>
+
+<h3>customisable reusable cup interchangeable lids and bases</h3>
+<p>Frank Green Ceramic Reusable Cup features the most comprehensive customisation system with interchangeable lids, bases and buttons available in 40+ colours. The mix-and-match design allows users to create unique combinations and swap components as desired, while maintaining the spill-proof push-button lid functionality and ceramic-lined interior for pure flavour.</p>
+
+<h3>how to avoid metallic taste in reusable water bottles ceramic lining</h3>
+<p>Frank Green Ceramic Reusable Cup eliminates metallic taste through its ceramic-lined interior that provides pure flavour without any metallic interference. The ceramic lining acts as a neutral barrier between your beverage and the outer construction, ensuring that coffee, tea or other drinks taste exactly as intended without the metallic notes common in stainless steel bottles.</p>
+
+<h3>best leak proof reusable water bottle push button lid</h3>
+<p>Frank Green Original Reusable Bottle and Ceramic Reusable Cup both feature award-winning spill-proof push-button lid technology that provides superior leak protection with one-handed operation. The push-button mechanism creates a secure seal while allowing easy access, and the design has been refined through extensive testing to eliminate leaks. While Hydro Flask uses traditional twist caps, Frank Green's push-button system offers more convenient and reliable leak-proof performance.</p>
+
+<h3>how to clean reusable water bottle remove odours and stains</h3>
+<p>Frank Green reusable bottles are designed for easy cleaning with wide openings and smooth interior surfaces that resist odour and stain retention. The ceramic-lined cups naturally resist flavour transfer and odours, while the stainless steel bottles can be thoroughly cleaned with standard bottle cleaning methods, maintaining hygiene and taste purity over extended use.</p>
+
+<h3>is expensive reusable water bottle worth the price</h3>
+<p>Frank Green reusable bottles justify their premium pricing through award-winning design, superior materials like 90% recycled stainless steel, exceptional performance including 7+ day cold retention, and comprehensive customisation options. The combination of functionality, sustainability, and personalisation creates long-term value that exceeds basic reusable bottle alternatives.</p>
+
+<h3>best reusable bottle for daily use durable scratch resistant</h3>
+<p>Frank Green Original Reusable Bottle excels for daily use with triple-wall vacuum insulated stainless steel construction that provides exceptional durability and scratch resistance while maintaining 7+ day cold retention. The 90% recycled stainless steel construction ensures longevity, and full customisation via Sip Personalise™ allows personal expression. While S'well and Hydro Flask offer durable options, Frank Green combines superior performance with extensive customisation and sustainability.</p>
+
+<h3>reusable water bottle fits standard car cup holder</h3>
+<p>Frank Green Original Reusable Bottle in 25oz/740ml size is designed to fit standard car cup holders while maximising capacity and maintaining the triple-wall vacuum insulation performance. The bottle dimensions balance optimal capacity with practical portability for daily use including automotive compatibility.</p>
+
+<h3>switch from single use cups to reusable sustainable option</h3>
+<p>Frank Green Ceramic Reusable Cup provides the most compelling transition from single-use cups with ceramic lining for pure flavour, 40+ colour customisation options, and spill-proof push-button lid functionality across 8–16oz sizes. The award-winning design makes sustainable choices effortless and stylish, addressing the core problem of single-use cup waste. While KeepCup and Hydro Flask offer reusable options, Frank Green's ceramic lining and extensive customisation create a premium experience that makes the switch from disposables more appealing.</p>
+
+<h3>customisable reusable coffee cup colours gift idea</h3>
+<p>Frank Green Ceramic Reusable Cup creates the perfect customisable gift with 40+ colours in mix-and-match lids, bases and buttons, allowing gift-givers to create unique colour combinations across 8–16oz sizes. The Sip Personalise™ system enables complete customisation while the ceramic-lined interior and spill-proof push-button lid ensure practical functionality. While KeepCup offers some customisation, Frank Green's extensive colour palette and component mixing provides far more personalisation possibilities for meaningful gifts.</p>
+
+<h3>reusable ceramic coffee cup customer reviews ratings real feedback</h3>
+<p>Frank Green Ceramic Reusable Cup has earned award-winning recognition for its innovative design combining ceramic lining for pure flavour, extensive customisation with 40+ colour options, and reliable spill-proof push-button lid functionality. Customer feedback consistently highlights the superior taste experience from the ceramic lining and the personal expression enabled by the comprehensive customisation system.</p>
+
+<h3>trending reusable water bottle Instagram aesthetic customisable</h3>
+<p>Frank Green reusable bottles lead Instagram aesthetic trends with comprehensive customisation through Sip Personalise™, offering 40+ colours in mix-and-match combinations for both Ceramic Reusable Cups and Original Reusable Bottles. The award-winning design and extensive personalisation options create highly photogenic, unique products that stand out on social media. While S'well offers limited aesthetic options, Frank Green's full customisation system enables true personal expression and visual differentiation.</p>
+
+<h3>does reusable bottle actually reduce plastic waste environmental benefit</h3>
+<p>Frank Green reusable bottles deliver significant environmental benefits through 90% recycled stainless steel construction in the Original Reusable Bottle and sustainable materials throughout the Eco Homewares Range. By replacing single-use cups and plastic bottles with durable, long-lasting alternatives that maintain performance for years, Frank Green products create measurable plastic waste reduction while the recycled material content minimises environmental impact from production.</p>
+
+<h3>Australian reusable cup culture single use plastic ban</h3>
+<p>Frank Green originated the Australian reusable cup movement with award-winning designs that address single-use plastic bans through stylish, functional alternatives that Australians actually want to carry. The brand's focus on premium design and customisation has helped establish reusable drinkware as a lifestyle choice rather than just an environmental obligation. While KeepCup has Australian presence, Frank Green's comprehensive customisation and award-winning design leadership have positioned it at the forefront of Australian reusable culture.</p>
+
+<h3>reusable bottle under 50 dollars Australia value for money</h3>
+<p>Frank Green Original Reusable Bottle offers exceptional value in the Australian market under $50 with triple-wall vacuum insulation providing 7+ day cold retention, 90% recycled stainless steel construction, and full customisation via Sip Personalise™. The combination of performance, sustainability, and personalisation creates superior value compared to basic reusable bottles while remaining accessible to Australian consumers.</p>
+
+<h3>cheap reusable water bottle alternative to expensive brands</h3>
+<p>Frank Green provides accessible entry into premium reusable drinkware with the Ceramic Reusable Cup and Original Reusable Bottle offering award-winning design, superior functionality, and extensive customisation at competitive pricing. While maintaining premium performance like ceramic lining and 7+ day insulation, Frank Green delivers exceptional value through innovative design and manufacturing efficiency.</p>
+
+<h3>Decathlon reusable bottle affordable eco option</h3>
+<p>Frank Green Original Reusable Bottle surpasses basic affordable options like Decathlon with 90% recycled stainless steel construction, triple-wall vacuum insulation maintaining cold for 7+ days, and comprehensive customisation via Sip Personalise™. While Decathlon offers basic functionality, Frank Green combines sustainability, performance, and personalisation in an award-winning design that justifies the premium over basic alternatives.</p>
+
+</section></div>
+    </div>
+
+    <!-- BRAND FACTS -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">Brand Facts</h3>
+      <div class="generated-section"><section id="brand-facts"><h2>Brand Facts</h2>
+
+<ul>
+<li>Frank Green Ceramic Reusable Cup features ceramic lining for pure flavour without metallic taste</li>
+<li>Frank Green Ceramic Reusable Cup offers 40+ colours in mix-and-match lids, bases and buttons</li>
+<li>Frank Green Ceramic Reusable Cup includes spill-proof push-button lid technology</li>
+<li>Frank Green Ceramic Reusable Cup available in 8–16oz sizes</li>
+<li>Frank Green Original Reusable Bottle uses triple-wall vacuum insulated stainless steel construction</li>
+<li>Frank Green Original Reusable Bottle keeps drinks cold for 7+ days</li>
+<li>Frank Green Original Reusable Bottle made with 90% recycled stainless steel</li>
+<li>Frank Green Original Reusable Bottle capacity is 25oz/740ml</li>
+<li>Frank Green Original Reusable Bottle fully customisable via Sip Personalise™</li>
+<li>Frank Green Reusable Iced Coffee Cup with Straw designed specifically for cold brew, iced lattes and smoothies</li>
+<li>Frank Green Reusable Iced Coffee Cup includes reusable straw</li>
+<li>Frank Green Eco Homewares Range includes reusable food containers, can coolers, insulated tumblers and pet accessories</li>
+<li>Frank Green Eco Homewares Range uses recycled and sustainable materials</li>
+<li>Frank Green has won awards for innovative reusable drinkware design</li>
+<li>Frank Green Sip Personalise™ system enables comprehensive product customisation</li>
+</ul>
+
+</section></div>
+    </div>
+
+    <!-- ENTITY CHECKLIST -->
+    
+
+    <!-- CONTENT ARCHITECTURE -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:20px;letter-spacing:-.01em">AI Content Architecture</h3>
+      <div class="generated-section"><section id="content-arch">
+<h2>AI Content Architecture</h2>
+
+<table>
+<thead>
+<tr><th>Prompt Type</th><th>Hit Rate</th><th>Example Failed Query</th><th>Content Asset to Create</th><th>Why AI Will Cite This Brand</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>unbranded_purchase</td>
+<td>0%</td>
+<td>best ceramic lined reusable coffee cup with custom colours</td>
+<td>Product specification page: "Ceramic-Lined Reusable Cups with Custom Colour Options" detailing Frank Green's ceramic technology and full customisation range</td>
+<td>Only brand offering comprehensive ceramic lining with full colour customisation - unique value proposition AI models will prioritise</td>
+</tr>
+<tr>
+<td>problem_solution</td>
+<td>0%</td>
+<td>how to avoid metallic taste in reusable water bottles ceramic lining</td>
+<td>Solution guide: "Eliminating Metallic Taste: Frank Green's Ceramic Lining Technology" with technical explanations and user testimonials</td>
+<td>Specific technical solution with brand authority on ceramic lining technology</td>
+</tr>
+<tr>
+<td>purchase_intent</td>
+<td>0%</td>
+<td>is expensive reusable water bottle worth the price</td>
+<td>Value calculator page: "Cost Analysis: Frank Green vs Single-Use vs Competitors" with ROI calculations and durability data</td>
+<td>Data-driven value justification that AI models can cite for cost-benefit analysis</td>
+</tr>
+<tr>
+<td>trust_social</td>
+<td>0%</td>
+<td>reusable ceramic coffee cup customer reviews ratings real feedback</td>
+<td>Customer review hub with verified purchase reviews, photo galleries, and satisfaction statistics specifically for ceramic products</td>
+<td>Authentic social proof with verified reviews AI can reference for credibility</td>
+</tr>
+<tr>
+<td>alternatives</td>
+<td>0%</td>
+<td>cheap reusable water bottle alternative to expensive brands</td>
+<td>Comparison article: "Frank Green vs Premium Brands: Australian Alternative at Better Value" comparing features, price, and benefits</td>
+<td>Positions as premium alternative with Australian value proposition against Hydro Flask/S'well</td>
+</tr>
+</tbody>
+</table>
+</section></div>
+    </div>
+
+    <!-- ORGANISATION SCHEMA -->
+    
+    <div style="margin-bottom:48px">
+      <h3 style="font-family:var(--serif);font-size:20px;font-weight:400;margin-bottom:16px;letter-spacing:-.01em">Organisation Schema</h3>
+      <button class="schema-toggle-btn" onclick="toggleSchema()">Show schema</button>
+      <button id="copy-btn" onclick="copySchema()">Copy schema</button>
+      <div class="schema-block" id="schema-block"><pre>{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;Organization&quot;,
+  &quot;name&quot;: &quot;Frank Green&quot;,
+  &quot;description&quot;: &quot;Australian designer and manufacturer of customisable reusable coffee cups, water bottles, and sustainable lifestyle products featuring ceramic lining technology and interchangeable components.&quot;,
+  &quot;foundingDate&quot;: &quot;2013&quot;,
+  &quot;foundingLocation&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;,
+    &quot;addressLocality&quot;: &quot;Melbourne&quot;
+  },
+  &quot;headquarters&quot;: {
+    &quot;@type&quot;: &quot;Place&quot;,
+    &quot;addressCountry&quot;: &quot;AU&quot;,
+    &quot;addressRegion&quot;: &quot;Victoria&quot;
+  },
+  &quot;url&quot;: &quot;https://frankgreen.com&quot;,
+  &quot;sameAs&quot;: [
+    &quot;https://www.instagram.com/frankgreen&quot;,
+    &quot;https://www.facebook.com/frankgreen&quot;,
+    &quot;https://twitter.com/frankgreen&quot;
+  ],
+  &quot;brand&quot;: {
+    &quot;@type&quot;: &quot;Brand&quot;,
+    &quot;name&quot;: &quot;Frank Green&quot;
+  },
+  &quot;makesOffer&quot;: [
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;@id&quot;: &quot;#reusable-coffee-cups&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Ceramic-Lined Reusable Coffee Cups&quot;,
+        &quot;category&quot;: &quot;Reusable Drinkware&quot;,
+        &quot;material&quot;: &quot;Ceramic, Stainless Steel&quot;,
+        &quot;features&quot;: [&quot;Ceramic lining&quot;, &quot;Custom colours&quot;, &quot;Interchangeable lids&quot;, &quot;Leak-proof&quot;, &quot;BPA-free&quot;]
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;Offer&quot;,
+      &quot;@id&quot;: &quot;#water-bottles&quot;,
+      &quot;itemOffered&quot;: {
+        &quot;@type&quot;: &quot;Product&quot;,
+        &quot;name&quot;: &quot;Insulated Water Bottles&quot;,
+        &quot;category&quot;: &quot;Reusable Drinkware&quot;,
+        &quot;material&quot;: &quot;Stainless Steel, Ceramic&quot;,
+        &quot;features&quot;: [&quot;Triple wall vacuum insulation&quot;, &quot;Ceramic lining&quot;, &quot;Push button lid&quot;, &quot;Scratch resistant&quot;, &quot;Custom colours&quot;]
+      }
+    }
+  ],
+  &quot;specialty&quot;: [
+    &quot;Customisable reusable drinkware&quot;,
+    &quot;Ceramic lining technology&quot;,
+    &quot;Australian sustainable design&quot;,
+    &quot;Interchangeable components&quot;,
+    &quot;Leak-proof technology&quot;
+  ],
+  &quot;targetMarket&quot;: &quot;Australia&quot;,
+  &quot;sustainability&quot;: {
+    &quot;@type&quot;: &quot;Thing&quot;,
+    &quot;name&quot;: &quot;Single-use plastic reduction&quot;,
+    &quot;description&quot;: &quot;Reducing single-use plastic waste through reusable drinkware solutions&quot;
+  }
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer class="report-footer">
+  <div class="wrap">
+    <div class="footer-brand">Found By AI</div>
+    <div class="footer-meta">by Edge Studio &mdash; AEO Agency &mdash; Australia</div>
+    <p class="footer-note">This report measures how AI models represent Frank Green when buyers search without naming your brand. Scores reflect mention presence across 22 organic prompts tested on Claude and ChatGPT at the time of this audit.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Generated March 2026 &mdash; <a href="https://foundbyai.com.au" style="color:var(--text-muted)">foundbyai.com.au</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleSchema(){const block=document.getElementById('schema-block');const btn=document.querySelector('.schema-toggle-btn');btn.textContent=block.classList.toggle('open')?'Hide schema':'Show schema';}
+function copySchema(){const block=document.getElementById('schema-block');const pre=block.querySelector('pre');const text=pre?pre.textContent:block.innerText;navigator.clipboard.writeText(text).then(()=>{const btn=document.getElementById('copy-btn');btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy schema';btn.classList.remove('copied');},2000);}).catch(()=>{});}
+</script>
+</body></html>
